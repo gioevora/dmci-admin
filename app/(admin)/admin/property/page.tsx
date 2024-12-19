@@ -2,11 +2,10 @@
 
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
-
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import type { Property } from '@/app/utils/types';
-import AddPropertyModal from './add-property-modal';
+import LoadingDot from '@/components/loading-dot';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -15,7 +14,6 @@ const fetchWithToken = async (url: string) => {
         'Content-Type': 'application/json',
     };
 
-    // Only add Authorization header if token exists
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
@@ -68,14 +66,13 @@ export default function Property() {
     }
 
     if (!data) {
-        return <div>Loading...</div>;
+        return <LoadingDot />;
     }
 
     return (
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">Property Table</h1>
-                <AddPropertyModal />
             </div>
             <DataTable<Property>
                 data={properties}
