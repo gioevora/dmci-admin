@@ -14,10 +14,10 @@ export const Modal: React.FC<ModalProps> = ({ title, buttonLabel, children, foot
     return (
         <>
             <Button color="primary" onPress={onOpen}>{buttonLabel}</Button>
-            <FortuneUIModal isOpen={isOpen} onOpenChange={onOpenChange}>
+            <FortuneUIModal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
-                    <ModalBody>
+                    <ModalBody className="pb-6">
                         {children}
                     </ModalBody>
                     {footer && <ModalFooter>{footer}</ModalFooter>}

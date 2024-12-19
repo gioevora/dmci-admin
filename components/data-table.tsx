@@ -1,3 +1,4 @@
+// components\data - table.tsx
 'use client'
 
 import React, { useState, useMemo } from 'react';
@@ -70,9 +71,10 @@ export function DataTable<T>({
                             ))}
                             {onAction && (
                                 <TableCell>
-                                    <Button size="sm" onClick={() => onAction(item)}>
+                                    <Button size="sm" onPress={() => onAction(item)}>
                                         {actionLabel}
                                     </Button>
+
                                 </TableCell>
                             )}
                         </TableRow>

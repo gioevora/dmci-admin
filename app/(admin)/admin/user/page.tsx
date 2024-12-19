@@ -1,19 +1,14 @@
 'use client';
 
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import { Button } from "@nextui-org/react";
+import useSWR from 'swr';
+import { useEffect, useState } from 'react';
 
+import AddUserModal from './add-user-modal';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
-import { Modal } from '@/components/add-modal';
-import CustomInput from "@/components/input";
-import { passwordSchema, emailSchema } from "@/app/utils/validation-schema";
-
-const validationSchema = Yup.object({
-    email: emailSchema.fields.email,
-    password: passwordSchema.fields.password,
-});
+import LoadingDot from '@/components/loading-dot';
+import HamsterWheel from '@/components/loading-hamster-wheel';
+import EditUserModal from './edit-user-modal';
 
 type User = {
     id: number;
@@ -21,12 +16,28 @@ type User = {
     email: string;
 };
 
-const users: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com' },
-];
+const fetchWithToken = async (url: string) => {
+    const token = sessionStorage.getItem('token');
 
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers,
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch data');
+    }
+
+    return response.json();
+};
 
 const columns: Column<User>[] = [
     { key: 'name', label: 'Name' },
@@ -34,49 +45,44 @@ const columns: Column<User>[] = [
 ];
 
 export default function Home() {
+    const { data, error } = useSWR<{ code: number; message: string; records: User[] }>(
+        'https://abicmanpowerservicecorp.com/api/users',
+        fetchWithToken
+    );
+
+    const [users, setUser] = useState<User[]>([]);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (data && data.records) {
+            setUser(data.records);
+        }
+    }, [data]);
+
     const handleAction = (user: User) => {
-        console.log('Action clicked for user:', user);
+        setSelectedUser(user);
+        setIsModalOpen(true);
     };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedUser(null);
+    };
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
+    if (!data) {
+        return <HamsterWheel />;
+    }
 
     return (
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">User Table</h1>
-                <Modal title="Add new user" buttonLabel="Add new user">
-                    <div className="min-w-full">
-                        <Formik
-                            initialValues={{ email: "", password: "" }}
-                            validationSchema={validationSchema}
-                            onSubmit={(values) => {
-                                console.log(values);
-                            }}
-                        >
-                            {({ errors, touched }) => (
-                                <Form className="space-y-4">
-                                    <CustomInput
-                                        name="email"
-                                        label="Email"
-                                        type="text"
-                                        error={touched.email ? errors.email : undefined}
-                                    />
-                                    <CustomInput
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        error={touched.password ? errors.password : undefined}
-                                    />
-                                    <Button
-                                        type="submit"
-                                        color="primary"
-                                        className="w-full"
-                                    >
-                                        Submit
-                                    </Button>
-                                </Form>
-                            )}
-                        </Formik>
-                    </div>
-                </Modal>
+                <AddUserModal />
             </div>
             <DataTable<User>
                 data={users}
@@ -85,6 +91,13 @@ export default function Home() {
                 onAction={handleAction}
                 actionLabel="Edit"
             />
+            {selectedUser && (
+                <EditUserModal
+                    user={selectedUser}
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                />
+            )}
         </main>
     );
 }
