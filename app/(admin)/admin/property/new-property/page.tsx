@@ -474,34 +474,63 @@ const PropertyForm = () => {
                                 <ErrorMessage name="images" component="div" className="absolute text-xs text-[#F31260] mt-1" />
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                                <div className="col-span-1">
-                                    <label className="mb-2">Features:</label>
-                                    <div className="space-y-2">
-                                        {[
-                                            "Pool Area",
-                                            "Clubhouse",
-                                            "Gym/Fitness Center",
-                                            "Balcony/Terrace",
-                                            "Concierge Services",
-                                            "Security",
-                                            "Elevator",
-                                            "Underground Parking",
-                                            "Pet-Friendly Facilities",
-                                            "Guest Suites"
-                                        ].map((amenity) => (
-                                            <label key={amenity} className="flex items-center space-x-2 col-span-1">
-                                                <Field
-                                                    type="checkbox"
-                                                    name="amenities"
-                                                    value={amenity} // Value is the specific amenity
-                                                    className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                                />
-                                                <span>{amenity}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                    <ErrorMessage name="amenities" component="div" className="absolute text-xs text-[#F31260] mt-1" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
+                                {/* First Column */}
+                                <div className="flex flex-col  space-y-2">
+                                    {[
+                                        "Pool Area",
+                                        "Clubhouse",
+                                        "Gym/Fitness Center",
+                                        "Balcony/Terrace"
+                                    ].map((amenity) => (
+                                        <label key={amenity} className="flex  space-x-2">
+                                            <Field
+                                                type="checkbox"
+                                                name="amenities"
+                                                value={amenity}
+                                                className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                            <span>{amenity}</span>
+                                        </label>
+                                    ))}
+                                </div>
+
+                                {/* Second Column */}
+                                <div className="flex flex-col  space-y-2">
+                                    {[
+                                        "Concierge Services",
+                                        "Security",
+                                        "Elevator",
+                                        "Underground Parking"
+                                    ].map((amenity) => (
+                                        <label key={amenity} className="flex  space-x-2">
+                                            <Field
+                                                type="checkbox"
+                                                name="amenities"
+                                                value={amenity}
+                                                className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                            <span>{amenity}</span>
+                                        </label>
+                                    ))}
+                                </div>
+
+                                {/* Third Column */}
+                                <div className="flex flex-col  space-y-2">
+                                    {[
+                                        "Pet-Friendly Facilities",
+                                        "Guest Suites"
+                                    ].map((amenity) => (
+                                        <label key={amenity} className="flex  space-x-2">
+                                            <Field
+                                                type="checkbox"
+                                                name="amenities"
+                                                value={amenity}
+                                                className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                            <span>{amenity}</span>
+                                        </label>
+                                    ))}
                                 </div>
                             </div>
                             {/* Acknowledgment */}
