@@ -23,6 +23,7 @@ const fetchWithToken = async (url: string) => {
         'Content-Type': 'application/json',
     };
 
+    
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
@@ -36,6 +37,7 @@ const fetchWithToken = async (url: string) => {
         throw new Error('Failed to fetch data');
     }
 
+    console.log(response);
     return response.json();
 };
 
@@ -46,7 +48,7 @@ const columns: Column<User>[] = [
 
 export default function Home() {
     const { data, error } = useSWR<{ code: number; message: string; records: User[] }>(
-        'https://abicmanpowerservicecorp.com/api/users',
+        'https://abicmanpowerservicecorp.com/api/users/01JFH4D8EYAJ31286QT4R0BDPP',
         fetchWithToken
     );
 

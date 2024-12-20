@@ -27,3 +27,9 @@ export interface Property {
     percent: string;
     images: string;
 }
+
+export interface Partner {
+    id: string;
+    name: string;
+    image: string;
+}

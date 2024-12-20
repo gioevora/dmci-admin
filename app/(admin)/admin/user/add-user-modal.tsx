@@ -26,6 +26,8 @@ const AddUserModal = () => {
                 }
 
             });
+            console.log(values);
+            console.log(response);
             console.log('User added:', response.data);
         } catch (error: any) {
             setSubmitting(false);

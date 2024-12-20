@@ -1,5 +1,4 @@
-// components\data - table.tsx
-'use client'
+'use client';
 
 import React, { useState, useMemo } from 'react';
 import {
@@ -13,9 +12,9 @@ import {
 } from '@nextui-org/react';
 import { SearchBar } from './search-bar';
 import { Pagination } from './pagination';
-import { DataTableProps, Column } from '@/app/utils/types'
+import { DataTableProps, Column } from '@/app/utils/types';
 
-export function DataTable<T>({
+export function DataTable<T extends Record<string, any>>({
     data,
     columns,
     itemsPerPage = 10,
@@ -46,7 +45,7 @@ export function DataTable<T>({
         if (column.render) {
             return column.render(item);
         }
-        return item[columnKey];
+        return item[columnKey] ?? '-';
     };
 
     return (
@@ -74,7 +73,6 @@ export function DataTable<T>({
                                     <Button size="sm" onPress={() => onAction(item)}>
                                         {actionLabel}
                                     </Button>
-
                                 </TableCell>
                             )}
                         </TableRow>
@@ -85,4 +83,3 @@ export function DataTable<T>({
         </div>
     );
 }
-

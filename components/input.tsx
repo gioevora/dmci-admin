@@ -1,6 +1,6 @@
 import React from "react";
-import { Input } from "@nextui-org/react"; // Import NextUI Input component
-import { Field } from "formik"; // Formik Field to bind to form
+import { Input } from "@nextui-org/react";
+import { Field, FieldProps } from "formik";
 import { AlertCircle } from "lucide-react";
 
 interface CustomInputProps {
@@ -9,19 +9,24 @@ interface CustomInputProps {
     type?: string;
     placeholder?: string;
     error?: string;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ label, name, type = "text", error }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ label, name, type = "text", error, onChange }) => {
     return (
         <div className="mb-4">
-            <Field
-                as={Input}
-                type={type}
-                label={label}
-                name={name}
-                variant="underlined"
-
-            />
+            <Field name={name}>
+                {({ field }: FieldProps) => (
+                    <Input
+                        {...field}
+                        type={type}
+                        label={label}
+                        onChange={type === "file" ? onChange : field.onChange}
+                        value={type === "file" ? undefined : field.value || ""}
+                        variant="underlined"
+                    />
+                )}
+            </Field>
             {error && (
                 <div id={`${name}-error`} className="mt-1 flex items-center gap-1 text-sm text-red-500">
                     <AlertCircle size={16} />
