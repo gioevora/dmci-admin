@@ -53,13 +53,10 @@ const PropertyForm = () => {
         try {
             console.log("Form values before submit:", values);
 
-            const userId = sessionStorage.getItem('userId');
-            const submissionUrl = `https://abicmanpowerservicecorp.com/api/submissions`;
-
-            const response = await axios.post(submissionUrl, values, {
+            const response = await axios.post("https://abicmanpowerservicecorp.com/api/submissions", values, {
                 headers: {
-                    'Authorization': 'application/json',
-                    'Content-Type': 'multipart/form-data'
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             });
 
@@ -114,7 +111,6 @@ const PropertyForm = () => {
                         amenities: [], // Set as an array for checkboxes
                         images: [], // Set as array for file upload
                         acknowledgment: false, // Set to false for checkbox
-                        _method: "PUT",
                     }}
                     // validationSchema={validationSchema}
                     onSubmit={handleSubmit}
