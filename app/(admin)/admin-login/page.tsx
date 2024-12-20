@@ -20,7 +20,6 @@ export default function LoginPage() {
   const handleLogin = async () => {
     try {
       const response = await fetch(`https://abicmanpowerservicecorp.com/api/users/login`, {
-
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,16 +28,19 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        const { token } = await response.json();
+        const { token, record: { id } } = await response.json();
         console.log('Login successful:', token);
+
+        // Store token and user id in sessionStorage
         sessionStorage.setItem('token', token);
+        sessionStorage.setItem('userId', id);
+
         router.push('/admin');
       } else {
         alert('Invalid email or password');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
-      alert('Something went wrong. Please try again.');
+      console.error('Login error:', error);
     }
   };
 
