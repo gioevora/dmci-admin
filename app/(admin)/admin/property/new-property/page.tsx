@@ -2,7 +2,6 @@
 
 import { Card, Input, Button, Select, SelectItem, } from '@nextui-org/react';
 import { Formik, Field, Form, ErrorMessage, } from 'formik';
-import { CheckboxGroup, Checkbox } from "@nextui-org/checkbox";
 import * as Yup from 'yup';
 
 const PropertyForm = () => {
@@ -218,11 +217,11 @@ const PropertyForm = () => {
                             </div>
 
                             {/* Features */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                                <div className="col-span-1">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                <div className="col-span-3">
                                     <label className="mb-2">Features:</label>
-                                    <div className="space-y-2">
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -231,7 +230,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Pool Area</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -240,7 +239,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Clubhouse</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -249,7 +248,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Gym/Fitness Center</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -258,7 +257,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Balcony/Terrace</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -267,7 +266,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Concierge Services</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -276,7 +275,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Security</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -285,7 +284,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Elevator</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -294,7 +293,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Underground Parking</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -303,7 +302,7 @@ const PropertyForm = () => {
                                             />
                                             <span>Pet-Friendly Facilities</span>
                                         </label>
-                                        <label className="flex items-center space-x-2 col-span-1">
+                                        <label className="flex items-center space-x-2">
                                             <Field
                                                 type="checkbox"
                                                 name="features"
@@ -313,13 +312,13 @@ const PropertyForm = () => {
                                             <span>Guest Suites</span>
                                         </label>
                                     </div>
-                                    <ErrorMessage name="features" component="div" className="absolute text-xs text-[#F31260] mt-1" />
+                                    <ErrorMessage
+                                        name="features"
+                                        component="div"
+                                        className="absolute text-xs text-[#F31260] mt-1"
+                                    />
                                 </div>
                             </div>
-
-
-
-
                             {/* Images */}
                             <div>
                                 <h4 className="mt-8">Upload Images:</h4>
