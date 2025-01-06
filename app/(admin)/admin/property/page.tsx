@@ -8,7 +8,8 @@ import type { Property } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 
 const fetchWithToken = async (url: string) => {
-    const token = sessionStorage.getItem('token');
+    const token = "20|EjfVtOkhFpVoUWpjpLmHHWPRUs07z3SMdbka9kDw5f2e99bf"
+    // const token = sessionStorage.getItem('token');
 
     const headers: HeadersInit = {
         'Content-Type': 'application/json',

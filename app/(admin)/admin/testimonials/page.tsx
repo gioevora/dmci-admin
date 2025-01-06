@@ -3,19 +3,12 @@
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 
-import AddUserModal from './add-user-modal';
+// import AddUserModal from './add-user-modal';
 import { DataTable } from '@/components/data-table';
-import { Column } from '@/app/utils/types';
+import { Column, Testimonial } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 import HamsterWheel from '@/components/loading-hamster-wheel';
-import EditUserModal from './edit-user-modal';
-
-type User = {
-    id: number;
-    name: string;
-    email: string;
-    type: string;
-};
+// import EditUserModal from './edit-user-modal';
 
 const fetchWithToken = async (url: string) => {
     const token = "20|EjfVtOkhFpVoUWpjpLmHHWPRUs07z3SMdbka9kDw5f2e99bf"
@@ -43,20 +36,23 @@ const fetchWithToken = async (url: string) => {
     return response.json();
 };
 
-const columns: Column<User>[] = [
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'type', label: 'type' },
+const columns: Column<Testimonial>[] = [
+    { key: 'id', label: 'id' },
+    { key: 'user_id', label: 'user_id' },
+    { key: 'name', label: 'name' },
+    { key: 'message', label: 'message' },
+    { key: 'created_at', label: 'created_at' },
+    { key: 'updated_at', label: 'updated_at' },
 ];
 
 export default function Home() {
-    const { data, error } = useSWR<{ code: number; message: string; records: User[] }>(
-        'https://abicmanpowerservicecorp.com/api/users',
+    const { data, error } = useSWR<{ code: number; message: string; records: Testimonial[] }>(
+        'https://abicmanpowerservicecorp.com/api/testimonials',
         fetchWithToken
     );
 
-    const [users, setUser] = useState<User[]>([]);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [users, setUser] = useState<Testimonial[]>([]);
+    const [selectedUser, setSelectedUser] = useState<Testimonial | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -65,7 +61,7 @@ export default function Home() {
         }
     }, [data]);
 
-    const handleAction = (user: User) => {
+    const handleAction = (user: Testimonial) => {
         setSelectedUser(user);
         setIsModalOpen(true);
     };
@@ -86,23 +82,23 @@ export default function Home() {
     return (
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">User Table</h1>
-                <AddUserModal />
+                <h1 className="text-2xl font-bold mb-4">Testiomonial Table</h1>
+                {/* <AddUserModal /> */}
             </div>
-            <DataTable<User>
+            <DataTable<Testimonial>
                 data={users}
                 columns={columns}
                 itemsPerPage={5}
                 onAction={handleAction}
                 actionLabel="Edit"
             />
-            {selectedUser && (
+            {/* {selectedUser && (
                 <EditUserModal
                     user={selectedUser}
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                 />
-            )}
+            )} */}
         </main>
     );
 }

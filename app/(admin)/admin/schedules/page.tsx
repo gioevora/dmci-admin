@@ -3,19 +3,12 @@
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 
-import AddUserModal from './add-user-modal';
+// import AddUserModal from './add-user-modal';
 import { DataTable } from '@/components/data-table';
-import { Column } from '@/app/utils/types';
+import { Column, Schedule } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 import HamsterWheel from '@/components/loading-hamster-wheel';
-import EditUserModal from './edit-user-modal';
-
-type User = {
-    id: number;
-    name: string;
-    email: string;
-    type: string;
-};
+// import EditUserModal from './edit-user-modal';
 
 const fetchWithToken = async (url: string) => {
     const token = "20|EjfVtOkhFpVoUWpjpLmHHWPRUs07z3SMdbka9kDw5f2e99bf"
@@ -43,20 +36,31 @@ const fetchWithToken = async (url: string) => {
     return response.json();
 };
 
-const columns: Column<User>[] = [
+const columns: Column<Schedule>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'user_id', label: 'User ID' },
     { key: 'name', label: 'Name' },
+    { key: 'phone', label: 'Phone' },
     { key: 'email', label: 'Email' },
-    { key: 'type', label: 'type' },
+    { key: 'date', label: 'Date' },
+    { key: 'time', label: 'Time' },
+    { key: 'type', label: 'Type' },
+    { key: 'properties', label: 'Properties' },
+    { key: 'message', label: 'Message' },
+    { key: 'status', label: 'Status' },
+    { key: 'created_at', label: 'Created At' },
+    { key: 'updated_at', label: 'Updated At' },
 ];
 
+
 export default function Home() {
-    const { data, error } = useSWR<{ code: number; message: string; records: User[] }>(
-        'https://abicmanpowerservicecorp.com/api/users',
+    const { data, error } = useSWR<{ code: number; message: string; records: Schedule[] }>(
+        'https://abicmanpowerservicecorp.com/api/schedules',
         fetchWithToken
     );
 
-    const [users, setUser] = useState<User[]>([]);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [users, setUser] = useState<Schedule[]>([]);
+    const [selectedUser, setSelectedUser] = useState<Schedule | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -65,7 +69,7 @@ export default function Home() {
         }
     }, [data]);
 
-    const handleAction = (user: User) => {
+    const handleAction = (user: Schedule) => {
         setSelectedUser(user);
         setIsModalOpen(true);
     };
@@ -86,23 +90,23 @@ export default function Home() {
     return (
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">User Table</h1>
-                <AddUserModal />
+                <h1 className="text-2xl font-bold mb-4">Schedule Table</h1>
+                {/* <AddUserModal /> */}
             </div>
-            <DataTable<User>
+            <DataTable<Schedule>
                 data={users}
                 columns={columns}
                 itemsPerPage={5}
                 onAction={handleAction}
                 actionLabel="Edit"
             />
-            {selectedUser && (
+            {/* {selectedUser && (
                 <EditUserModal
                     user={selectedUser}
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                 />
-            )}
+            )} */}
         </main>
     );
 }
