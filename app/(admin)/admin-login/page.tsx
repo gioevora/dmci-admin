@@ -13,8 +13,8 @@ import {
 } from '@nextui-org/react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('email@gmail.com');
+  const [password, setPassword] = useState('12345678');
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -29,9 +29,10 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        const { token } = await response.json();
-        console.log('Login successful:', token);
+        const { token, record } = await response.json();
+        console.log('Login successful');
         sessionStorage.setItem('token', token);
+        sessionStorage.setItem('type', record.type);
         router.push('/admin');
       } else {
         alert('Invalid email or password');
