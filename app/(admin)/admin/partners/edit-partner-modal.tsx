@@ -15,25 +15,26 @@ interface EditPartnerModalProps {
     partner: Partner | null;
     isOpen: boolean;
     onClose: () => void;
+    mutate: () => void;
 }
 
-const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, onClose }) => {
+const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, onClose, mutate }) => {
 
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         console.log(values);
 
         try {
-            const response = await axios.post('https://abicmanpowerservicecorp.com/api/partners', values, {
+            const response = await axios.post(`https://abicmanpowerservicecorp.com/api/partners/${partner?.id}`, values, {
                 headers: {
                     'Accept': 'application/json/',
                     'Content-Type': 'multipart/form-data',
                 }
 
             });
-            console.log(values);
-            console.log(response);
-            console.log('User added:', response.data);
+            onClose();
+            console.log('data added:', response.data);
+            mutate();
         } catch (error: any) {
             setSubmitting(false);
             console.error('Error adding user:', error);
@@ -44,7 +45,7 @@ const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, on
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
-                    <h1>Edit Partner</h1>
+                    <h1>Edit {partner?.name}</h1>
                 </ModalHeader>
                 <ModalBody className="pb-6">
                     <Formik
@@ -52,7 +53,7 @@ const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, on
                             id: partner?.id,
                             name: partner?.name,
                             image: partner?.image,
-                            _method:'PUT',
+                            _method: 'PUT',
 
                         }}
                         validationSchema={validationSchema}
@@ -82,6 +83,7 @@ const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, on
                                     color="primary"
                                     className="w-full"
                                     isDisabled={isSubmitting}
+                                    isLoading={isSubmitting}
                                 >
                                     Save Changes
                                 </Button>

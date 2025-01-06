@@ -1,25 +1,17 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import {
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    Button,
-} from '@nextui-org/react';
 import { SearchBar } from './search-bar';
 import { Pagination } from './pagination';
 import { DataTableProps, Column } from '@/app/utils/types';
+import { Button } from '@nextui-org/button';
 
 export function DataTable<T extends Record<string, any>>({
     data,
     columns,
     itemsPerPage = 10,
     onAction,
-    actionLabel = 'Action',
+    onDelete,
 }: DataTableProps<T>) {
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -49,37 +41,61 @@ export function DataTable<T extends Record<string, any>>({
     };
 
     return (
-        <div>
-            <div className="place-items-end">
+        <div className="p-4">
+            <div className="flex justify-end mb-4">
                 <SearchBar onSearch={setSearchTerm} />
             </div>
-            <Table aria-label="Data table">
-                <TableHeader>
-                    {columns.map((column) => (
-                        <TableColumn key={column.key as string}>{column.label}</TableColumn>
-                    ))}
-                    {onAction && <TableColumn>Actions</TableColumn>}
-                </TableHeader>
-                <TableBody emptyContent={"No rows to display."}>
-                    {paginatedData.map((item, index) => (
-                        <TableRow key={index}>
+            <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr>
                             {columns.map((column) => (
-                                <TableCell key={column.key as string}>
-                                    {renderCell(item, column.key, column)}
-                                </TableCell>
+                                <th key={column.key as string} className="px-4 py-2 border-b">
+                                    {column.label}
+                                </th>
                             ))}
-                            {onAction && (
-                                <TableCell>
-                                    <Button size="sm" onPress={() => onAction(item)}>
-                                        {actionLabel}
-                                    </Button>
-                                </TableCell>
-                            )}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <Pagination total={totalPages} page={page} onChange={setPage} />
+                            {onAction && <th className="px-4 py-2 border-b">Actions</th>}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {paginatedData.length === 0 ? (
+                            <tr>
+                                <td colSpan={columns.length + (onAction ? 1 : 0)} className="px-4 py-2 text-center">
+                                    No rows to display.
+                                </td>
+                            </tr>
+                        ) : (
+                            paginatedData.map((item, index) => (
+                                <tr key={index} className="hover:bg-gray-100">
+                                    {columns.map((column) => (
+                                        <td key={column.key as string} className="px-4 py-2 border-b">
+                                            {renderCell(item, column.key, column)}
+                                        </td>
+                                    ))}
+                                    {onAction && (
+                                        <td className="px-4 py-2 border-b">
+                                            <Button
+                                                onClick={() => onAction(item)}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                color="danger"
+                                                onClick={() => onDelete && onDelete(item)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </td>
+                                    )}
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            <div className="mt-4">
+                <Pagination total={totalPages} page={page} onChange={setPage} />
+            </div>
         </div>
     );
 }

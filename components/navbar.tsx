@@ -1,18 +1,23 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeSwitch } from './theme-switch';
 import { Building, Grid, User } from 'lucide-react';
 import { Link } from '@nextui-org/react';
 
 const Navbar = () => {
+  const [type, setType] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
 
-  const type = sessionStorage.getItem('type');
-  console.log(type)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedType = sessionStorage.getItem('type');
+      setType(storedType);
+    }
+  }, []);
 
   return (
     <>
@@ -134,3 +139,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+function setType(storedType: string | null) {
+  throw new Error('Function not implemented.');
+}
+

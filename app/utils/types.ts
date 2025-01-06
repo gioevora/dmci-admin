@@ -1,9 +1,7 @@
-import { ReactNode } from 'react';
-
 export interface Column<T> {
     key: keyof T; 
     label: string;
-    render?: (item: T) => ReactNode; 
+    render?: (item: T) => React.ReactNode;
 }
 
 export interface DataTableProps<T> {
@@ -11,6 +9,8 @@ export interface DataTableProps<T> {
     columns: Column<T>[];
     itemsPerPage?: number;
     onAction?: (item: T) => void; 
+    onEdit?: (item: T) => void;
+    onDelete?: (item: T) => void;
     actionLabel?: string; 
 }
 

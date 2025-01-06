@@ -8,6 +8,7 @@ import type { Partner } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 import AddPartnerModal from './add-partner-modal';
 import EditPartnerModal from './edit-partner-modal';
+import DeletePartnerModal from './delete-partner-modal';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -34,27 +35,28 @@ const fetchWithToken = async (url: string) => {
 
 const columns: Column<Partner>[] = [
     { key: 'name', label: 'Name' },
-    { 
-        key: 'image', 
-        label: 'Logo', 
+    {
+        key: 'image',
+        label: 'Logo',
         render: (partner) => (
-            <img 
-                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/partners/${partner.image}`} 
-                alt={partner.image} 
-                className="h-12 w-12 object-contain" 
+            <img
+                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/partners/${partner.image}`}
+                alt={partner.image}
+                className="h-12 w-12 object-contain"
             />
         ),
     },
 ];
 
 export default function Property() {
-    const { data, error } = useSWR<{ code: number; message: string; records: Partner[] }>(
+    const { data, error, mutate } = useSWR<{ code: number; message: string; records: Partner[] }>(
         'https://abicmanpowerservicecorp.com/api/partners',
         fetchWithToken
     );
 
     const [partners, setPartners] = useState<Partner[]>([]);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // State for delete modal
     const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
 
     useEffect(() => {
@@ -68,8 +70,18 @@ export default function Property() {
         setEditModalOpen(true);
     };
 
+    const handleDelete = (partner: Partner) => {
+        setSelectedPartner(partner);
+        setDeleteModalOpen(true); // Open delete modal
+    };
+
     const handleCloseEditModal = () => {
         setEditModalOpen(false);
+        setSelectedPartner(null);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setDeleteModalOpen(false); // Close delete modal
         setSelectedPartner(null);
     };
 
@@ -92,13 +104,22 @@ export default function Property() {
                 columns={columns}
                 itemsPerPage={5}
                 onAction={handleAction}
-                actionLabel="Edit"
+                onDelete={handleDelete} // Pass the handleDelete function
             />
             {selectedPartner && (
                 <EditPartnerModal
                     partner={selectedPartner}
                     isOpen={isEditModalOpen}
+                    mutate={mutate}
                     onClose={handleCloseEditModal}
+                />
+            )}
+            {selectedPartner && (
+                <DeletePartnerModal
+                    partner={selectedPartner}
+                    isOpen={isDeleteModalOpen} // Control delete modal visibility
+                    mutate={mutate}
+                    onClose={handleCloseDeleteModal}
                 />
             )}
         </main>
