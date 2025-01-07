@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
-import { Formik, Form, FormikHelpers } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-
 import CustomInput from '@/components/input';
 import type { Partner } from '@/app/utils/types';
 
@@ -19,25 +18,20 @@ interface EditPartnerModalProps {
 }
 
 const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, onClose, mutate }) => {
-
-
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
-        console.log(values);
-
         try {
-            const response = await axios.post(`https://abicmanpowerservicecorp.com/api/partners/${partner?.id}`, values, {
+            const response = await axios.post('https://abicmanpowerservicecorp.com/api/partners', values, {
                 headers: {
                     'Accept': 'application/json/',
                     'Content-Type': 'multipart/form-data',
-                }
-
+                },
             });
-            onClose();
-            console.log('data added:', response.data);
             mutate();
+            onClose();
         } catch (error: any) {
-            setSubmitting(false);
             console.error('Error adding user:', error);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -45,7 +39,7 @@ const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, on
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
-                    <h1>Edit {partner?.name}</h1>
+                    <h1>Edit</h1>
                 </ModalHeader>
                 <ModalBody className="pb-6">
                     <Formik
@@ -54,7 +48,6 @@ const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, on
                             name: partner?.name,
                             image: partner?.image,
                             _method: 'PUT',
-
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}

@@ -12,15 +12,17 @@ const validationSchema = Yup.object({
     image: Yup.mixed().required('Image is required'),
 });
 
-const AddPartnerModal = () => {
+interface AddPartnerModalProps {
+    mutate: () => void;
+
+}
+
+const AddPartnerModal: React.FC<AddPartnerModalProps> = ({ mutate }) => {
     const handleSubmit = async (
         values: { name: string; image: File | null },
         { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
     ) => {
-
-        console.log(values);
         try {
-
             const token = sessionStorage.getItem('token');
             const response = await axios.post('https://abicmanpowerservicecorp.com/api/partners', values, {
                 headers: {
@@ -28,8 +30,7 @@ const AddPartnerModal = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
-            console.log('Partner added:', response.data);
+            mutate();
         } catch (error) {
             console.error('Error adding partner:', error);
         } finally {
@@ -66,7 +67,6 @@ const AddPartnerModal = () => {
                                     setFieldValue('image', file);
                                 }}
                             />
-
                             <Button
                                 type="submit"
                                 color="primary"

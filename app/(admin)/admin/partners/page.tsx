@@ -97,14 +97,14 @@ export default function Property() {
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">Partner Table</h1>
-                <AddPartnerModal />
+                <AddPartnerModal  mutate={mutate} />
             </div>
             <DataTable<Partner>
                 data={partners}
                 columns={columns}
                 itemsPerPage={5}
                 onAction={handleAction}
-                onDelete={handleDelete} // Pass the handleDelete function
+                onDelete={handleDelete} 
             />
             {selectedPartner && (
                 <EditPartnerModal
@@ -117,7 +117,7 @@ export default function Property() {
             {selectedPartner && (
                 <DeletePartnerModal
                     partner={selectedPartner}
-                    isOpen={isDeleteModalOpen} // Control delete modal visibility
+                    isOpen={isDeleteModalOpen} 
                     mutate={mutate}
                     onClose={handleCloseDeleteModal}
                 />
