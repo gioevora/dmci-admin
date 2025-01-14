@@ -1,3 +1,4 @@
+// app\(admin)\admin-login\page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -11,6 +12,7 @@ import {
   Input,
   Spacer,
 } from '@nextui-org/react';
+import { setCookie } from 'nookies';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('email@gmail.com');
@@ -32,6 +34,8 @@ export default function LoginPage() {
         const { token, record } = await response.json();
         console.log('Login successful');
         sessionStorage.setItem('token', token);
+        sessionStorage.setItem('id', record.id);
+        setCookie(null, 'token', token, { path: '/', maxAge: 30 * 24 * 60 * 60 });
         sessionStorage.setItem('type', record.type);
         router.push('/admin');
       } else {

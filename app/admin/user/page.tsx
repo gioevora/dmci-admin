@@ -50,10 +50,11 @@ const columns: Column<User>[] = [
 
 export default function Home() {
     const { data, error } = useSWR<{ code: number; message: string; records: User[] }>(
-        'https://abicmanpowerservicecorp.com/api/users',
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,
         fetchWithToken
     );
 
+    console.log(data);
     const [users, setUser] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -22,7 +22,7 @@ const AddPartnerModal = () => {
         try {
 
             const token = sessionStorage.getItem('token');
-            const response = await axios.post('https://abicmanpowerservicecorp.com/api/partners', values, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners`, values, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',

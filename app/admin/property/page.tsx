@@ -2,10 +2,13 @@
 
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import type { Property } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
+import { Button } from '@nextui-org/react';
+
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -44,8 +47,9 @@ const columns: Column<Property>[] = [
 
 
 export default function Property() {
+    const router = useRouter();
     const { data, error } = useSWR<{ code: number; message: string; records: Property[] }>(
-        'https://abicmanpowerservicecorp.com/api/properties',
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`,
         fetchWithToken
     );
 
@@ -73,6 +77,9 @@ export default function Property() {
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">Property Table</h1>
+                <Button color="primary" onPress={() => router.push('/admin/property/new-property')}>
+                    Add new property
+                </Button>
             </div>
             <DataTable<Property>
                 data={properties}
