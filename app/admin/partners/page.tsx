@@ -97,7 +97,7 @@ export default function Property() {
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">Partner Table</h1>
-                <AddPartnerModal />
+                <AddPartnerModal mutate={mutate} />
             </div>
             <DataTable<Partner>
                 data={partners}

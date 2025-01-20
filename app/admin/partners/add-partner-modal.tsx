@@ -6,30 +6,41 @@ import axios from 'axios';
 
 import { Modal } from '@/components/add-modal';
 import CustomInput from '@/components/input';
+import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
     image: Yup.mixed().required('Image is required'),
 });
 
-const AddPartnerModal = () => {
+interface AddModalProps {
+    mutate: () => void;
+}
+
+const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
     const handleSubmit = async (
         values: { name: string; image: File | null },
-        { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+        { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
     ) => {
 
         console.log(values);
         try {
 
             const token = sessionStorage.getItem('token');
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners`, values, {
+            await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners`, values, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
-            console.log('Partner added:', response.data);
+            toast.success('Operation successful!');
+            mutate();
+            resetForm();
+            const imageInput = document.querySelector('input[name="image"]') as HTMLInputElement | null;
+            if (imageInput) {
+                imageInput.value = '';
+            }
         } catch (error) {
             console.error('Error adding partner:', error);
         } finally {
