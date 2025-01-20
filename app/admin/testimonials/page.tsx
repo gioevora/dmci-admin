@@ -3,12 +3,12 @@
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 
-// import AddUserModal from './add-user-modal';
 import { DataTable } from '@/components/data-table';
 import { Column, Testimonial } from '@/app/utils/types';
-import LoadingDot from '@/components/loading-dot';
 import HamsterWheel from '@/components/loading-hamster-wheel';
-// import EditUserModal from './edit-user-modal';
+import AddTestimonialModal from './add-testimonial-modal';
+import DeleteTestimonial from './delete-testimonial-modal';
+import EditTestimonialModal from './edit-testimonial-modal';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -16,7 +16,6 @@ const fetchWithToken = async (url: string) => {
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     };
-
 
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -31,47 +30,56 @@ const fetchWithToken = async (url: string) => {
         throw new Error('Failed to fetch data');
     }
 
-    console.log(response);
     return response.json();
 };
 
 const columns: Column<Testimonial>[] = [
-    { key: 'id', label: 'id' },
-    { key: 'user_id', label: 'user_id' },
-    { key: 'name', label: 'name' },
-    { key: 'message', label: 'message' },
-    { key: 'created_at', label: 'created_at' },
-    { key: 'updated_at', label: 'updated_at' },
+    { key: 'id', label: 'ID' },
+    { key: 'user_id', label: 'User ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'message', label: 'Message' },
 ];
 
-export default function Home() {
-    const { data, error } = useSWR<{ code: number; message: string; records: Testimonial[] }>(
-        'https://abicmanpowerservicecorp.com/api/testimonials',
-        fetchWithToken
-    );
+export default function TestimonialsPage() {
+    const { data, error, mutate } = useSWR<{
+        code: number;
+        message: string;
+        records: Testimonial[];
+    }>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/testimonials`, fetchWithToken);
 
-    const [users, setUser] = useState<Testimonial[]>([]);
-    const [selectedUser, setSelectedUser] = useState<Testimonial | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
 
     useEffect(() => {
         if (data && data.records) {
-            setUser(data.records);
+            setTestimonials(data.records);
         }
     }, [data]);
 
-    const handleAction = (user: Testimonial) => {
-        setSelectedUser(user);
-        setIsModalOpen(true);
+    const handleAction = (testimonial: Testimonial) => {
+        setSelectedTestimonial(testimonial);
+        setEditModalOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedUser(null);
+    const handleDelete = (testimonial: Testimonial) => {
+        setSelectedTestimonial(testimonial);
+        setDeleteModalOpen(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setEditModalOpen(false);
+        setSelectedTestimonial(null);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setDeleteModalOpen(false);
+        setSelectedTestimonial(null);
     };
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div className="text-red-500">Error: {error.message}</div>;
     }
 
     if (!data) {
@@ -80,24 +88,33 @@ export default function Home() {
 
     return (
         <main className="container mx-auto p-4">
-            <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">Testiomonial Table</h1>
-                {/* <AddUserModal /> */}
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-bold">Testimonials Table</h1>
+                <AddTestimonialModal mutate={mutate} />
             </div>
             <DataTable<Testimonial>
-                data={users}
+                data={testimonials}
                 columns={columns}
                 itemsPerPage={5}
                 onAction={handleAction}
-                actionLabel="Edit"
+                onDelete={handleDelete}
             />
-            {/* {selectedUser && (
-                <EditUserModal
-                    user={selectedUser}
-                    isOpen={isModalOpen}
-                    onClose={handleCloseModal}
+            {selectedTestimonial && (
+                <EditTestimonialModal
+                    testimonial={selectedTestimonial}
+                    isOpen={isEditModalOpen}
+                    mutate={mutate}
+                    onClose={handleCloseEditModal}
                 />
-            )} */}
+            )}
+            {selectedTestimonial && (
+                <DeleteTestimonial
+                    testimonial={selectedTestimonial}
+                    isOpen={isDeleteModalOpen}
+                    mutate={mutate}
+                    onClose={handleCloseDeleteModal}
+                />
+            )}
         </main>
     );
 }
