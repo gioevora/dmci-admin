@@ -18,7 +18,7 @@ const DeletePartnerModal: React.FC<DeletePartnerModalProps> = ({ partner, isOpen
 
         setIsSubmitting(true);
         try {
-            await axios.delete(`https://abicmanpowerservicecorp.com/api/partners/${partner.id}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners/${partner.id}`, {
                 headers: {
                     Accept: 'application/json',
                 },

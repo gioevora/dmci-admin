@@ -25,7 +25,7 @@ const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, on
         console.log(values);
 
         try {
-            const response = await axios.post(`https://abicmanpowerservicecorp.com/api/partners/${partner?.id}`, values, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners`, values, {
                 headers: {
                     'Accept': 'application/json/',
                     'Content-Type': 'multipart/form-data',
