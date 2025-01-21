@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react';
 import { DataTable } from '@/components/data-table';
 import { Column, Certificate } from '@/app/utils/types';
 import HamsterWheel from '@/components/loading-hamster-wheel';
-import AddTestimonialModal from './add-testimonial-modal';
-import DeleteTestimonial from './delete-testimonial-modal';
-import EditTestimonialModal from './edit-testimonial-modal';
+import AddTestimonialModal from './add-certificate-modal';
+import DeleteCertificateModal from './delete-certificate-modal';
+import EditCertificateModal from './edit-certificate-modal';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -61,7 +61,7 @@ export default function CertificatesPage() {
     const [certificates, setTestimonials] = useState<Certificate[]>([]);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedTestimonial, setSelectedTestimonial] = useState<Certificate | null>(null);
+    const [selectedCertificate, setSelectedTestimonial] = useState<Certificate | null>(null);
 
     useEffect(() => {
         if (data && data.records) {
@@ -69,13 +69,13 @@ export default function CertificatesPage() {
         }
     }, [data]);
 
-    const handleAction = (testimonial: Certificate) => {
-        setSelectedTestimonial(testimonial);
+    const handleAction = (certificate: Certificate) => {
+        setSelectedTestimonial(certificate);
         setEditModalOpen(true);
     };
 
-    const handleDelete = (testimonial: Certificate) => {
-        setSelectedTestimonial(testimonial);
+    const handleDelete = (certificate: Certificate) => {
+        setSelectedTestimonial(certificate);
         setDeleteModalOpen(true);
     };
 
@@ -110,22 +110,23 @@ export default function CertificatesPage() {
                 onAction={handleAction}
                 onDelete={handleDelete}
             />
-            {/* {selectedTestimonial && (
-                <EditTestimonialModal
-                    testimonial={selectedTestimonial}
+            {selectedCertificate && (
+                <EditCertificateModal
+                    certificate={selectedCertificate}
                     isOpen={isEditModalOpen}
                     mutate={mutate}
                     onClose={handleCloseEditModal}
                 />
             )}
-            {selectedTestimonial && (
-                <DeleteTestimonial
-                    testimonial={selectedTestimonial}
+
+            {selectedCertificate && (
+                <DeleteCertificateModal
+                    certificate={selectedCertificate}
                     isOpen={isDeleteModalOpen}
                     mutate={mutate}
                     onClose={handleCloseDeleteModal}
                 />
-            )} */}
+            )}
         </main>
     );
 }

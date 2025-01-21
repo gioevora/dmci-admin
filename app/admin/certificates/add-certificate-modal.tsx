@@ -53,7 +53,7 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
     const user_id = sessionStorage.getItem('id') || '';
 
     return (
-        <Modal title="Add new Testimonial" buttonLabel="Add new Certificate">
+        <Modal title="Add new Certificate" buttonLabel="Add new Certificate">
             <div className="min-w-full">
                 <Formik
                     initialValues={{
@@ -89,7 +89,6 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
                                     setFieldValue('image', file);
                                 }}
                             />
-
                             <Button
                                 type="submit"
                                 color="primary"

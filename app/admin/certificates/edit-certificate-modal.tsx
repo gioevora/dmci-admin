@@ -1,37 +1,34 @@
-import React, { useEffect, useState } from 'react';
 import { Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from '@nextui-org/react';
-import { Formik, Form, FormikHelpers, Field } from 'formik';
+import { Formik, Form, } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
 import CustomInput from '@/components/input';
-import type { Testimonial } from '@/app/utils/types';
-import test from 'node:test';
+import type { Certificate } from '@/app/utils/types';
 import toast from 'react-hot-toast';
-import { AlertCircle } from 'lucide-react';
 
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
+    date: Yup.string().required('Date is required'),
 });
 
-interface EditTestimonialModalProps {
-    testimonial: Testimonial | null;
+
+interface EditCertificateModalProps {
+    certificate: Certificate | null;
     isOpen: boolean;
     onClose: () => void;
     mutate: () => void;
 }
 
-const EditTestimonialModal: React.FC<EditTestimonialModalProps> = ({ testimonial, isOpen, onClose, mutate }) => {
-    const user_id = sessionStorage.getItem('id') || '';
-
+const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate, isOpen, onClose, mutate }) => {
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         console.log(values);
 
         try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/testimonials`, values, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/certificates`, values, {
                 headers: {
                     'Accept': 'application/json/',
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                 }
 
             });
@@ -50,16 +47,17 @@ const EditTestimonialModal: React.FC<EditTestimonialModalProps> = ({ testimonial
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
-                    <h1>Edit {testimonial?.name}</h1>
+                    <h1>Edit {certificate?.name}</h1>
                 </ModalHeader>
                 <ModalBody className="pb-6">
                     <Formik
                         initialValues={{
-                            id: testimonial?.id,
-                            user_id,
-                            name: testimonial?.name,
-                            message: testimonial?.message,
-
+                            id: certificate?.id,
+                            user_id: certificate?.user_id,
+                            name: certificate?.name,
+                            date: certificate?.date,
+                            image: certificate?.image,
+                            _method: 'PUT',
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -73,21 +71,22 @@ const EditTestimonialModal: React.FC<EditTestimonialModalProps> = ({ testimonial
                                     type="text"
                                     error={touched.name ? errors.name : undefined}
                                 />
-                                <div>
-                                    <Field
-                                        as={Textarea}
-                                        name="message"
-                                        label="Message"
-                                        variant="underlined"
-                                        rows={4}
-                                        cols={50}
-                                    />
-                                    {touched.message && errors.message && (
-                                        <div className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                                            <AlertCircle size={16} /> <span>{errors.message}</span>
-                                        </div>
-                                    )}
-                                </div>
+                                <CustomInput
+                                    name="date"
+                                    label="Date"
+                                    type="date"
+                                    error={touched.date ? errors.date : undefined}
+                                />
+                                <CustomInput
+                                    name="image"
+                                    label="Image"
+                                    type="file"
+                                    error={touched.image ? errors.image : undefined}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        const file = event.target.files?.[0];
+                                        setFieldValue('image', file);
+                                    }}
+                                />
                                 <Button
                                     type="submit"
                                     color="primary"
@@ -106,4 +105,4 @@ const EditTestimonialModal: React.FC<EditTestimonialModalProps> = ({ testimonial
     );
 };
 
-export default EditTestimonialModal;
+export default EditCertificateModal;
