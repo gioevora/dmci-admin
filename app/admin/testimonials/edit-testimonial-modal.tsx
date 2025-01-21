@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import { Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from '@nextui-org/react';
-import { Formik, Form, FormikHelpers, Field } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
 import CustomInput from '@/components/input';
 import type { Testimonial } from '@/app/utils/types';
-import test from 'node:test';
 import toast from 'react-hot-toast';
 import { AlertCircle } from 'lucide-react';
 
 const validationSchema = Yup.object({
-    name: Yup.string().required('Name is required'),
+    first_name: Yup.string().required('First Name is required'),
+    last_name: Yup.string().required('Last Name is required'),
+    message: Yup.string().required('Message is required'),
 });
 
 interface EditTestimonialModalProps {
@@ -50,14 +50,15 @@ const EditTestimonialModal: React.FC<EditTestimonialModalProps> = ({ testimonial
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
-                    <h1>Edit {testimonial?.name}</h1>
+                    <h1>Edit {testimonial?.first_name} {testimonial?.last_name}</h1>
                 </ModalHeader>
                 <ModalBody className="pb-6">
                     <Formik
                         initialValues={{
                             id: testimonial?.id,
                             user_id,
-                            name: testimonial?.name,
+                            first_name: testimonial?.first_name,
+                            last_name: testimonial?.last_name,
                             message: testimonial?.message,
 
                         }}
@@ -65,13 +66,19 @@ const EditTestimonialModal: React.FC<EditTestimonialModalProps> = ({ testimonial
                         onSubmit={handleSubmit}
                         enableReinitialize
                     >
-                        {({ errors, touched, setFieldValue, isSubmitting }) => (
+                        {({ errors, touched, isSubmitting }) => (
                             <Form className="space-y-4">
                                 <CustomInput
-                                    name="name"
-                                    label="Name"
+                                    name="first_name"
+                                    label="First Name"
                                     type="text"
-                                    error={touched.name ? errors.name : undefined}
+                                    error={touched.first_name ? errors.first_name : undefined}
+                                />
+                                <CustomInput
+                                    name="last_name"
+                                    label="Last Name"
+                                    type="text"
+                                    error={touched.last_name ? errors.last_name : undefined}
                                 />
                                 <div>
                                     <Field

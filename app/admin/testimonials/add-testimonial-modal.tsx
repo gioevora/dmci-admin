@@ -11,7 +11,8 @@ import { AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
-    name: Yup.string().required('Name is required'),
+    first_name: Yup.string().required('First Name is required'),
+    last_name: Yup.string().required('Last Name is required'),
     message: Yup.string().required('Message is required'),
 });
 
@@ -21,7 +22,7 @@ interface AddModalProps {
 
 const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
     const handleSubmit = async (
-        values: { user_id: string; name: string; message: string },
+        values: { user_id: string; first_name: string; last_name: string; message: string },
         { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
     ) => {
         try {
@@ -54,7 +55,8 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
             <div className="min-w-full">
                 <Formik
                     initialValues={{
-                        name: '',
+                        first_name: '',
+                        last_name: '',
                         message: '',
                         user_id,
                     }}
@@ -64,10 +66,16 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
                     {({ errors, touched, isSubmitting }) => (
                         <Form className="space-y-4">
                             <CustomInput
-                                name="name"
-                                label="Name"
+                                name="first_name"
+                                label="First Name"
                                 type="text"
-                                error={touched.name ? errors.name : undefined}
+                                error={touched.first_name ? errors.first_name : undefined}
+                            />
+                            <CustomInput
+                                name="last_name"
+                                label="Last Name"
+                                type="text"
+                                error={touched.last_name ? errors.last_name : undefined}
                             />
                             <div>
                                 <Field

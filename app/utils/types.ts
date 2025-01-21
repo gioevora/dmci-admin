@@ -37,7 +37,8 @@ export interface Partner {
 export interface Testimonial {
     id: number;
     user_id: number;
-    name: string;
+    first_name: string;
+    last_name: string;
     message: string;
     email: string;
     created_at: string;
