@@ -14,6 +14,16 @@ export interface DataTableProps<T> {
     actionLabel?: string; 
 }
 
+export interface Article {
+    id: string;
+    title: string;
+    subtitle: string;
+    date: string;
+    content: string;
+    type: string;
+    image: string;
+}
+
 export interface Property {
     id: number;
     name: string;
