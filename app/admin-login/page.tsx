@@ -35,9 +35,9 @@ export default function LoginPage() {
         console.log('Login successful');
         sessionStorage.setItem('token', token);
         sessionStorage.setItem('id', record.id);
-        setCookie(null, 'token', token, { path: '/', maxAge: 30 * 24 * 60 * 60 });
         sessionStorage.setItem('type', record.type);
-        router.push('/admin');
+        setCookie(null, 'abic-admin-login', 'true', { path: '/' });
+        router.replace('/admin');
       } else {
         alert('Invalid email or password');
       }

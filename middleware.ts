@@ -2,18 +2,25 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
-    const token = req.cookies.get('token')?.value;
+    const isLogin = req.cookies.get('abic-admin-login')?.value;
 
-    // If no token is found, redirect to the login page
-    if (!token) {
-        return NextResponse.redirect(new URL('/unauthorized', req.url));
+    const currentPath = req.nextUrl.pathname;
+
+    if (!isLogin || isLogin === 'false' || isLogin === 'null') {
+        if (currentPath === '/admin-login' || currentPath === '/unauthorized') {
+            return NextResponse.next(); 
+        }
+
+        return NextResponse.redirect(new URL('/unauthorized', req.url)); 
     }
 
-    // Allow the request if token exists
-    return NextResponse.next();
+    if (isLogin && currentPath === '/admin-login') {
+        return NextResponse.redirect(new URL('/admin', req.url)); 
+    }
+
+    return NextResponse.next(); 
 }
 
-// Apply middleware only to admin routes
 export const config = {
-    matcher: '/admin/:path*',
+    matcher: ['/admin/:path*', '/admin-login', '/unauthorized'], 
 };
