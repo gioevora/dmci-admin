@@ -39,7 +39,7 @@ const DeleteTestimonialModal: React.FC<DeletePartnerModalProps> = ({ testimonial
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
-                    <h1>Delete {testimonial?.name}</h1>
+                    <h1>Delete</h1>
                 </ModalHeader>
                 <ModalBody>
                     <p>Are you sure you want to delete this testimonial? This action cannot be undone.</p>
