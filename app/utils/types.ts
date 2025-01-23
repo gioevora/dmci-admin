@@ -34,6 +34,17 @@ export interface Partner {
     image: string;
 }
 
+export interface Career {
+    id: string;
+    position: string;
+    slots: number;
+    image: string;
+    available_slots: number;
+    created_at: string;
+    updated_at: string;
+}
+
+
 export interface Testimonial {
     id: number;
     user_id: number;
