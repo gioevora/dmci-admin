@@ -42,8 +42,13 @@ const validationSchema = Yup.object({
 });
 
 const PropertyForm = () => {
-    const userId = sessionStorage.getItem('id');
-    const token = sessionStorage.getItem('token');
+    let userId;
+
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+        userId = sessionStorage.getItem('id');
+    } else {
+        userId = null;
+    }
 
     const handleSubmit = async (
         values: any,
@@ -59,6 +64,7 @@ const PropertyForm = () => {
         };
 
         try {
+            const token = sessionStorage.getItem('token');
             const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`,
                 payload,
