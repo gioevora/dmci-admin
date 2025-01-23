@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '@nextui-org/react';
-import { Formik, Form } from 'formik';
+import { Button, Select, SelectItem } from '@nextui-org/react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
@@ -97,6 +97,20 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 type="text"
                                 error={touched.type ? errors.type : undefined}
                             />
+                            {/* <Select
+                                label="Type"
+                                name="type"
+                                id="type"
+                                variant="underlined"
+                                placeholder="Type"
+                            >
+                                <SelectItem key="Seminars" >Seminars</SelectItem>
+                                <SelectItem key="Meetings" >Meetings</SelectItem>
+                                <SelectItem key="Events" >Events</SelectItem>
+                                <SelectItem key="Closed Deals" >Closed Deals</SelectItem>
+                                <SelectItem key="Real Estate News" >Real Estate News</SelectItem>
+                            </Select> */}
+                            <ErrorMessage name="type" component="div" className="text-xs text-[#F31260] mt-1" />
                             <CustomInput
                                 name="image"
                                 label="Image"
