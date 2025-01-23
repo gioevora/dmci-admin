@@ -17,9 +17,11 @@ const DeletePartnerModal: React.FC<DeletePartnerModalProps> = ({ partner, isOpen
         if (!partner) return;
 
         setIsSubmitting(true);
+        const token = sessionStorage.getItem('token');
         try {
             await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners/${partner.id}`, {
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     Accept: 'application/json',
                 },
             });

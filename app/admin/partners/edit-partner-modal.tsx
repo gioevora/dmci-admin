@@ -25,9 +25,10 @@ const EditPartnerModal: React.FC<EditPartnerModalProps> = ({ partner, isOpen, on
         console.log(values);
 
         try {
+            const token = sessionStorage.getItem('token');
             const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners`, values, {
                 headers: {
-                    'Accept': 'application/json/',
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 }
 
