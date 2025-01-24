@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Select, SelectItem } from '@nextui-org/react';
+import { Button } from '@nextui-org/react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Modal } from '@/components/add-modal';
 import CustomInput from '@/components/input';
 import toast from 'react-hot-toast';
+import { AlertCircle } from 'lucide-react';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -91,26 +92,20 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 type="text"
                                 error={touched.content ? errors.content : undefined}
                             />
-                            <CustomInput
+                            <Field as="select"
                                 name="type"
-                                label="Type"
-                                type="text"
-                                error={touched.type ? errors.type : undefined}
+                                className="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-white dark:bg-[#18181b] dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                <option value="" label="Type" />
+                                <option value="Seminars">Seminars</option>
+                                <option value="Meetings">Meetings</option>
+                                <option value="Events">Events</option>
+                                <option value="Closed Deals">Closed Deals</option>
+                                <option value="Real Estate News">Real Estate News</option>
+                            </Field>
+                            <ErrorMessage
+                                name="type"
+                                render={(msg) => <ErrorMessageComponent>{msg}</ErrorMessageComponent>}
                             />
-                            {/* <Select
-                                label="Type"
-                                name="type"
-                                id="type"
-                                variant="underlined"
-                                placeholder="Type"
-                            >
-                                <SelectItem key="Seminars" >Seminars</SelectItem>
-                                <SelectItem key="Meetings" >Meetings</SelectItem>
-                                <SelectItem key="Events" >Events</SelectItem>
-                                <SelectItem key="Closed Deals" >Closed Deals</SelectItem>
-                                <SelectItem key="Real Estate News" >Real Estate News</SelectItem>
-                            </Select> */}
-                            <ErrorMessage name="type" component="div" className="text-xs text-[#F31260] mt-1" />
                             <CustomInput
                                 name="image"
                                 label="Image"
@@ -140,3 +135,10 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
 };
 
 export default AddModal;
+
+const ErrorMessageComponent = ({ children }: { children: React.ReactNode }) => (
+    <div className="mt-1 flex items-center gap-1 text-sm text-red-500">
+        <AlertCircle size={16} />
+        <span>{children}</span>
+    </div>
+);

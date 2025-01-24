@@ -42,23 +42,23 @@ export function DataTable<T extends Record<string, any>>({
     };
 
     return (
-        <div className="p-4 bg-white dark:bg-gray-800 dark:text-white">
+        <div className="p-4 bg-white dark:bg-[#18181b] dark:text-white">
             <div className="flex justify-end mb-4">
                 <SearchBar onSearch={setSearchTerm} />
             </div>
             <div className="overflow-x-auto">
-                <table className="min-w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                <table className="min-w-full bg-white dark:bg-[#18181b] border border-gray-200 dark:border-gray-700">
                     <thead>
                         <tr>
                             {columns.map((column) => (
                                 <th
                                     key={column.key as string}
-                                    className="px-4 py-2 border-b bg-gray-100 dark:bg-gray-700"
+                                    className="px-4 py-2 border-b bg-gray-100 dark:bg-[#27272a]"
                                 >
                                     {column.label}
                                 </th>
                             ))}
-                            {onAction && <th className="px-4 py-2 border-b bg-gray-100 dark:bg-gray-700">Actions</th>}
+                            {onAction && <th className="px-4 py-2 border-b bg-gray-100 dark:bg-[#27272a]">Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -73,7 +73,7 @@ export function DataTable<T extends Record<string, any>>({
                             </tr>
                         ) : (
                             paginatedData.map((item, index) => (
-                                <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <tr key={index} className="hover:bg-gray-100 dark:hover:bg-[#27272a]">
                                     {columns.map((column) => (
                                         <td key={column.key as string} className="px-4 py-2 border-b">
                                             {renderCell(item, column.key, column)}
