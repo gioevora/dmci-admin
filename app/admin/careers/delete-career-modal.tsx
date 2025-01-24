@@ -1,35 +1,36 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalBody, ModalContent, ModalHeader, ModalFooter } from '@nextui-org/react';
 import axios from 'axios';
-import type { Certificate } from '@/app/utils/types';
+import type { Career } from '@/app/utils/types';
 import toast from 'react-hot-toast';
 
-interface DeleteCertificateModalProps {
-    certificate: Certificate | null;
+interface DeleteModalProps {
+    career: Career | null;
     isOpen: boolean;
     onClose: () => void;
     mutate: () => void;
 }
 
-const DeleteCertificateModal: React.FC<DeleteCertificateModalProps> = ({ certificate, isOpen, onClose, mutate }) => {
+const DeleteModal: React.FC<DeleteModalProps> = ({ career, isOpen, onClose, mutate }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleDelete = async () => {
-        if (!certificate) return;
+        if (!career) return;
 
         setIsSubmitting(true);
         try {
-            await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/certificates/${certificate.id}`, {
+            const token = sessionStorage.getItem('token');
+            await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/careers/${career.id}`, {
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     Accept: 'application/json',
                 },
             });
             toast.success('Operation successful!');
             mutate();
             onClose();
-        } catch (error) {
+        } catch {
             toast.error('Something went wrong.');
-            console.error('Error deleting certificate:', error);
         } finally {
             setIsSubmitting(false);
         }
@@ -39,10 +40,10 @@ const DeleteCertificateModal: React.FC<DeleteCertificateModalProps> = ({ certifi
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
-                    <h1>Delete {certificate?.name}</h1>
+                    <h1>Delete {career?.position}</h1>
                 </ModalHeader>
                 <ModalBody>
-                    <p>Are you sure you want to delete this certificate? This action cannot be undone.</p>
+                    <p>Are you sure you want to delete this career? This action cannot be undone.</p>
                 </ModalBody>
                 <ModalFooter>
                     <Button
@@ -62,4 +63,4 @@ const DeleteCertificateModal: React.FC<DeleteCertificateModalProps> = ({ certifi
     );
 };
 
-export default DeleteCertificateModal;
+export default DeleteModal;

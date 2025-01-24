@@ -49,10 +49,26 @@ export interface Career {
     position: string;
     slots: number;
     image: string;
-    available_slots: number;
+    applications_count: number;
+    created_at: string;
+    updated_at: string;
+    Application: []
+}
+
+export interface Application {
+    id: string;
+    career_id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    address: string;
+    resume: string;
     created_at: string;
     updated_at: string;
 }
+
+
 
 
 export interface Testimonial {

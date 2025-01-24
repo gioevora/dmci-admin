@@ -1,45 +1,48 @@
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from '@nextui-org/react';
-import { Formik, Form, } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Button, Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
+import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
 import CustomInput from '@/components/input';
-import type { Certificate } from '@/app/utils/types';
+import type { Career } from '@/app/utils/types';
 import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
-    name: Yup.string().required('Name is required'),
-    date: Yup.string().required('Date is required'),
+    position: Yup.string().required('Position is required'),
+    slots: Yup.number().required('Slots is required'),
+    image: Yup.mixed().required('Image is required'),
+    available_slots: Yup.number().required('Available slots is required'),
 });
 
 
-interface EditCertificateModalProps {
-    certificate: Certificate | null;
+interface EditModalProps {
+    career: Career | null;
     isOpen: boolean;
     onClose: () => void;
     mutate: () => void;
 }
 
-const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate, isOpen, onClose, mutate }) => {
-    const handleSubmit = async (values: any, { setSubmitting }: any) => {
-        console.log(values);
+const EditModal: React.FC<EditModalProps> = ({ career, isOpen, onClose, mutate }) => {
 
+
+    const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/certificates`, values, {
+            const token = sessionStorage.getItem('token');
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/careers`, values, {
                 headers: {
-                    'Accept': 'application/json/',
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 }
 
             });
-            toast.success('Operation successful!');
             onClose();
-            console.log('data added:', response.data);
+            toast.success('Operation successful!');
             mutate();
-        } catch (error: any) {
+        } catch {
             toast.error('Something went wrong.');
+        } finally {
             setSubmitting(false);
-            console.error('Error adding user:', error);
         }
     };
 
@@ -47,17 +50,18 @@ const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
-                    <h1>Edit {certificate?.name}</h1>
+                    <h1>Edit {career?.position}</h1>
                 </ModalHeader>
                 <ModalBody className="pb-6">
                     <Formik
                         initialValues={{
-                            id: certificate?.id,
-                            user_id: certificate?.user_id,
-                            name: certificate?.name,
-                            date: certificate?.date,
-                            image: certificate?.image,
+                            id: career?.id,
+                            position: career?.position,
+                            slots: career?.slots,
+                            available_slots: career?.available_slots,
+                            image: career?.image,
                             _method: 'PUT',
+
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -66,16 +70,16 @@ const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate
                         {({ errors, touched, setFieldValue, isSubmitting }) => (
                             <Form className="space-y-4">
                                 <CustomInput
-                                    name="name"
-                                    label="Name"
+                                    name="position"
+                                    label="Position"
                                     type="text"
-                                    error={touched.name ? errors.name : undefined}
+                                    error={touched.position ? errors.position : undefined}
                                 />
                                 <CustomInput
-                                    name="date"
-                                    label="Date"
-                                    type="date"
-                                    error={touched.date ? errors.date : undefined}
+                                    name="slots"
+                                    label="Slots"
+                                    type="number"
+                                    error={touched.position ? errors.position : undefined}
                                 />
                                 <CustomInput
                                     name="image"
@@ -91,10 +95,10 @@ const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate
                                     type="submit"
                                     color="primary"
                                     className="w-full"
-                                    isDisabled={isSubmitting}
                                     isLoading={isSubmitting}
+                                    isDisabled={isSubmitting}
                                 >
-                                    Save Changes
+                                    Submit
                                 </Button>
                             </Form>
                         )}
@@ -105,4 +109,4 @@ const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate
     );
 };
 
-export default EditCertificateModal;
+export default EditModal;

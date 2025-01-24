@@ -2,13 +2,15 @@
 
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
+import Link from 'next/link'
 
 import { DataTable } from '@/components/data-table';
 import { Column, Career } from '@/app/utils/types';
 import HamsterWheel from '@/components/loading-hamster-wheel';
 import AddCareerModal from './add-career-modal';
-// import DeleteCertificateModal from './delete-career-modal';
-// import EditCertificateModal from './edit-career-modal';
+import EditCertificateModal from './edit-career-modal';
+import DeleteModal from './delete-career-modal';
+import { Button } from '@nextui-org/react';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -38,6 +40,15 @@ const columns: Column<Career>[] = [
     { key: 'position', label: 'Position' },
     { key: 'slots', label: 'Slots' },
     {
+        key: 'applications_count', label: 'Applicants', render: (career) => (
+            <Link href={`/admin/careers/${career.id}`}>
+                <Button size="sm" className="w-full">
+                    {career.applications_count}
+                </Button >
+            </Link>
+        ),
+    },
+    {
         key: 'image',
         label: 'Image',
         render: (career) => (
@@ -48,7 +59,6 @@ const columns: Column<Career>[] = [
             />
         ),
     },
-    { key: 'available_slots', label: 'Available Slots' },
 ];
 
 export default function CertificatesPage() {
@@ -110,7 +120,7 @@ export default function CertificatesPage() {
                 onAction={handleAction}
                 onDelete={handleDelete}
             />
-            {/*
+
             {selectedCareer && (
                 <EditCertificateModal
                     career={selectedCareer}
@@ -119,15 +129,14 @@ export default function CertificatesPage() {
                     onClose={handleCloseEditModal}
                 />
             )}
-
             {selectedCareer && (
-                <DeleteCertificateModal
+                <DeleteModal
                     career={selectedCareer}
                     isOpen={isDeleteModalOpen}
                     mutate={mutate}
                     onClose={handleCloseDeleteModal}
                 />
-            )} */}
+            )}
         </main>
     );
 }
