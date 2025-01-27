@@ -16,7 +16,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { Images } from "lucide-react";
 
-export const agents = [
+const agents = [
     { key: "Owner", label: "Owner" },
     { key: "Agent", label: "Agent" },
     { key: "Broker", label: "Broker" },
@@ -29,17 +29,17 @@ const agreementMessages: Record<string, string> = {
     Broker: "I agree to a 60/40 commission sharing on the transaction.",
 };
 
-export const status = [
+const status = [
     { key: "For Rent", label: "For Rent" },
     { key: "For Sale", label: "For Sale" },
 ];
 
-export const parking = [
+const parking = [
     { key: "0", label: "With Parking" },
     { key: "1", label: "No Parking" },
 ];
 
-export const type = [
+const type = [
     { key: "Studio Type", label: "Studio Type" },
     { key: "1BR", label: "1BR" },
     { key: "2BR", label: "2BR" },
@@ -48,30 +48,30 @@ export const type = [
     { key: "Penthouse", label: "Penthouse" },
 ];
 
-export const furnished = [
+const furnished = [
     { key: "Bare", label: "Bare" },
     { key: "Semi-Furnished", label: "Semi-Furnished" },
     { key: "Fully-Furnished", label: "Fully-Furnished" },
     { key: "Interiored", label: "Interiored" },
 ];
 
-export const rent = [
+const rent = [
     { key: "6 Months", label: "6 Months" },
     { key: "1 Year", label: "1 Year" },
     { key: "2 Year", label: "2 Years" },
 ];
 
-export const sale = [
+const sale = [
     { key: "RFO", label: "RFO" },
     { key: "Pre-Selling", label: "Pre-Selling" },
 ];
 
-export const payment = [
+const payment = [
     { key: "Cash", label: "Cash" },
     { key: "Bank Financing", label: "Bank Financing" },
 ];
 
-export const amenities = [
+const amenities = [
     { key: "Pool Area", label: "Pool Area" },
     { key: "Balcony/Terrace", label: "Balcony/Terrace" },
     { key: "Elevator", label: "Elevator" },
