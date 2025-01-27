@@ -1,4 +1,5 @@
 "use client";
+
 import {
     Button,
     Card,
@@ -39,7 +40,7 @@ export const parking = [
     { key: "1", label: "No Parking" },
 ];
 
-export const type = [
+export const types = [
     { key: "Studio Type", label: "Studio Type" },
     { key: "1BR", label: "1BR" },
     { key: "2BR", label: "2BR" },
@@ -371,7 +372,7 @@ const NewPropertyPage = () => {
                                         formik.setFieldValue("unit_type", e.target.value)
                                     }
                                 >
-                                    {type.map((type) => (
+                                    {types.map((type) => (
                                         <SelectItem key={type.key}>{type.label}</SelectItem>
                                     ))}
                                 </Select>
