@@ -68,9 +68,6 @@ export interface Application {
     updated_at: string;
 }
 
-
-
-
 export interface Testimonial {
     id: number;
     user_id: number;
@@ -98,7 +95,7 @@ export interface Item {
     image: string;
     width: string;
     height: string;
-    category: string;
+    type: string;
     created_at: string;
     updated_at: string;
 }
