@@ -1,14 +1,13 @@
 'use client';
 
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useEffect, useState } from 'react';
-
-// import AddUserModal from './add-user-modal';
 import { DataTable } from '@/components/data-table';
 import { Column, Schedule } from '@/app/utils/types';
-import LoadingDot from '@/components/loading-dot';
 import HamsterWheel from '@/components/loading-hamster-wheel';
-// import EditUserModal from './edit-user-modal';
+import { Button } from '@nextui-org/react';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -16,7 +15,6 @@ const fetchWithToken = async (url: string) => {
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     };
-
 
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -31,14 +29,30 @@ const fetchWithToken = async (url: string) => {
         throw new Error('Failed to fetch data');
     }
 
-    console.log(response);
     return response.json();
 };
 
 const columns: Column<Schedule>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'user_id', label: 'User ID' },
-    { key: 'name', label: 'Name' },
+    {
+        key: 'user',
+        label: 'Agent',
+        render: (data) => (
+            <div className="truncate">
+                <span>{data.user?.name || 'N/A'}</span>
+            </div>
+        ),
+    },
+    {
+        key: 'first_name',
+        label: 'Full Name',
+        render: (data) => (
+            <div className="truncate">
+                <span>
+                    {data.first_name} {data.last_name}
+                </span>
+            </div>
+        ),
+    },
     { key: 'phone', label: 'Phone' },
     { key: 'email', label: 'Email' },
     { key: 'date', label: 'Date' },
@@ -47,36 +61,86 @@ const columns: Column<Schedule>[] = [
     { key: 'properties', label: 'Properties' },
     { key: 'message', label: 'Message' },
     { key: 'status', label: 'Status' },
-    { key: 'created_at', label: 'Created At' },
-    { key: 'updated_at', label: 'Updated At' },
+    {
+        key: 'id',
+        label: 'Action',
+        render: (data) => (
+            <div className="flex gap-2">
+                <Button
+                    color="primary"
+                    onClick={() => handleAcceptSchedule(data.id)}
+                    size="sm"
+                >
+                    Accept
+                </Button>
+                <Button
+                    color="danger"
+                    onClick={() => handleDeclineSchedule(data.id)}
+                    size="sm"
+                >
+                    Decline
+                </Button>
+            </div>
+        ),
+    },
 ];
 
+const handleAcceptSchedule = async (id: string) => {
+    try {
+        const token = sessionStorage.getItem('token');
+        await axios.post(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/set-status`,
+            { id, status: 'Accepted' },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        toast.success('Schedule updated successfully!');
+        mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules`);
+    } catch {
+        toast.error('Failed to update schedule.');
+    }
+};
+
+const handleDeclineSchedule = async (id: string) => {
+    try {
+        const token = sessionStorage.getItem('token');
+        await axios.post(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/set-status`,
+            { id, status: 'Declined' },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        toast.success('Schedule declined successfully!');
+        mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules`);
+    } catch {
+        toast.error('Failed to decline schedule.');
+    }
+};
 
 export default function Home() {
-    const { data, error } = useSWR<{ code: number; message: string; records: Schedule[] }>(
-        'https://abicmanpowerservicecorp.com/api/schedules',
-        fetchWithToken
-    );
+    const { data, error } = useSWR<{
+        code: number;
+        message: string;
+        records: Schedule[];
+    }>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules`, fetchWithToken);
 
-    const [users, setUser] = useState<Schedule[]>([]);
-    const [selectedUser, setSelectedUser] = useState<Schedule | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [users, setUsers] = useState<Schedule[]>([]);
 
     useEffect(() => {
-        if (data && data.records) {
-            setUser(data.records);
+        if (data?.records) {
+            setUsers(data.records);
         }
     }, [data]);
-
-    const handleAction = (user: Schedule) => {
-        setSelectedUser(user);
-        setIsModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedUser(null);
-    };
 
     if (error) {
         return <div>Error: {error.message}</div>;
@@ -90,22 +154,8 @@ export default function Home() {
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">Schedule Table</h1>
-                {/* <AddUserModal /> */}
             </div>
-            <DataTable<Schedule>
-                data={users}
-                columns={columns}
-                itemsPerPage={5}
-                onAction={handleAction}
-                actionLabel="Edit"
-            />
-            {/* {selectedUser && (
-                <EditUserModal
-                    user={selectedUser}
-                    isOpen={isModalOpen}
-                    onClose={handleCloseModal}
-                />
-            )} */}
+            <DataTable<Schedule> data={users} columns={columns} itemsPerPage={5} />
         </main>
     );
 }

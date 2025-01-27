@@ -14,6 +14,13 @@ export interface DataTableProps<T> {
     actionLabel?: string; 
 }
 
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    type: string;
+}
+
 export interface Article {
     id: string;
     title: string;
@@ -62,11 +69,23 @@ export interface Owner {
     updated_at: string;
 }
 
-
 export interface Partner {
     id: string;
     name: string;
     image: string;
+}
+
+export interface Inquirie {
+    id: string;
+    user_id: string;
+    first_name: string;
+    last_name:string;
+    email:string;
+    phone: string;
+    type: string;
+    properties: string;
+    message: string;
+    user: User;
 }
 
 export interface Career {
@@ -126,9 +145,10 @@ export interface Item {
 }
 
 export interface Schedule {
-    id: number;
+    id: string;
     user_id: string;
-    name: string;
+    first_name: string;
+    last_name: string;
     phone: string;
     email: string;
     date: string;
@@ -139,6 +159,7 @@ export interface Schedule {
     status: string;
     created_at: string;
     updated_at: string;
+    user: User;
 }
 
 export interface Submission {

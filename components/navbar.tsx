@@ -1,9 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { ThemeSwitch } from './theme-switch';
-import { Building, Calendar, Grid, Handshake, HardHat, LayoutDashboard, LogOut, Newspaper, Star, User } from 'lucide-react';
+import { Building, Calendar, Grid, Handshake, HardHat, HelpingHand, LayoutDashboard, LogOut, Newspaper, Star, User } from 'lucide-react';
 import { Link } from '@nextui-org/react';
 import { setCookie } from 'nookies';
+import { FaCertificate } from 'react-icons/fa6';
 
 const Navbar = () => {
   const [type, setType] = useState<string | null>(null);
@@ -112,13 +113,17 @@ const Navbar = () => {
                 <span className="ms-3">Careers</span>
               </Link>
               <Link href="/admin/certificates" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-[#27272a] group">
-                <Building className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <FaCertificate className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
                 <span className="ms-3">Certificates</span>
               </Link>
-              <Link href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-[#27272a] group">
+              {/* <Link href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-[#27272a] group">
                 <LayoutDashboard
                   className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
                 <span className="ms-3">Dashboard</span>
+              </Link> */}
+              <Link href="/admin/inquiries" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-[#27272a] group">
+                <HelpingHand className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <span className="ms-3">Inquiries</span>
               </Link>
               <Link href="/admin/items" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-[#27272a] group">
                 <Building className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
