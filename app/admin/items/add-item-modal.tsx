@@ -114,7 +114,7 @@ const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
                             <Field as="select"
                                 name="type"
                                 className="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-white dark:bg-[#18181b] dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                <option value="" label="Type" />
+                                <option value="" hidden label="Type" />
                                 <option value="Living Room">Living Room</option>
                                 <option value="Bedroom">Bedroom</option>
                                 <option value="Dining Room">Dining Room</option>

@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
-import { Formik, Form, FormikHelpers } from 'formik';
+import { Formik, Form, ErrorMessage, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 import CustomInput from '@/components/input';
 import type { Article } from '@/app/utils/types';
-import toast from 'react-hot-toast';
+import FormikCustomError from '@/components/formik-custom-error';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -96,11 +97,19 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     type="text"
                                     error={touched.content ? errors.content : undefined}
                                 />
-                                <CustomInput
+                                <Field as="select"
                                     name="type"
-                                    label="Type"
-                                    type="text"
-                                    error={touched.type ? errors.type : undefined}
+                                    className="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-white dark:bg-[#18181b] dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="" hidden label="Type" />
+                                    <option value="Seminars">Seminars</option>
+                                    <option value="Meetings">Meetings</option>
+                                    <option value="Events">Events</option>
+                                    <option value="Closed Deals">Closed Deals</option>
+                                    <option value="Real Estate News">Real Estate News</option>
+                                </Field>
+                                <ErrorMessage
+                                    name="type"
+                                    render={(msg) => <FormikCustomError children={msg} />}
                                 />
                                 <CustomInput
                                     name="image"

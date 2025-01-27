@@ -3,11 +3,12 @@ import { Button } from '@nextui-org/react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 import { Modal } from '@/components/add-modal';
 import CustomInput from '@/components/input';
-import toast from 'react-hot-toast';
 import { AlertCircle } from 'lucide-react';
+import FormikCustomError from '@/components/formik-custom-error';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -95,7 +96,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                             <Field as="select"
                                 name="type"
                                 className="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-white dark:bg-[#18181b] dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                <option value="" label="Type" />
+                                <option value="" hidden label="Type" />
                                 <option value="Seminars">Seminars</option>
                                 <option value="Meetings">Meetings</option>
                                 <option value="Events">Events</option>
@@ -104,7 +105,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                             </Field>
                             <ErrorMessage
                                 name="type"
-                                render={(msg) => <ErrorMessageComponent>{msg}</ErrorMessageComponent>}
+                                render={(msg) => <FormikCustomError children={msg} />}
                             />
                             <CustomInput
                                 name="image"
