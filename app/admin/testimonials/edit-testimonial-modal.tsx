@@ -28,9 +28,10 @@ const EditTestimonialModal: React.FC<EditTestimonialModalProps> = ({ testimonial
         console.log(values);
 
         try {
+            const token = sessionStorage.getItem('token');
             const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/testimonials`, values, {
                 headers: {
-                    'Accept': 'application/json/',
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 }
 

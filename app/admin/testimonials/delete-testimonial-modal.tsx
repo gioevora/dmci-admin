@@ -19,9 +19,10 @@ const DeleteTestimonialModal: React.FC<DeletePartnerModalProps> = ({ testimonial
 
         setIsSubmitting(true);
         try {
+            const token = sessionStorage.getItem('token');
             await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/testimonials/${testimonial.id}`, {
                 headers: {
-                    Accept: 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             toast.success('Operation successful!');
