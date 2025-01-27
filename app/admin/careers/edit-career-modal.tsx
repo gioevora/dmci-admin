@@ -58,7 +58,6 @@ const EditModal: React.FC<EditModalProps> = ({ career, isOpen, onClose, mutate }
                             id: career?.id,
                             position: career?.position,
                             slots: career?.slots,
-                            available_slots: career?.available_slots,
                             image: career?.image,
                             _method: 'PUT',
 
