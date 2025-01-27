@@ -36,7 +36,7 @@ const fetchWithToken = async (url: string) => {
 };
 
 const columns: Column<Career>[] = [
-    { key: 'id', label: 'ID' },
+    // { key: 'id', label: 'ID' },
     { key: 'position', label: 'Position' },
     { key: 'slots', label: 'Slots' },
     {

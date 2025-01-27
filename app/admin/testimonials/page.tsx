@@ -34,8 +34,8 @@ const fetchWithToken = async (url: string) => {
 };
 
 const columns: Column<Testimonial>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'user_id', label: 'User ID' },
+    // { key: 'id', label: 'ID' },
+    // { key: 'user_id', label: 'User ID' },
     { key: 'first_name', label: 'First Name' },
     { key: 'last_name', label: 'Last Name' },
     { key: 'message', label: 'Message' },

@@ -34,17 +34,17 @@ const fetchWithToken = async (url: string) => {
 
 const columns: Column<Schedule>[] = [
     {
-        key: 'user',
-        label: 'Agent',
+        key: "user",
+        label: "Agent",
         render: (data) => (
             <div className="truncate">
-                <span>{data.user?.name || 'N/A'}</span>
+                <span>{data.user?.name || "N/A"}</span>
             </div>
         ),
     },
     {
-        key: 'first_name',
-        label: 'Full Name',
+        key: "first_name",
+        label: "Full Name",
         render: (data) => (
             <div className="truncate">
                 <span>
@@ -53,37 +53,46 @@ const columns: Column<Schedule>[] = [
             </div>
         ),
     },
-    { key: 'phone', label: 'Phone' },
-    { key: 'email', label: 'Email' },
-    { key: 'date', label: 'Date' },
-    { key: 'time', label: 'Time' },
-    { key: 'type', label: 'Type' },
-    { key: 'properties', label: 'Properties' },
-    { key: 'message', label: 'Message' },
-    { key: 'status', label: 'Status' },
+    { key: "phone", label: "Phone" },
+    { key: "email", label: "Email" },
+    { key: "date", label: "Date" },
+    { key: "time", label: "Time" },
+    { key: "type", label: "Type" },
+    { key: "properties", label: "Properties" },
+    { key: "message", label: "Message" },
+    { key: "status", label: "Status" },
     {
-        key: 'id',
-        label: 'Action',
+        key: "id",
+        label: "Action",
         render: (data) => (
             <div className="flex gap-2">
-                <Button
-                    color="primary"
-                    onClick={() => handleAcceptSchedule(data.id)}
-                    size="sm"
-                >
-                    Accept
-                </Button>
-                <Button
-                    color="danger"
-                    onClick={() => handleDeclineSchedule(data.id)}
-                    size="sm"
-                >
-                    Decline
-                </Button>
+                {data.status === "Pending" ? (
+                    <>
+                        <Button
+                            color="primary"
+                            onClick={() => handleAcceptSchedule(data.id)}
+                            size="sm"
+                        >
+                            Accept
+                        </Button>
+                        <Button
+                            color="danger"
+                            onClick={() => handleDeclineSchedule(data.id)}
+                            size="sm"
+                        >
+                            Decline
+                        </Button>
+                    </>
+                ) : (
+                    <span className="text-gray-500 font-semibold">
+                        {data.status}
+                    </span>
+                )}
             </div>
         ),
-    },
+    }
 ];
+
 
 const handleAcceptSchedule = async (id: string) => {
     try {

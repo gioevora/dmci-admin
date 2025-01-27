@@ -34,8 +34,8 @@ const fetchWithToken = async (url: string) => {
 };
 
 const columns: Column<Certificate>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'user_id', label: 'User ID' },
+    // { key: 'id', label: 'ID' },
+    // { key: 'user_id', label: 'User ID' },
     { key: 'name', label: 'Name' },
     { key: 'date', label: 'Date' },
     {

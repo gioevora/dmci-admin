@@ -34,7 +34,7 @@ const fetchWithToken = async (url: string) => {
 };
 
 const columns: Column<Item>[] = [
-    { key: 'id', label: 'id' },
+    // { key: 'id', label: 'id' },
     { key: 'name', label: 'Name' },
     {
         key: 'image',
