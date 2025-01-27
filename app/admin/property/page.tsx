@@ -3,11 +3,12 @@
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+import type { Property } from '@/app/utils/types';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
-import type { Property } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-import { Button } from '@nextui-org/react';
+import { Button, Link } from '@nextui-org/react';
 
 
 const fetchWithToken = async (url: string) => {
@@ -35,14 +36,20 @@ const fetchWithToken = async (url: string) => {
 
 const columns: Column<Property>[] = [
     { key: 'name', label: 'Name' },
-    { key: 'logo', label: 'Logo', render: (property) => <img src={property.logo} alt={property.name} className="h-12 w-12 object-contain" /> },
-    { key: 'slogan', label: 'Slogan' },
-    { key: 'description', label: 'Description' },
     { key: 'location', label: 'Location' },
-    { key: 'min_price', label: 'Min Price', render: (property) => `₱${parseFloat(property.min_price).toFixed(2)}` },
-    { key: 'max_price', label: 'Max Price', render: (property) => `₱${parseFloat(property.max_price).toFixed(2)}` },
-    { key: 'status', label: 'Status' },
-    { key: 'percent', label: 'Percent' },
+    { key: 'price', label: 'Min Price', render: (property) => `₱${parseFloat(property.price).toFixed(2)}` },
+    {
+        key: 'id', label: '', render: (property) => (
+            <Link href={`/admin/property/${property.id}`} className="w-full">
+                <Button size="sm" className="w-full">
+                    Details
+                </Button >
+            </Link>
+        ),
+    },
+    // { key: 'logo', label: 'Logo', render: (property) => <img src={property.logo} alt={property.name} className="h-12 w-12 object-contain" /> },
+    // { key: 'min_price', label: 'Min Price', render: (property) => `₱${parseFloat(property.min_price).toFixed(2)}` },
+    // { key: 'max_price', label: 'Max Price', render: (property) => `₱${parseFloat(property.max_price).toFixed(2)}` },
 ];
 
 
