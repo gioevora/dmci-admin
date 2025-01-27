@@ -1,560 +1,738 @@
-'use client';
+"use client";
+import {
+    Button,
+    Card,
+    CardBody,
+    Divider,
+    Input,
+    Select,
+    SelectItem,
+} from "@nextui-org/react";
+import React, { useState } from "react";
+import { FaArrowRightLong, } from "react-icons/fa6";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { Images } from "lucide-react";
 
-import { Card, Input, Button, Select, SelectItem, Checkbox } from '@nextui-org/react';
-import { Formik, Field, Form, ErrorMessage, } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import { select } from '@nextui-org/theme';
+export const agents = [
+    { key: "Owner", label: "Owner" },
+    { key: "Agent", label: "Agent" },
+    { key: "Broker", label: "Broker" },
+];
+
+const agreementMessages: Record<string, string> = {
+    Owner:
+        "I agree to provide 1 month full commission when renting out and another 1 month for renewal.",
+    Agent: "I agree to a 50/50 commission sharing on the transaction.",
+    Broker: "I agree to a 60/40 commission sharing on the transaction.",
+};
+
+export const status = [
+    { key: "For Rent", label: "For Rent" },
+    { key: "For Sale", label: "For Sale" },
+];
+
+export const parking = [
+    { key: "0", label: "With Parking" },
+    { key: "1", label: "No Parking" },
+];
+
+export const type = [
+    { key: "Studio Type", label: "Studio Type" },
+    { key: "1BR", label: "1BR" },
+    { key: "2BR", label: "2BR" },
+    { key: "3BR", label: "3BR" },
+    { key: "Loft", label: "Loft" },
+    { key: "Penthouse", label: "Penthouse" },
+];
+
+export const furnished = [
+    { key: "Bare", label: "Bare" },
+    { key: "Semi-Furnished", label: "Semi-Furnished" },
+    { key: "Fully-Furnished", label: "Fully-Furnished" },
+    { key: "Interiored", label: "Interiored" },
+];
+
+export const rent = [
+    { key: "6 Months", label: "6 Months" },
+    { key: "1 Year", label: "1 Year" },
+    { key: "2 Year", label: "2 Years" },
+];
+
+export const sale = [
+    { key: "RFO", label: "RFO" },
+    { key: "Pre-Selling", label: "Pre-Selling" },
+];
+
+export const payment = [
+    { key: "Cash", label: "Cash" },
+    { key: "Bank Financing", label: "Bank Financing" },
+];
+
+export const amenities = [
+    { key: "Pool Area", label: "Pool Area" },
+    { key: "Balcony/Terrace", label: "Balcony/Terrace" },
+    { key: "Elevator", label: "Elevator" },
+    { key: "Guest Suite", label: "Guest Suite" },
+    { key: "Club House", label: "Club House" },
+    { key: "Concerierge Services", label: "Concerierge Services" },
+    { key: "Underground Parking", label: "Underground Parking" },
+    { key: "Gym/Fitnes Center", label: "Gym/Fitnes Center" },
+    { key: "Security", label: "Security" },
+    { key: "Pet-Friendly Facilities", label: "Pet-Friendly Facilities" },
+];
 
 const validationSchema = Yup.object({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().email('Enter a valid email').required('Email is required'),
-    phone: Yup.string().required('Phone number is required'),
-    property: Yup.string().required('Property type is required'),
-    type: Yup.string().required('Type is required'),
-    location: Yup.string().required('Location is required'),
-    price: Yup.number().positive('Price must be positive').required('Price is required'),
-    area: Yup.number().positive('Area must be positive').required('Area is required'),
-    parking: Yup.boolean()
-        .oneOf([true], 'You must select a parking option')
-        .required('Parking option is required'),
-    vacant: Yup.boolean().required('Vacancy status is required'),
-    nearby: Yup.string().required('Nearby places are required'),
-    description: Yup.string().required('Description is required'),
-    sale: Yup.string().required('Sale type is required'),
-    badge: Yup.string().required('Badge is required'),
-    status: Yup.string().required('Status is required'),
-    submit_status: Yup.string().required('Submit status is required'),
+    // Personal Information
+    first_name: Yup.string().required("First name is required"),
+    last_name: Yup.string().required("Last name is required"),
+    email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+    phone: Yup.string()
+        .matches(/^[0-9]+$/, "Phone number must be numeric")
+        .required("Phone number is required"),
+    type: Yup.string().required("Type is required"),
+
+    // Property Information
+    name: Yup.string().required("Property name is required"),
+    unit_type: Yup.string().required("Unit Type is required"),
+    unit_status: Yup.string().required("Unit Status is required"),
+    location: Yup.string().required("Location is required"),
+    price: Yup.number()
+        .typeError("Price must be a number")
+        .positive("Price must be positive")
+        .required("Property price is required"),
+    area: Yup.number()
+        .typeError("Square meter must be a number")
+        .positive("Square meter must be positive")
+        .required("Square meter is required"),
     unit_number: Yup.number()
-        .positive('Unit number must be positive')
-        .required('Unit number is required'),
-    unit_type: Yup.string().required('Unit type is required'),
-    unit_furnish: Yup.string().required('Unit furnishing status is required'),
-    unit_floor: Yup.string().required('Unit floor is required'),
-    submitted_by: Yup.string().required('Submitted by is required'),
-    commission: Yup.boolean().required('Commission is required'),
-    terms: Yup.string().required('Terms are required'),
-    title: Yup.string().required('Title is required'),
-    lease: Yup.string().required('Lease information is required'),
+        .typeError("Floor number must be a number")
+        .positive("Floor number must be positive")
+        .required("Floor number is required"),
+    parking: Yup.boolean().required("Parking is required"),
+    status: Yup.string().required("Property Status is required"),
     amenities: Yup.array()
-        .min(1, 'At least one amenity is required')
-        .required('Amenities are required'),
+        .of(Yup.string())
+        .min(1, "At least one amenity is required")
+        .required("Amenities are required"),
+    images: Yup.mixed().required('Image is required'),
 });
 
-const PropertyForm = () => {
-    let userId;
+const NewPropertyPage = () => {
+    const [selectedStatus, setSelectedStatus] = useState("");
+    const [selectedtPayment, setSelectedPayment] = useState("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [propertyStatus, setPropertyStatus] = useState("");
 
-    if (typeof window !== 'undefined' && window.sessionStorage) {
-        userId = sessionStorage.getItem('id');
-    } else {
-        userId = null;
-    }
+    const formik = useFormik({
+        initialValues: {
+            first_name: "",
+            last_name: "",
+            email: "",
+            phone: "",
+            type: "",
 
-    const handleSubmit = async (
-        values: any,
-        { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
-    ) => {
-        console.log("Form values before submit:", values);
+            name: "",
+            location: "",
+            price: "",
+            area: "",
+            parking: "",
+            description: "N/A",
 
-        const payload = {
-            ...values,
-            parking: values.parking ? 1 : 0,
-            vacant: values.vacant ? 1 : 0,
-            commission: values.commission ? 1 : 0,
-        };
+            unit_number: "",
+            unit_type: "",
+            unit_status: "",
 
-        try {
-            const token = sessionStorage.getItem('token');
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`,
-                payload,
-                {
+            title: "N/A",
+            payment: "N/A",
+            turnover: "N/A",
+            terms: "N/A",
+
+
+            category: "",
+            badge: "",
+            published: "1",
+
+            status: "",
+            sale_type: "N/A",
+            amenities: [] as string[],
+            images: "",
+        },
+        validationSchema,
+
+        onSubmit: async (values, { resetForm }) => {
+            setLoading(true);
+
+            try {
+                const formData = new FormData();
+                const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`;
+                const token = sessionStorage.getItem('token');
+
+                Object.entries(values).forEach(([key, value]: [string, unknown]) => {
+                    if (key === "images" && value instanceof FileList) {
+
+                        Array.from(value).forEach((file) => {
+                            formData.append("images[]", file);
+                        });
+                    } else if (key === "amenities" && Array.isArray(value)) {
+                        value.forEach((amenity) => {
+                            formData.append("amenities[]", amenity);
+                        });
+                    } else if (typeof value === "string" || typeof value === "number") {
+                        // Append other fields
+                        formData.append(key, value.toString());
+                    }
+                });
+
+                const response = await axios.post(endpoint, formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data',
                     },
-                }
-            );
+                });
 
-            if (response.status === 201) {
-                console.log("Form submitted successfully:", response.data);
-            } else {
-                console.error("Form submission failed:", response.statusText);
+                toast.success("Inquiry submitted successfully!");
+                resetForm();
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if (error.response) {
+                        toast.error(
+                            error.response.data.message ||
+                            "Failed to submit inquiry. Please try again later."
+                        );
+                    } else if (error.request) {
+                        toast.error("No response from server. Please try again later.");
+                    }
+                } else {
+                    toast.error("Unexpected error occurred. Please try again.");
+                }
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error("An error occurred during form submission:", error);
-        } finally {
-            setSubmitting(false);
         }
+
+    });
+
+    const handleStatusChange = (value: string): void => {
+        setSelectedStatus(value);
     };
 
+    const handlePaymentChange = (value: string): void => {
+
+        setSelectedPayment(value);
+    };
+
+
     return (
-        <div className="container mx-auto py-8">
-            <h2 className="text-center text-2xl font-bold mb-6">Submit Property</h2>
-            <Card aria-labelledby="submit-property-form" className="mx-auto p-6">
-                <Formik
-                    initialValues={{
-                        user_id: userId,
-                        status: "Pending",
-                        submit_status: "Pending",
-                        name: '',
-                        email: '',
-                        phone: '',
-                        property: '',
-                        type: '',
-                        location: '',
-                        price: '',
-                        area: '',
-                        parking: false, // Set to false for checkbox
-                        vacant: false, // Set to false for checkbox
-                        nearby: '',
-                        description: '',
-                        sale: '',
-                        badge: '',
-                        unit_number: '',
-                        unit_type: '',
-                        unit_furnish: '',
-                        unit_floor: '',
-                        submitted_by: '',
-                        commission: false,
-                        terms: '',
-                        title: '',
-                        lease: '',
-                        turnover: '',
-                        amenities: [],
-                        images: [],
-                    }}
-                    validationSchema={validationSchema}
-                    onSubmit={handleSubmit}
-                >
-                    {({ isSubmitting, setFieldValue }) => (
-                        <Form id="modalForm" className="space-y-6">
-                            {/* Personal Information */}
-                            <h4 className="mb-3">Personal Information:</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <div className="col-span-1 mb-2">
-                                    <Field
-                                        name="name"
-                                        as={Input}
-                                        label="Full Name"
-                                        variant="underlined"
-                                        placeholder="Enter full name"
-                                    />
-                                    <ErrorMessage name="name" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-                                <div className="col-span-1 mb-2">
-                                    <Field
-                                        name="email"
-                                        as={Input}
-                                        label="Email"
-                                        variant="underlined"
-                                        placeholder="Enter your email"
-                                    />
-                                    <ErrorMessage name="email" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-                                <div className="col-span-1 mb-2">
-                                    <Field
-                                        name="phone"
-                                        as={Input}
-                                        label="Phone Number"
-                                        variant="underlined"
-                                        placeholder="Enter phone number"
-                                    />
-                                    <ErrorMessage name="phone" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-                                <div className="col-span-1 mb-2">
-                                    <Field
-                                        as={Select}
-                                        name="submitted_by"
-                                        id="submitted_by"
-                                        label="Are you the owner or an agent?"
-                                        variant="underlined"
-                                        placeholder="Select"
-                                    >
-                                        <SelectItem value="owner">Owner</SelectItem>
-                                        <SelectItem value="agent">Agent</SelectItem>
-                                    </Field>
-                                    <ErrorMessage
-                                        name="submitted_by"
-                                        component="div"
-                                        className="text-xs text-[#F31260] mt-1"
-                                    />
-                                </div>
+        <div className="w-full mt-8">
+            <Toaster position="top-center" reverseOrder={false} />
+            <form onSubmit={formik.handleSubmit}>
+                <Card className="w-full">
+                    <CardBody>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 md:px-6">
+                            <div className="col-span-2 py-6">
+                                <h1 className="text-2xl  font-bold underline">
+                                    Personal Information
+                                </h1>
                             </div>
-
-
-
-                            {/* Property Details */}
-                            <h4 className="mb-3 pt-4">Property Details:</h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                {/* Property Name */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="property"
-                                        as={Input}
-                                        label="Property Name"
-                                        variant="underlined"
-                                        placeholder="Enter property name"
-                                    />
-                                    <ErrorMessage name="property" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Location */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="location"
-                                        as={Input}
-                                        label="Location"
-                                        variant="underlined"
-                                        placeholder="Enter location"
-                                    />
-                                    <ErrorMessage name="location" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Property Type */}
-                                <div className="col-span-1">
-                                    <Field
-                                        as={Select}
-                                        label="Property Type"
-                                        name="type"
-                                        id="type"
-                                        variant="underlined"
-                                        placeholder="Select Property Type"
-                                    >
-                                        <SelectItem key="sale" >For Sale</SelectItem>
-                                        <SelectItem key="rent" >For Rent</SelectItem>
-                                    </Field>
-                                    <ErrorMessage name="type" component="div" className="text-xs text-[#F31260] mt-1" />
-                                </div>
-
-                                {/* Unit Type */}
-                                <div className="col-span-1">
-                                    <label htmlFor="unit_type" className="block text-sm font-medium text-gray-700">
-                                        Unit Type
-                                    </label>
-                                    <Field
-                                        as={Select}
-                                        name="unit_type"
-                                        id="unit_type"
-                                        variant="underlined"
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                        placeholder="Select Unit Type"
-                                    >
-                                        <SelectItem key="Studio">Studio</SelectItem>
-                                        <SelectItem key="1BR">1BR</SelectItem>
-                                        <SelectItem key="2BR">2BR</SelectItem>
-                                        <SelectItem key="3BR">3BR</SelectItem>
-                                        <SelectItem key="Loft">Loft</SelectItem>
-                                        <SelectItem key="Penthouse">Penthouse</SelectItem>
-                                        <SelectItem key="Duplex/Bi-Level">Duplex/Bi-Level</SelectItem>
-                                    </Field>
-                                    <ErrorMessage name="unit_type" component="div" className="text-xs text-red-500 mt-1" />
-                                </div>
-
-                                {/* Price */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="price"
-                                        as={Input}
-                                        type="number"
-                                        label="Price"
-                                        variant="underlined"
-                                        placeholder="Enter price"
-                                    />
-                                    <ErrorMessage name="price" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Square Meter */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="area"
-                                        as={Input}
-                                        type="number"
-                                        label="Square Meter"
-                                        variant="underlined"
-                                        placeholder="Enter square meter"
-                                    />
-                                    <ErrorMessage name="area" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Floor Number */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="unit_floor"
-                                        as={Input}
-                                        type="number"
-                                        label="Floor Number"
-                                        variant="underlined"
-                                        placeholder="Enter floor number"
-                                    />
-                                    <ErrorMessage name="unit_floor" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Unit Number */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="unit_number"
-                                        as={Input}
-                                        label="Unit Number"
-                                        variant="underlined"
-                                        placeholder="Enter unit number"
-                                    />
-                                    <ErrorMessage name="unit_number" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Commission */}
-                                <div className="col-span-1">
-                                    <label className="flex items-center space-x-2">
-                                        <Field
-                                            type="checkbox"
-                                            name="commission"
-                                            className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                        />
-                                        <span>Commission</span>
-                                    </label>
-                                    <ErrorMessage name="commission" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Vacant */}
-                                <div className="col-span-1">
-                                    <label className="flex items-center space-x-2">
-                                        <Field
-                                            type="checkbox"
-                                            name="vacant"
-                                            className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                        />
-                                        <span>Vacant</span>
-                                    </label>
-                                    <ErrorMessage name="vacant" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Nearby */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="nearby"
-                                        as={Input}
-                                        label="Nearby"
-                                        variant="underlined"
-                                        placeholder="Enter nearby details"
-                                    />
-                                    <ErrorMessage name="nearby" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Sale Type */}
-                                <div className="col-span-1">
-                                    <Field
-                                        as={Select}
-                                        name="sale"
-                                        id="sale"
-                                        label="Sale Type"
-                                        variant="underlined"
-                                        placeholder="Select sale type"
-                                    >
-                                        <SelectItem key="rfo">RFO</SelectItem>
-                                        <SelectItem key="pre-selling">Pre-Selling</SelectItem>
-                                    </Field>
-                                    <ErrorMessage name="sale" component="div" className="text-xs text-[#F31260] mt-1" />
-                                </div>
-
-                                {/* Turnover Date (For Pre-Selling) */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="turnover"
-                                        as={Input}
-                                        type="date"
-                                        label="Turnover Date"
-                                        variant="underlined"
-                                        placeholder="Enter turnover date"
-                                    />
-                                    <ErrorMessage name="turnover" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Payment Terms */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="terms"
-                                        as={Input}
-                                        label="Payment Terms"
-                                        variant="underlined"
-                                        placeholder="Enter payment terms"
-                                    />
-                                    <ErrorMessage name="terms" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-                                <div className="col-span-1">
-                                    <Field
-                                        name="badge"
-                                        as={Input}
-                                        label="Badge"
-                                        variant="underlined"
-                                        placeholder="Enter badge"
-                                    />
-                                    <ErrorMessage name="terms" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-                                <div className="col-span-1">
-                                    <Field
-                                        name="description"
-                                        as={Input}
-                                        label="Description"
-                                        variant="underlined"
-                                        placeholder="Enter badge"
-                                    />
-                                    <ErrorMessage name="terms" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Title */}
-                                <div className="col-span-1">
-                                    <Field
-                                        name="title"
-                                        as={Input}
-                                        label="Title"
-                                        variant="underlined"
-                                        placeholder="Enter title"
-                                    />
-                                    <ErrorMessage name="title" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                                {/* Lease Term */}
-                                <div className="col-span-1">
-                                    <Field
-                                        as={Select}
-                                        name="lease"
-                                        id="lease"
-                                        label="Minimum Lease Term"
-                                        variant="underlined"
-                                        placeholder="Select min lease term"
-                                    >
-                                        <SelectItem key="six-months">6 months</SelectItem>
-                                        <SelectItem key="one-year">1 year</SelectItem>
-                                        <SelectItem key="two-years">2 years</SelectItem>
-                                    </Field>
-                                    <ErrorMessage name="lease" component="div" className="text-xs text-[#F31260] mt-1" />
-                                </div>
-
-                                {/* Furnish */}
-                                <div className="col-span-1">
-                                    <Field
-                                        as={Select}
-                                        name="unit_furnish"
-                                        id="furnish"
-                                        label="Furnish Type"
-                                        variant="underlined"
-                                        placeholder="Select Furnish Type"
-                                    >
-                                        <SelectItem key="furnished">Furnished</SelectItem>
-                                        <SelectItem key="unfurnished">Unfurnished</SelectItem>
-                                    </Field>
-                                    <ErrorMessage name="furnish" component="div" className="text-xs text-[#F31260] mt-1" />
-                                </div>
-
-                                {/* Parking */}
-                                <div>
-                                    <label className="flex items-center space-x-2 col-span-1">
-                                        <Field
-                                            type="checkbox"
-                                            name="parking"
-                                            className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                        // onChange={(e) => {
-                                        //     console.log(e.target.value)
-                                        // }}
-                                        />
-                                        <span>With Parking</span>
-                                    </label>
-                                    <ErrorMessage name="parking" component="div" className="absolute text-xs text-[#F31260] ml-1 mt-1" />
-                                </div>
-
-                            </div>
-                            <div>
-                                <h4 className="mt-8">Upload Images:</h4>
+                            <div className="col-span-2 md:col-span-1">
                                 <Input
-                                    type="file"
-                                    name="images"
-                                    variant="underlined"
-                                    multiple
-                                    onChange={(event) => setFieldValue('images', event.target.files)}
+                                    label="First Name"
+                                    name="first_name"
+                                    placeholder="eg. Juan"
+                                    type="text"
+                                    value={formik.values.first_name}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
                                 />
-                                <ErrorMessage name="images" component="div" className="absolute text-xs text-[#F31260] mt-1" />
+                                {formik.touched.first_name && formik.errors.first_name && (
+                                    <p className="text-red-500 text-sm">
+                                        {formik.errors.first_name}
+                                    </p>
+                                )}
                             </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
-                                {/* First Column */}
-                                <div className="flex flex-col  space-y-2">
-                                    {[
-                                        "Pool Area",
-                                        "Clubhouse",
-                                        "Gym/Fitness Center",
-                                        "Balcony/Terrace"
-                                    ].map((amenity) => (
-                                        <label key={amenity} className="flex  space-x-2">
-                                            <Field
-                                                type="checkbox"
-                                                name="amenities"
-                                                value={amenity}
-                                                className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                            <span>{amenity}</span>
-                                        </label>
-                                    ))}
-                                </div>
-
-                                {/* Second Column */}
-                                <div className="flex flex-col  space-y-2">
-                                    {[
-                                        "Concierge Services",
-                                        "Security",
-                                        "Elevator",
-                                        "Underground Parking"
-                                    ].map((amenity) => (
-                                        <label key={amenity} className="flex  space-x-2">
-                                            <Field
-                                                type="checkbox"
-                                                name="amenities"
-                                                value={amenity}
-                                                className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                            <span>{amenity}</span>
-                                        </label>
-                                    ))}
-                                </div>
-
-                                {/* Third Column */}
-                                <div className="flex flex-col  space-y-2">
-                                    {[
-                                        "Pet-Friendly Facilities",
-                                        "Guest Suites"
-                                    ].map((amenity) => (
-                                        <label key={amenity} className="flex  space-x-2">
-                                            <Field
-                                                type="checkbox"
-                                                name="amenities"
-                                                value={amenity}
-                                                className="h-4 w-4 border-gray-300 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                            <span>{amenity}</span>
-                                        </label>
-                                    ))}
-                                </div>
+                            <div className="col-span-2 md:col-span-1">
+                                <Input
+                                    label="Last Name"
+                                    name="last_name"
+                                    placeholder="eg. Dela Cruz"
+                                    type="text"
+                                    value={formik.values.last_name}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.last_name && formik.errors.last_name && (
+                                    <p className="text-red-500 text-sm">
+                                        {formik.errors.last_name}
+                                    </p>
+                                )}
                             </div>
-
-                            {/* Submit */}
-                            <div className="flex justify-center">
-                                <Button
-                                    type="submit"
-                                    color="primary"
-                                    className="w-full"
-                                    isLoading={isSubmitting}
-                                    isDisabled={isSubmitting}
+                            <div className="col-span-2 md:col-span-1">
+                                <Input
+                                    label="Email"
+                                    name="email"
+                                    placeholder="eg. juandelacruz@gmail.com"
+                                    type="email"
+                                    value={formik.values.email}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.email && formik.errors.email && (
+                                    <p className="text-red-500 text-sm">
+                                        {formik.errors.email}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="col-span-2 md:col-span-1">
+                                <Input
+                                    label="Phone Number"
+                                    name="phone"
+                                    placeholder="eg. 09924401097"
+                                    type="number"
+                                    value={formik.values.phone}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.phone && formik.errors.phone && (
+                                    <p className="text-red-500 text-sm">
+                                        {formik.errors.phone}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="col-span-2 md:col-span-1">
+                                <Select
+                                    label="Type"
+                                    name="type"
+                                    placeholder="Select Type"
+                                    value={formik.values.type}
+                                    onChange={(e) =>
+                                        formik.setFieldValue("type", e.target.value)
+                                    }
                                 >
-                                    Submit
-                                </Button>
+                                    {agents.map((agent) => (
+                                        <SelectItem key={agent.key} value={agent.key}>
+                                            {agent.label}
+                                        </SelectItem>
+                                    ))}
+                                </Select>
+                                {formik.touched.type && formik.errors.type && (
+                                    <p className="text-red-500 text-sm">
+                                        {formik.errors.type}
+                                    </p>
+                                )}
                             </div>
-                        </Form>
 
-                    )}
-                </Formik>
-            </Card>
+                            <div className="col-span-2 md:col-span-1">
+                                {formik.values.type && (
+                                    <>
+                                        <div className="col-span-2 md:col-span-1">
+                                            <p className="text-gray-700 text-sm">
+                                                {agreementMessages[formik.values.type]}
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-6 md:px-6">
+                            <div className="col-span-3 py-6">
+                                <h1 className="text-2xl  font-bold underline">
+                                    Property Information
+                                </h1>
+                            </div>
+                            <div className="col-span-3 md:col-span-1">
+                                <Input
+                                    label="Property Name"
+                                    name="name"
+                                    placeholder="eg. Prisma Residences"
+                                    type="text"
+                                    value={formik.values.name}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.name &&
+                                    formik.errors.name && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.name}
+                                        </p>
+                                    )}
+                            </div>
+                            <div className="col-span-3 md:col-span-1">
+                                <Select
+                                    label="Unit Type"
+                                    name="unit_type"
+                                    placeholder="eg. 1 BR"
+                                    onChange={(e) =>
+                                        formik.setFieldValue("unit_type", e.target.value)
+                                    }
+                                >
+                                    {type.map((type) => (
+                                        <SelectItem key={type.key}>{type.label}</SelectItem>
+                                    ))}
+                                </Select>
+
+                                {formik.touched.unit_type &&
+                                    formik.errors.unit_type && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.unit_type}
+                                        </p>
+                                    )}
+                            </div>
+
+                            <div className="col-span-3 md:col-span-1">
+                                <Select
+                                    label="Unit Status"
+                                    name="unit_status"
+                                    placeholder="Fully Furnished"
+                                    onChange={(e) =>
+                                        formik.setFieldValue("unit_status", e.target.value)
+                                    }
+                                >
+                                    {furnished.map((furnished) => (
+                                        <SelectItem key={furnished.key}>
+                                            {furnished.label}
+                                        </SelectItem>
+                                    ))}
+                                </Select>
+                                {formik.touched.unit_status &&
+                                    formik.errors.unit_status && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.unit_status}
+                                        </p>
+                                    )}
+                            </div>
+
+                            <div className="col-span-3">
+                                <Input
+                                    label="Location"
+                                    name="location"
+                                    placeholder="eg. Makati City"
+                                    type="text"
+                                    value={formik.values.location}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.location &&
+                                    formik.errors.location && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.location}
+                                        </p>
+                                    )}
+                            </div>
+
+                            <div className="col-span-3 md:col-span-1">
+                                <Input
+                                    label="Property Price"
+                                    name="price"
+                                    placeholder="eg. 0.00"
+                                    type="text"
+                                    value={formik.values.price}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.price &&
+                                    formik.errors.price && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.price}
+                                        </p>
+                                    )}
+                            </div>
+
+                            <div className="col-span-3 md:col-span-1">
+                                <Input
+                                    label="Square Meter"
+                                    name="area"
+                                    placeholder="eg. 0.00"
+                                    type="text"
+                                    value={formik.values.area}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.area &&
+                                    formik.errors.area && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.area}
+                                        </p>
+                                    )}
+                            </div>
+
+                            <div className="col-span-3 md:col-span-1">
+                                <Input
+                                    label="Floor Number"
+                                    name="unit_number"
+                                    placeholder="eg. 0.00"
+                                    type="text"
+                                    value={formik.values.unit_number}
+                                    onBlur={formik.handleBlur}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.touched.unit_number &&
+                                    formik.errors.unit_number && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.unit_number}
+                                        </p>
+                                    )}
+                            </div>
+
+                            <div className="col-span-3 md:col-span-1">
+                                <Select
+                                    label="Parking"
+                                    name="parking"
+                                    placeholder="Select Parking"
+                                    onChange={(e) =>
+                                        formik.setFieldValue("parking", e.target.value)
+                                    }
+                                >
+                                    {parking.map((parking) => (
+                                        <SelectItem key={parking.key}>{parking.label}</SelectItem>
+                                    ))}
+                                </Select>
+                                {formik.touched.parking &&
+                                    formik.errors.parking && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.parking}
+                                        </p>
+                                    )}
+                            </div>
+
+                            <div className="col-span-3 md:col-span-1">
+                                <Select
+                                    label="Property Status"
+                                    name="status"
+                                    placeholder="Property Status"
+                                    value={formik.values.status}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        formik.setFieldValue(
+                                            "status",
+                                            e.target.value,
+                                        )
+                                    }}
+                                >
+                                    {status.map((statusItem) => (
+                                        <SelectItem key={statusItem.key} value={statusItem.key}>
+                                            {statusItem.label}
+                                        </SelectItem>
+                                    ))}
+                                </Select>
+                                {formik.touched.status &&
+                                    formik.errors.status && (
+                                        <p className="text-red-500 text-sm">
+                                            {formik.errors.status}
+                                        </p>
+                                    )}
+                            </div>
+
+                            {formik.values.status === "For Rent" && (
+                                <div className="col-span-3 md:col-span-1">
+                                    <Select
+                                        label="Minimum Lease Term"
+                                        name="terms"
+                                        placeholder="Lease Term"
+                                        value={formik.values.terms}
+                                        onChange={(e) =>
+                                            formik.setFieldValue(
+                                                "terms",
+                                                e.target.value,
+                                            )
+                                        }
+                                    >
+                                        {rent.map((rentItem) => (
+                                            <SelectItem key={rentItem.key} value={rentItem.key}>
+                                                {rentItem.label}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
+                                </div>
+                            )}
+
+                            {formik.values.status === "For Sale" && (
+                                <>
+                                    <div className="col-span-2 md:col-span-1">
+                                        <Select
+                                            label="Sale Type"
+                                            name="sale_type"
+                                            placeholder="Select Sale Type"
+                                            value={formik.values.sale_type}
+                                            onChange={(e) =>
+                                                formik.setFieldValue(
+                                                    "sale_type",
+                                                    e.target.value,
+                                                )
+                                            }
+                                        >
+                                            {sale.map((saleItem) => (
+                                                <SelectItem key={saleItem.key} value={saleItem.key}>
+                                                    {saleItem.label}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+                                    </div>
+
+                                    {formik.values.sale_type === "RFO" && (
+                                        <>
+                                            <div className="col-span-2 md:col-span-1">
+                                                <Select
+                                                    label="Payment Type"
+                                                    name="payment"
+                                                    placeholder="Select Payment Type"
+                                                    value={formik.values.payment}
+                                                    onChange={(e) =>
+                                                        formik.setFieldValue(
+                                                            "payment",
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                >
+                                                    {payment.map((paymentItem) => (
+                                                        <SelectItem
+                                                            key={paymentItem.key}
+                                                            value={paymentItem.key}
+                                                        >
+                                                            {paymentItem.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                            </div>
+
+                                            <div className="col-span-2 md:col-span-1">
+                                                <Input
+                                                    label="Title Status"
+                                                    name="title"
+                                                    placeholder="Enter Title Status"
+                                                    type="text"
+                                                    value={formik.values.title}
+                                                    onBlur={formik.handleBlur}
+                                                    onChange={formik.handleChange}
+                                                />
+                                                {formik.touched.title &&
+                                                    formik.errors.title && (
+                                                        <p className="text-red-500 text-sm">
+                                                            {formik.errors.title}
+                                                        </p>
+                                                    )}
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {formik.values.sale_type === "Pre-Selling" && (
+                                        <div className="col-span-2 md:col-span-1">
+                                            <Input
+                                                label="Turnover Date"
+                                                name="turnover"
+                                                placeholder="Enter Turnover Date"
+                                                type="date"
+                                                value={formik.values.turnover}
+                                                onBlur={formik.handleBlur}
+                                                onChange={formik.handleChange}
+                                            />
+                                            {formik.touched.turnover &&
+                                                formik.errors.turnover && (
+                                                    <p className="text-red-500 text-sm">
+                                                        {formik.errors.turnover}
+                                                    </p>
+                                                )}
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+
+                        <Divider className="my-4" />
+
+                        <div className="md:px-6">
+                            <h1 className="font-bold ">
+                                Features and Amenties
+                            </h1>
+
+                            <div className="py-8">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    {amenities.map((amenitiesItem) => (
+                                        <div key={amenitiesItem.key} className="flex items-center">
+                                            <input
+                                                checked={formik.values.amenities.includes(amenitiesItem.key)}
+                                                className="w-4 h-4"
+                                                id={amenitiesItem.key}
+                                                type="checkbox"
+                                                value={amenitiesItem.key}
+                                                name="amenities"
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        formik.setFieldValue("amenities", [
+                                                            ...formik.values.amenities,
+                                                            amenitiesItem.key,
+                                                        ]);
+                                                    } else {
+                                                        formik.setFieldValue(
+                                                            "amenities",
+                                                            formik.values.amenities.filter(
+                                                                (key) => key !== amenitiesItem.key
+                                                            )
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                            <label
+                                                className="ms-2 text-md font-medium text-default-500"
+                                                htmlFor={amenitiesItem.key}
+                                            >
+                                                {amenitiesItem.label}
+                                            </label>
+                                        </div>
+                                    ))}
+
+                                    {formik.errors.amenities && formik.touched.amenities && (
+                                        <div className="text-red-500 text-sm">{formik.errors.amenities}</div>
+                                    )}
+                                </div>
+                            </div>
+
+
+                            <h1 className="font-bold ">Property Image</h1>
+                            <div className="col-span-3 md:col-span-1 py-8">
+                                <label htmlFor="images" className="block text-sm font-medium text-gray-700">
+                                    Upload Image
+                                </label>
+                                <Input
+                                    id="images"
+                                    name="images"
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    className="w-full col-span-1 mt-1 block"
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        const files = event.currentTarget.files;
+
+                                        if (files) {
+                                            formik.setFieldValue("images", files);
+                                        }
+                                    }}
+                                />
+                                {formik.errors.images && formik.touched.images && (
+                                    <div className="text-red-500 text-sm">{formik.errors.images}</div>
+                                )}
+                            </div>
+
+                            <Button
+                                className=" text-white font-bold uppercase mb-4"
+                                endContent={<FaArrowRightLong />}
+                                size="lg"
+                                type="submit"
+                                isLoading={loading}
+                            >
+                                {loading ? "Sending Property..." : "Submit Property"}
+                            </Button>
+                        </div>
+                    </CardBody>
+                </Card>
+            </form>
         </div>
     );
 };
 
-export default PropertyForm;
+export default NewPropertyPage;
