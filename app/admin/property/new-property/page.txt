@@ -1,5 +1,4 @@
 "use client";
-
 import {
     Button,
     Card,
@@ -15,7 +14,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-
+import { Images } from "lucide-react";
 
 export const agents = [
     { key: "Owner", label: "Owner" },
@@ -40,7 +39,7 @@ export const parking = [
     { key: "1", label: "No Parking" },
 ];
 
-export const types = [
+export const type = [
     { key: "Studio Type", label: "Studio Type" },
     { key: "1BR", label: "1BR" },
     { key: "2BR", label: "2BR" },
@@ -372,7 +371,7 @@ const NewPropertyPage = () => {
                                         formik.setFieldValue("unit_type", e.target.value)
                                     }
                                 >
-                                    {types.map((type) => (
+                                    {type.map((type) => (
                                         <SelectItem key={type.key}>{type.label}</SelectItem>
                                     ))}
                                 </Select>
