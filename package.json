@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
+		"email": "email dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
@@ -24,6 +25,9 @@
 		"@nextui-org/theme": "2.4.1",
 		"@react-aria/ssr": "3.9.7",
 		"@react-aria/visually-hidden": "3.8.18",
+		"@react-email/components": "^0.0.31",
+		"@react-email/render": "^1.0.4",
+		"@types/nodemailer": "^6.4.17",
 		"axios": "^1.7.9",
 		"clsx": "2.1.1",
 		"formik": "^2.4.6",
@@ -32,6 +36,7 @@
 		"lucide-react": "^0.468.0",
 		"next": "^15.1.4",
 		"next-themes": "^0.4.4",
+		"nodemailer": "^6.10.0",
 		"nookies": "^2.5.2",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
@@ -61,6 +66,7 @@
 		"eslint-plugin-unused-imports": "4.1.4",
 		"postcss": "8.4.49",
 		"prettier": "3.3.3",
+		"react-email": "3.0.6",
 		"tailwind-variants": "0.1.20",
 		"tailwindcss": "^3.4.16",
 		"typescript": "5.6.3"

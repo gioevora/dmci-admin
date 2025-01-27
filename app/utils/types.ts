@@ -75,7 +75,7 @@ export interface Partner {
     image: string;
 }
 
-export interface Inquirie {
+export interface Inquiry {
     id: string;
     user_id: string;
     first_name: string;

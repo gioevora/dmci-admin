@@ -4,11 +4,12 @@ import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
-import type { Inquirie } from '@/app/utils/types';
+import type { Inquiry } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-// import AddModal from './add-inquirie-modal';
-// import EditModal from './edit-inquirie-modal';
-// import DeleteModal from './delete-inquirie-modal';
+// import AddModal from './add-inquiry-modal';
+import EditModal from './edit-inquiry-modal';
+import { Button } from '@nextui-org/react';
+// import DeleteModal from './delete-inquiry-modal';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -33,44 +34,60 @@ const fetchWithToken = async (url: string) => {
     return response.json();
 };
 
-const columns: Column<Inquirie>[] = [
-    {
-        key: 'user',
-        label: 'Agent',
-        render: (data) => (
-            <div className="truncate">
-                <span>{data.user?.name || 'N/A'}</span>
-            </div>
-        ),
-    },
-    {
-        key: 'first_name',
-        label: 'Full Name',
-        render: (data) => (
-            <div className="truncate">
-                <span>
-                    {data.first_name} {data.last_name}
-                </span>
-            </div>
-        ),
-    },
-    { key: 'email', label: 'Email' },
-    { key: 'phone', label: 'Phone' },
-    { key: 'type', label: 'Type' },
-    { key: 'message', label: 'Message' },
 
-];
 
 export default function Property() {
-    const { data, error, mutate } = useSWR<{ code: number; message: string; records: Inquirie[] }>(
+    const { data, error, mutate } = useSWR<{ code: number; message: string; records: Inquiry[] }>(
         'https://abicmanpowerservicecorp.com/api/inquiries',
         fetchWithToken
     );
 
-    const [inquiries, setArticles] = useState<Inquirie[]>([]);
+    const columns: Column<Inquiry>[] = [
+        {
+            key: 'user',
+            label: 'Agent',
+            render: (data) => (
+                <div className="truncate">
+                    <span>{data.user?.name || 'N/A'}</span>
+                </div>
+            ),
+        },
+        {
+            key: 'first_name',
+            label: 'Full Name',
+            render: (data) => (
+                <div className="truncate">
+                    <span>
+                        {data.first_name} {data.last_name}
+                    </span>
+                </div>
+            ),
+        },
+        { key: 'email', label: 'Email' },
+        { key: 'phone', label: 'Phone' },
+        { key: 'type', label: 'Type' },
+        { key: 'message', label: 'Message' },
+        {
+            key: 'id',
+            label: 'Action',
+            render: (data) => (
+                <div className="truncate">
+                    <Button
+                        color="primary"
+                        onClick={() => handleAction(data)}
+                        size="sm"
+                    >
+                        Reply
+                    </Button>
+                </div>
+            ),
+        },
+    ];
+
+    const [inquiries, setArticles] = useState<Inquiry[]>([]);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedArticle, setSelectedArticle] = useState<Inquirie | null>(null);
+    const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
 
     useEffect(() => {
         if (data && data.records) {
@@ -78,24 +95,24 @@ export default function Property() {
         }
     }, [data]);
 
-    const handleAction = (inquirie: Inquirie) => {
-        setSelectedArticle(inquirie);
+    const handleAction = (inquiry: Inquiry) => {
+        setSelectedInquiry(inquiry);
         setEditModalOpen(true);
     };
 
-    const handleDelete = (inquirie: Inquirie) => {
-        setSelectedArticle(inquirie);
+    const handleDelete = (inquiry: Inquiry) => {
+        setSelectedInquiry(inquiry);
         setDeleteModalOpen(true);
     };
 
     const handleCloseEditModal = () => {
         setEditModalOpen(false);
-        setSelectedArticle(null);
+        setSelectedInquiry(null);
     };
 
     const handleCloseDeleteModal = () => {
         setDeleteModalOpen(false);
-        setSelectedArticle(null);
+        setSelectedInquiry(null);
     };
 
     if (error) {
@@ -112,24 +129,25 @@ export default function Property() {
                 <h1 className="text-2xl font-bold mb-4">Inquiries Table</h1>
                 {/* <AddModal mutate={mutate} /> */}
             </div>
-            <DataTable<Inquirie>
+            <DataTable<Inquiry>
                 data={inquiries}
                 columns={columns}
                 itemsPerPage={5}
             // onAction={handleAction}
             // onDelete={handleDelete}
             />
-            {/* {selectedArticle && (
+            {selectedInquiry && (
                 <EditModal
-                    inquirie={selectedArticle}
+                    inquiry={selectedInquiry}
                     isOpen={isEditModalOpen}
                     mutate={mutate}
                     onClose={handleCloseEditModal}
                 />
             )}
-            {selectedArticle && (
+            {/* 
+            {selectedInquiry && (
                 <DeleteModal
-                    inquirie={selectedArticle}
+                    inquiry={selectedInquiry}
                     isOpen={isDeleteModalOpen}
                     mutate={mutate}
                     onClose={handleCloseDeleteModal}
@@ -138,3 +156,4 @@ export default function Property() {
         </main>
     );
 }
+
