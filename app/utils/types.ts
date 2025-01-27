@@ -25,18 +25,43 @@ export interface Article {
 }
 
 export interface Property {
-    id: number;
+    id: string;
+    owner_id: string;
     name: string;
-    logo: string;
-    slogan: string;
-    description: string;
     location: string;
-    min_price: string;
-    max_price: string;
+    price: string;
+    area: string;
+    parking: boolean;
+    description: string;
+    unit_number: string;
+    unit_type: string;
+    unit_status: string;
+    sale_type: string;
+    title: string;
+    payment: string;
+    turnover: string;
+    terms: string;
     status: string;
-    percent: string;
+    badge: string;
+    published: boolean;
+    amenities: string;
     images: string;
+    create_at: string;
+    update_at: string;
+    owner: Owner;
 }
+
+export interface Owner {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    type: string;
+    created_at: string;
+    updated_at: string;
+}
+
 
 export interface Partner {
     id: string;
