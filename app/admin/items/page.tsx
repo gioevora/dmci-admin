@@ -49,7 +49,7 @@ const columns: Column<Item>[] = [
     },
     { key: 'width', label: 'Width' },
     { key: 'height', label: 'Height' },
-    { key: 'category', label: 'Category' },
+    { key: 'type', label: 'Type' },
 ];
 
 export default function Property() {

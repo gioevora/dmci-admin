@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button } from '@nextui-org/react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 import { Modal } from '@/components/add-modal';
 import CustomInput from '@/components/input';
-import toast from 'react-hot-toast';
+import FormikCustomError from '@/components/formik-custom-error';
 
 
 const validationSchema = Yup.object({
@@ -26,7 +27,7 @@ const validationSchema = Yup.object({
             'Height must have at most two decimal places',
             (value) => value === undefined || /^[0-9]+(\.[0-9]{1,2})?$/.test(value.toString())
         ),
-    category: Yup.string().required('Category is required'),
+    type: Yup.string().required('Type is required'),
 });
 
 
@@ -40,7 +41,7 @@ const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
         { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
     ) => {
 
-        console.log(values);
+        // console.log(values);
         try {
 
             const token = sessionStorage.getItem('token');
@@ -75,7 +76,7 @@ const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
                         image: null,
                         width: '',
                         height: '',
-                        category: '',
+                        type: '',
                     }}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
@@ -110,11 +111,20 @@ const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 type="height"
                                 error={touched.height ? errors.height : undefined}
                             />
-                            <CustomInput
-                                name="category"
-                                label="Category"
-                                type="category"
-                                error={touched.category ? errors.category : undefined}
+                            <Field as="select"
+                                name="type"
+                                className="block py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-white dark:bg-[#18181b] dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                <option value="" label="Type" />
+                                <option value="Living Room">Living Room</option>
+                                <option value="Bedroom">Bedroom</option>
+                                <option value="Dining Room">Dining Room</option>
+                                <option value="Home Office">Home Office</option>
+                                <option value="Miscellaneous">Miscellaneous</option>
+                                <option value="Structural">Structural</option>
+                            </Field>
+                            <ErrorMessage
+                                name="type"
+                                render={(msg) => <FormikCustomError children={msg} />}
                             />
                             <Button
                                 type="submit"
