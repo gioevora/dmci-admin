@@ -1,5 +1,5 @@
 import React from "react";
-import PropertyDetails from "./property-deets-card";
+import PropertyDetailsTabs from "./property-tabs";
 
 export default async function ProductPage({
     params,
@@ -8,5 +8,9 @@ export default async function ProductPage({
 }) {
     const { property_id } = await params;
 
-    return <PropertyDetails property_id={property_id} />;
+    return (
+        <div>
+            <PropertyDetailsTabs property_id={property_id} />
+        </div>
+    );
 }

@@ -8,7 +8,7 @@ import type { Property } from '@/app/utils/types';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link, Spinner } from '@nextui-org/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -37,7 +37,7 @@ const fetchWithToken = async (url: string) => {
 
 export default function Property() {
     const router = useRouter();
-    const [loadingId, setLoadingId] = useState<string | null>(null); // Track the ID of the row being updated
+    const [loadingId, setLoadingId] = useState<string | null>(null);
     const { data, error } = useSWR<{ code: number; message: string; records: Property[] }>(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`,
         fetchWithToken
@@ -109,24 +109,22 @@ export default function Property() {
                     {data.published === 0 ? (
                         <Button
                             color="primary"
-                            onClick={() => handlePublishProperty(data.id)}
+                            onPress={() => handlePublishProperty(data.id)}
                             size="sm"
-                            className="min-w-28 w-full"
-                            isLoading={loadingId === data.id}
+                            className="min-w-24 w-full"
                             isDisabled={loadingId === data.id}
                         >
-                            Publish
+                            {loadingId === data.id ? <Spinner color="current" size="sm" /> : "Publish"}
                         </Button>
                     ) : (
                         <Button
                             color="warning"
-                            onClick={() => handleUnpublishProperty(data.id)}
+                            onPress={() => handleUnpublishProperty(data.id)}
                             size="sm"
-                            className="min-w-28 w-full"
-                            isLoading={loadingId === data.id}
+                            className="min-w-24 w-full"
                             isDisabled={loadingId === data.id}
                         >
-                            Unpublish
+                            {loadingId === data.id ? <Spinner color="current" size="sm" /> : "Unpublish"}
                         </Button>
                     )}
                 </div>

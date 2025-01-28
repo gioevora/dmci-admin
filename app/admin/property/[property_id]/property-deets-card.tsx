@@ -86,7 +86,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property_id }) => {
             })
             toast.success("Description updated successfully!")
             setIsEditing(false)
-            mutate() // Refresh the data
+            mutate()
         } catch (error) {
             console.error("Error updating description:", error)
             toast.error("Failed to update description.")
@@ -96,12 +96,14 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property_id }) => {
     }
 
     return (
-        <div className="p-4">
-            <Card className="max-w-4xl mx-auto">
+        <div>
+            <Card>
                 <CardHeader className="flex justify-between items-center">
                     <Link color="primary" href="/admin/property" className="flex items-center"><ChevronLeft size={20} /> Back</Link>
                     <h1 className="text-2xl font-bold">{property.name}</h1>
-                    <Chip color={property.status === "For Rent" ? "primary" : "success"}>{property.status}</Chip>
+                    <div>
+                        <Chip color={property.status === "For Rent" ? "primary" : "success"}>{property.status}</Chip>
+                    </div>
                 </CardHeader>
                 <Divider />
                 <CardBody>

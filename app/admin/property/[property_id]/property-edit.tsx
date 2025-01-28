@@ -1,33 +1,20 @@
 "use client";
-import {
-    Button,
-    Card,
-    CardBody,
-    Divider,
-    Input,
-    Select,
-    SelectItem,
-} from "@nextui-org/react";
+import { Button, Card, CardBody, Divider, Input, Select, SelectItem, } from "@nextui-org/react";
 import React, { useState } from "react";
 import { FaArrowRightLong, } from "react-icons/fa6";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { Images } from "lucide-react";
+import useSWR from "swr";
 
-import {
-    agents,
-    agreementMessages,
-    status,
-    parking,
-    type,
-    furnished,
-    rent,
-    sale,
-    payment,
-    amenities,
-} from "@/app/admin/property/utils/option";
+import type { PropertyRecord } from '@/app/utils/types';
+import { fetchWithToken, agents, agreementMessages, status, parking, type, furnished, rent, sale, payment, amenities, } from "@/app/admin/property/utils/option";
+
+
+interface PropertyEditProps {
+    property_id: string
+}
 
 const validationSchema = Yup.object({
     // Personal Information
@@ -67,7 +54,11 @@ const validationSchema = Yup.object({
     images: Yup.mixed().required('Image is required'),
 });
 
-const NewPropertyPage = () => {
+const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
+    //    DATA FETCHING
+    const { data, error, isLoading, mutate } = useSWR<PropertyRecord>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${property_id}`, fetchWithToken,)
+    const property = data?.record;
+
     const [selectedStatus, setSelectedStatus] = useState("");
     const [selectedtPayment, setSelectedPayment] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -75,39 +66,51 @@ const NewPropertyPage = () => {
 
     const formik = useFormik({
         initialValues: {
-            first_name: "",
-            last_name: "",
-            email: "",
-            phone: "",
-            type: "",
+            id: property_id,
+            _method: 'PUT',
 
-            name: "",
-            location: "",
-            price: "",
-            area: "",
-            parking: "",
-            description: "N/A",
+            // Personal Information
+            first_name: property?.owner.first_name || "",
+            last_name: property?.owner.last_name || "",
+            email: property?.owner.email || "",
+            phone: property?.owner.phone || "",
+            type: property?.type || "",
 
-            unit_number: "",
-            unit_type: "",
-            unit_status: "",
+            // Property Information
+            name: property?.name || "",
+            location: property?.location || "",
+            price: property?.price || "",
+            area: property?.area || "",
+            parking: property?.parking || false,
+            description: property?.description || "N/A",
 
-            title: "N/A",
-            payment: "N/A",
-            turnover: "N/A",
-            terms: "N/A",
+            // Unit Details
+            unit_number: property?.unit_number || "",
+            unit_type: property?.unit_type || "",
+            unit_status: property?.unit_status || "",
 
+            // Additional Information
+            title: property?.title || "N/A",
+            payment: property?.payment || "N/A",
+            turnover: property?.turnover || "N/A",
+            terms: property?.terms || "N/A",
 
-            category: "",
-            badge: "",
-            published: "1",
+            // Category & Badge Information
+            category: property?.category || "",
+            badge: property?.badge || "",
+            published: property?.published ? "1" : "0", // Assuming `published` is a boolean
 
-            status: "",
-            sale_type: "N/A",
-            amenities: [] as string[],
-            images: "",
+            // Property Status and Sale Type
+            status: property?.status || "",
+            sale_type: property?.sale_type || "N/A",
+
+            // Amenities and Images
+            amenities: Array.isArray(property?.amenities)
+                ? property?.amenities
+                : JSON.parse(property?.amenities || "[]"),
+            images: property?.images || [],// If images are an array, you may need to handle this differently
         },
-        validationSchema,
+        // validationSchema,
 
         onSubmit: async (values, { resetForm }) => {
             setLoading(true);
@@ -178,112 +181,6 @@ const NewPropertyPage = () => {
             <form onSubmit={formik.handleSubmit}>
                 <Card className="w-full">
                     <CardBody>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 md:px-6">
-                            <div className="col-span-2 py-6">
-                                <h1 className="text-2xl  font-bold underline">
-                                    Personal Information
-                                </h1>
-                            </div>
-                            <div className="col-span-2 md:col-span-1">
-                                <Input
-                                    label="First Name"
-                                    name="first_name"
-                                    placeholder="eg. Juan"
-                                    type="text"
-                                    value={formik.values.first_name}
-                                    onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
-                                />
-                                {formik.touched.first_name && formik.errors.first_name && (
-                                    <p className="text-red-500 text-sm">
-                                        {formik.errors.first_name}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="col-span-2 md:col-span-1">
-                                <Input
-                                    label="Last Name"
-                                    name="last_name"
-                                    placeholder="eg. Dela Cruz"
-                                    type="text"
-                                    value={formik.values.last_name}
-                                    onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
-                                />
-                                {formik.touched.last_name && formik.errors.last_name && (
-                                    <p className="text-red-500 text-sm">
-                                        {formik.errors.last_name}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="col-span-2 md:col-span-1">
-                                <Input
-                                    label="Email"
-                                    name="email"
-                                    placeholder="eg. juandelacruz@gmail.com"
-                                    type="email"
-                                    value={formik.values.email}
-                                    onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
-                                />
-                                {formik.touched.email && formik.errors.email && (
-                                    <p className="text-red-500 text-sm">
-                                        {formik.errors.email}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="col-span-2 md:col-span-1">
-                                <Input
-                                    label="Phone Number"
-                                    name="phone"
-                                    placeholder="eg. 09924401097"
-                                    type="number"
-                                    value={formik.values.phone}
-                                    onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
-                                />
-                                {formik.touched.phone && formik.errors.phone && (
-                                    <p className="text-red-500 text-sm">
-                                        {formik.errors.phone}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="col-span-2 md:col-span-1">
-                                <Select
-                                    label="Type"
-                                    name="type"
-                                    placeholder="Select Type"
-                                    value={formik.values.type}
-                                    onChange={(e) =>
-                                        formik.setFieldValue("type", e.target.value)
-                                    }
-                                >
-                                    {agents.map((agent) => (
-                                        <SelectItem key={agent.key} value={agent.key}>
-                                            {agent.label}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
-                                {formik.touched.type && formik.errors.type && (
-                                    <p className="text-red-500 text-sm">
-                                        {formik.errors.type}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="col-span-2 md:col-span-1">
-                                {formik.values.type && (
-                                    <>
-                                        <div className="col-span-2 md:col-span-1">
-                                            <p className="text-gray-700 text-sm">
-                                                {agreementMessages[formik.values.type]}
-                                            </p>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-6 md:px-6">
                             <div className="col-span-3 py-6">
                                 <h1 className="text-2xl  font-bold underline">
@@ -587,92 +484,6 @@ const NewPropertyPage = () => {
                                 </>
                             )}
                         </div>
-
-                        <Divider className="my-4" />
-
-                        <div className="md:px-6">
-                            <h1 className="font-bold ">
-                                Features and Amenties
-                            </h1>
-
-                            <div className="py-8">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                    {amenities.map((amenitiesItem) => (
-                                        <div key={amenitiesItem.key} className="flex items-center">
-                                            <input
-                                                checked={formik.values.amenities.includes(amenitiesItem.key)}
-                                                className="w-4 h-4"
-                                                id={amenitiesItem.key}
-                                                type="checkbox"
-                                                value={amenitiesItem.key}
-                                                name="amenities"
-                                                onChange={(e) => {
-                                                    if (e.target.checked) {
-                                                        formik.setFieldValue("amenities", [
-                                                            ...formik.values.amenities,
-                                                            amenitiesItem.key,
-                                                        ]);
-                                                    } else {
-                                                        formik.setFieldValue(
-                                                            "amenities",
-                                                            formik.values.amenities.filter(
-                                                                (key) => key !== amenitiesItem.key
-                                                            )
-                                                        );
-                                                    }
-                                                }}
-                                            />
-                                            <label
-                                                className="ms-2 text-md font-medium text-default-500"
-                                                htmlFor={amenitiesItem.key}
-                                            >
-                                                {amenitiesItem.label}
-                                            </label>
-                                        </div>
-                                    ))}
-
-                                    {formik.errors.amenities && formik.touched.amenities && (
-                                        <div className="text-red-500 text-sm">{formik.errors.amenities}</div>
-                                    )}
-                                </div>
-                            </div>
-
-
-                            <h1 className="font-bold ">Property Image</h1>
-                            <div className="col-span-3 md:col-span-1 py-8">
-                                <label htmlFor="images" className="block text-sm font-medium text-gray-700">
-                                    Upload Image
-                                </label>
-                                <Input
-                                    id="images"
-                                    name="images"
-                                    type="file"
-                                    multiple
-                                    accept="image/*"
-                                    className="w-full col-span-1 mt-1 block"
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                        const files = event.currentTarget.files;
-
-                                        if (files) {
-                                            formik.setFieldValue("images", files);
-                                        }
-                                    }}
-                                />
-                                {formik.errors.images && formik.touched.images && (
-                                    <div className="text-red-500 text-sm">{formik.errors.images}</div>
-                                )}
-                            </div>
-
-                            <Button
-                                className=" text-white font-bold uppercase mb-4"
-                                endContent={<FaArrowRightLong />}
-                                size="lg"
-                                type="submit"
-                                isLoading={loading}
-                            >
-                                {loading ? "Sending Property..." : "Submit Property"}
-                            </Button>
-                        </div>
                     </CardBody>
                 </Card>
             </form>
@@ -680,4 +491,4 @@ const NewPropertyPage = () => {
     );
 };
 
-export default NewPropertyPage;
+export default PropertyEdit;

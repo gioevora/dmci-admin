@@ -57,6 +57,39 @@ export interface Property {
     update_at: string;
     owner: Owner;
     action: string;
+    category: string;
+}
+
+export interface PropertyRecord {
+    record: {
+    id: string;
+    owner_id: string;
+    name: string;
+    location: string;
+    price: string;
+    area: string;
+    parking: boolean;
+    description: string;
+    unit_number: string;
+    unit_type: string;
+    unit_status: string;
+    sale_type: string;
+    title: string;
+    payment: string;
+    turnover: string;
+    terms: string;
+    status: string;
+    badge: string;
+    published: number;
+    amenities: string;
+    images: string;
+    create_at: string;
+    update_at: string;
+    owner: Owner;
+    action: string;
+    category: string;
+    type: string;
+    }
 }
 
 export interface Owner {
