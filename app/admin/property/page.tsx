@@ -1,6 +1,6 @@
 'use client';
 
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -9,7 +9,8 @@ import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 import { Button, Link } from '@nextui-org/react';
-
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -34,27 +35,9 @@ const fetchWithToken = async (url: string) => {
     return response.json();
 };
 
-const columns: Column<Property>[] = [
-    { key: 'name', label: 'Name' },
-    { key: 'location', label: 'Location' },
-    { key: 'price', label: 'Min Price', render: (property) => `₱${parseFloat(property.price).toFixed(2)}` },
-    {
-        key: 'id', label: '', render: (property) => (
-            <Link href={`/admin/property/${property.id}`} className="w-full">
-                <Button size="sm" className="w-full">
-                    Details
-                </Button >
-            </Link>
-        ),
-    },
-    // { key: 'logo', label: 'Logo', render: (property) => <img src={property.logo} alt={property.name} className="h-12 w-12 object-contain" /> },
-    // { key: 'min_price', label: 'Min Price', render: (property) => `₱${parseFloat(property.min_price).toFixed(2)}` },
-    // { key: 'max_price', label: 'Max Price', render: (property) => `₱${parseFloat(property.max_price).toFixed(2)}` },
-];
-
-
 export default function Property() {
     const router = useRouter();
+    const [loadingId, setLoadingId] = useState<string | null>(null); // Track the ID of the row being updated
     const { data, error } = useSWR<{ code: number; message: string; records: Property[] }>(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`,
         fetchWithToken
@@ -80,6 +63,77 @@ export default function Property() {
         return <LoadingDot />;
     }
 
+    const updatePropertyStatus = async (id: string, published: '0' | '1') => {
+        setLoadingId(id);
+        try {
+            const token = sessionStorage.getItem('token');
+            await axios.post(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/set-status`,
+                { id, published },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            toast.success('Operation Success!');
+            mutate(`${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`);
+        } catch (error) {
+            toast.error('Something went wrong');
+        } finally {
+            setLoadingId(null);
+        }
+    };
+
+    const handlePublishProperty = (id: string) => updatePropertyStatus(id, '1');
+    const handleUnpublishProperty = (id: string) => updatePropertyStatus(id, '0');
+
+    const columns: Column<Property>[] = [
+        { key: 'name', label: 'Name' },
+        { key: 'location', label: 'Location' },
+        {
+            key: 'price', label: 'Min Price', render: (property) => `₱${parseFloat(property.price).toFixed(2)}`
+        },
+        {
+            key: 'action',
+            label: 'Action',
+            render: (data) => (
+                <div className="flex gap-2">
+                    <Link href={`/admin/property/${data.id}`} className="w-full">
+                        <Button size="sm" className="w-full">
+                            Details
+                        </Button>
+                    </Link>
+                    {data.published === 0 ? (
+                        <Button
+                            color="primary"
+                            onClick={() => handlePublishProperty(data.id)}
+                            size="sm"
+                            className="min-w-28 w-full"
+                            isLoading={loadingId === data.id}
+                            isDisabled={loadingId === data.id}
+                        >
+                            Publish
+                        </Button>
+                    ) : (
+                        <Button
+                            color="warning"
+                            onClick={() => handleUnpublishProperty(data.id)}
+                            size="sm"
+                            className="min-w-28 w-full"
+                            isLoading={loadingId === data.id}
+                            isDisabled={loadingId === data.id}
+                        >
+                            Unpublish
+                        </Button>
+                    )}
+                </div>
+            ),
+        }
+    ];
+
     return (
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
@@ -92,8 +146,6 @@ export default function Property() {
                 data={properties}
                 columns={columns}
                 itemsPerPage={5}
-                onAction={handleAction}
-                actionLabel="Edit"
             />
         </main>
     );

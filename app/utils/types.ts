@@ -50,12 +50,13 @@ export interface Property {
     terms: string;
     status: string;
     badge: string;
-    published: boolean;
+    published: number;
     amenities: string;
     images: string;
     create_at: string;
     update_at: string;
     owner: Owner;
+    action: string;
 }
 
 export interface Owner {
