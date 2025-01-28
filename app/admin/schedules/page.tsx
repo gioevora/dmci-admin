@@ -4,10 +4,10 @@ import useSWR, { mutate } from 'swr';
 import { useEffect, useState } from 'react';
 import { DataTable } from '@/components/data-table';
 import { Column, Schedule } from '@/app/utils/types';
-import HamsterWheel from '@/components/loading-hamster-wheel';
 import { Button } from '@nextui-org/react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import LoadingDot from '@/components/loading-dot';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -156,7 +156,7 @@ export default function Home() {
     }
 
     if (!data) {
-        return <HamsterWheel />;
+        return <LoadingDot />;
     }
 
     return (

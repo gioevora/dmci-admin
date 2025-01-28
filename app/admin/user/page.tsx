@@ -7,7 +7,6 @@ import AddUserModal from './add-user-modal';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-import HamsterWheel from '@/components/loading-hamster-wheel';
 import EditUserModal from './edit-user-modal';
 
 type User = {
@@ -80,7 +79,7 @@ export default function Home() {
     }
 
     if (!data) {
-        return <HamsterWheel />;
+        return <LoadingDot />;
     }
 
     return (

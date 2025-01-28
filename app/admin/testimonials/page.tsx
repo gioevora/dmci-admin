@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 
 import { DataTable } from '@/components/data-table';
 import { Column, Testimonial } from '@/app/utils/types';
-import HamsterWheel from '@/components/loading-hamster-wheel';
 import AddTestimonialModal from './add-testimonial-modal';
 import DeleteTestimonial from './delete-testimonial-modal';
 import EditTestimonialModal from './edit-testimonial-modal';
+import LoadingDot from '@/components/loading-dot';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -84,7 +84,7 @@ export default function TestimonialsPage() {
     }
 
     if (!data) {
-        return <HamsterWheel />;
+        return <LoadingDot />;
     }
 
     return (

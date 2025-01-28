@@ -6,11 +6,11 @@ import Link from 'next/link'
 
 import { DataTable } from '@/components/data-table';
 import { Column, Career } from '@/app/utils/types';
-import HamsterWheel from '@/components/loading-hamster-wheel';
 import AddCareerModal from './add-career-modal';
 import EditCertificateModal from './edit-career-modal';
 import DeleteModal from './delete-career-modal';
 import { Button } from '@nextui-org/react';
+import LoadingDot from '@/components/loading-dot';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -104,7 +104,7 @@ export default function CertificatesPage() {
     }
 
     if (!data) {
-        return <HamsterWheel />;
+        return <LoadingDot />;
     }
 
     return (

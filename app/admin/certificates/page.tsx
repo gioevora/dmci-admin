@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 
 import { DataTable } from '@/components/data-table';
 import { Column, Certificate } from '@/app/utils/types';
-import HamsterWheel from '@/components/loading-hamster-wheel';
 import AddTestimonialModal from './add-certificate-modal';
 import DeleteCertificateModal from './delete-certificate-modal';
 import EditCertificateModal from './edit-certificate-modal';
+import LoadingDot from '@/components/loading-dot';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -94,7 +94,7 @@ export default function CertificatesPage() {
     }
 
     if (!data) {
-        return <HamsterWheel />;
+        return <LoadingDot />;
     }
 
     return (
