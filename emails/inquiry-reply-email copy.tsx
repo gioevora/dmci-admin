@@ -13,17 +13,11 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-interface EmailProps {
-  first_name: string;
-  last_name: string;
-  body: string;
-}
-
 export const Email = ({
   first_name = "Fortune Matthew",
   last_name = "Tamares",
   body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In maximus enim nec mauris elementum mollis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Suspendisse lobortis congue magna, id rhoncus ipsum ultricies at. Maecenas porttitor faucibus velit, quis rutrum eros pellentesque ac.",
-}: EmailProps) => (
+}: any) => (
   <Html>
     <Head />
     <Preview>New Inquiry Received - Abic Realty & Consultancy Corporation</Preview>
@@ -106,6 +100,19 @@ const paragraph = {
 
 const anchor = {
   color: "#556cd6",
+};
+
+const button = {
+  backgroundColor: "#656ee8",
+  borderRadius: "5px",
+  color: "#fff",
+  fontSize: "16px",
+  fontWeight: "bold",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "block",
+  width: "100%",
+  padding: "10px",
 };
 
 const footer = {
