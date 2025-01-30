@@ -9,7 +9,7 @@ import useSWR from "swr";
 
 
 import type { PropertyRecord } from '@/app/utils/types';
-import { fetchWithToken, status, parking, type, furnished, amenities, agents, } from "@/app/admin/property/utils/option";
+import { fetchWithToken, status, type, furnished, amenities, agents, } from "@/app/admin/property/utils/option";
 import CustomInput from "@/components/input";
 import FormikCustomError from "@/components/formik-custom-error";
 
@@ -59,6 +59,7 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
     console.log(property)
     const parseAmenities = JSON.parse(property?.amenities || "[]")
     const [selectedAmenities, setSelectedAmenities] = React.useState(parseAmenities);
+    const [isSelected, setIsSelected] = React.useState(property?.parking);
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
@@ -68,9 +69,9 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                 if (key === "images") {
                     values.images.forEach((file: File) => formData.append("images[]", file));
                 } else if (key === "amenities") {
-                    values.amenities.forEach((amenity: string) => formData.append("amenities[]", amenity)); // Fix here
+                    values.amenities.forEach((amenity: string) => formData.append("amenities[]", amenity));
                 } else {
-                    formData.append(key, values[key]);
+                    formData.append(key, key === "parking" ? String(values[key] ? 1 : 0) : values[key]);
                 }
             });
 
@@ -85,12 +86,11 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
             toast.success("Operation Success!");
             mutate();
         } catch (error) {
-            toast.error("Failed to update description.");
+            toast.error("Something went wrong.");
         } finally {
             setSubmitting(false);
         }
     };
-
 
     return (
         <div className="w-full mt-8">
@@ -113,7 +113,7 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                             location: property?.location || "",
                             price: property?.price || "",
                             area: property?.area || "",
-                            parking: property?.parking || "",
+                            parking: Boolean(property?.parking),
                             description: property?.description || "N/A",
 
                             // Unit Details
@@ -250,17 +250,17 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                     type="text"
                                     error={touched.unit_number ? errors.unit_number : undefined}
                                 />
-                                <Field as={Select}
-                                    label="Parking"
-                                    name="parking"
-                                    variant="underlined"
-                                    defaultSelectedKeys={property?.parking ? [String(property.parking)] : []}
-                                >
-                                    {parking.map((item) => (
-                                        <SelectItem key={item.key} value={String(item.key)}>{item.label}</SelectItem>
-                                    ))}
+                                <Field name="parking">
+                                    {({ field }: { field: any }) => (
+                                        <Checkbox
+                                            {...field}
+                                            isSelected={field.value}
+                                            onValueChange={(val) => field.onChange({ target: { name: "parking", value: val } })}
+                                        >
+                                            With Parking
+                                        </Checkbox>
+                                    )}
                                 </Field>
-
                                 <ErrorMessage
                                     name="parking"
                                     render={(msg) => <FormikCustomError children={msg} />}

@@ -136,7 +136,7 @@ export default function Property() {
         <main className="container mx-auto p-4">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">Property Table</h1>
-                <Button color="primary" onPress={() => router.push('/admin/property/new-property')}>
+                <Button color="primary" onClick={() => router.push('/admin/property/new-property')}>
                     Add new property
                 </Button>
             </div>
