@@ -13,7 +13,7 @@ import { FaArrowRightLong, } from "react-icons/fa6";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Images } from "lucide-react";
 
 import {
@@ -174,7 +174,6 @@ const NewPropertyPage = () => {
 
     return (
         <div className="w-full mt-8">
-            <Toaster position="top-center" reverseOrder={false} />
             <form onSubmit={formik.handleSubmit}>
                 <Card className="w-full">
                     <CardBody>

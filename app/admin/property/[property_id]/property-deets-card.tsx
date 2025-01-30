@@ -3,7 +3,7 @@
 import useSWR from "swr"
 import type React from "react"
 import { useState } from "react"
-import { Button, Card, CardBody, CardHeader, Chip, Divider, Image, Textarea } from "@heroui/react"
+import { Button, Card, CardBody, CardHeader, Chip, Divider, Textarea } from "@heroui/react"
 import { Formik, Form, Field, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { ChevronLeft, Pen } from "lucide-react"
@@ -13,6 +13,7 @@ import Link from "next/link"
 
 import LoadingDot from "@/components/loading-dot"
 import FormikCustomError from "@/components/formik-custom-error"
+import PropertyImageSlider from "./property-image-slider"
 
 const validationSchema = Yup.object({
     description: Yup.string().required("Description is required"),
@@ -88,12 +89,13 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property_id }) => {
             setIsEditing(false)
             mutate()
         } catch (error) {
-            console.error("Error updating description:", error)
             toast.error("Failed to update description.")
         } finally {
             setSubmitting(false)
         }
     }
+
+
 
     return (
         <div>
@@ -108,13 +110,16 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property_id }) => {
                 <Divider />
                 <CardBody>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <Image
-                                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/properties/images/${images[0]}`}
-                                alt={property.name}
-                                className="w-full h-64 object-cover rounded-lg"
-                            />
-                        </div>
+                        {/* {images.map((image: string, index: number) => (
+                            <div key={index} className="relative">
+                                <Image
+                                    src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/properties/images/${image}`}
+                                    alt={`Property image ${index + 1}`}
+                                    className="w-full h-64 object-cover rounded-lg"
+                                />
+                            </div>
+                        ))} */}
+                        <PropertyImageSlider images={images} />
                         <div className="space-y-4">
                             <p className="text-xl font-semibold">{formatPrice(property.price)} / month</p>
                             <p>{property.location}</p>
