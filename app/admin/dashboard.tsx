@@ -15,7 +15,32 @@ import {
     Pie,
     Cell,
 } from "recharts"
-import { Building, Calendar, HelpingHand, Newspaper, Star, User } from "lucide-react"
+import { Box, Building, Calendar, HelpingHand, Newspaper, Star, User } from "lucide-react"
+import useSWR from "swr";
+import { FaHelmetSafety } from "react-icons/fa6"
+
+const fetchWithToken = async (url: string) => {
+    const token = sessionStorage.getItem("token")
+
+    const headers: HeadersInit = {
+        "Content-Type": "application/json",
+    }
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+    }
+
+    const response = await fetch(url, {
+        method: "GET",
+        headers,
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch data")
+    }
+
+    return response.json()
+}
 
 const barChartData = [
     { name: "Articles", value: 20 },
@@ -35,6 +60,7 @@ const pieChartData = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
 
 const Dashboard = () => {
+    const { data, error, isLoading } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard/get-counts`, fetchWithToken)
     return (
         <div className="min-h-screen">
             <div className="p-4">
@@ -43,12 +69,12 @@ const Dashboard = () => {
 
                     {/* Summary Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                        <SummaryCard title="Total Properties" value="1,234" icon={<Building />} />
-                        <SummaryCard title="Active Listings" value="567" icon={<Star />} />
-                        <SummaryCard title="New Inquiries" value="89" icon={<HelpingHand />} />
-                        <SummaryCard title="Scheduled Viewings" value="45" icon={<Calendar />} />
-                        <SummaryCard title="Published Articles" value="78" icon={<Newspaper />} />
-                        <SummaryCard title="Registered Agenet" value="3,210" icon={<User />} />
+                        <SummaryCard title="Total Properties" value={data.records.properties} icon={<Building />} />
+                        <SummaryCard title="New Inquiries" value={data.records.inquiries} icon={<HelpingHand />} />
+                        <SummaryCard title="Published Articles" value={data.records.articles} icon={<Newspaper />} />
+                        <SummaryCard title="Registered Agent" value="6" icon={<User />} />
+                        <SummaryCard title="Careers" value={data.records.careers} icon={<FaHelmetSafety />} />
+                        <SummaryCard title="Items" value={data.records.items} icon={<Box />} />
                     </div>
 
                     {/* Charts */}
