@@ -3,7 +3,7 @@
 import useSWR from "swr"
 import type React from "react"
 import { useState } from "react"
-import { Button, Card, CardBody, CardHeader, Chip, Divider, Image, Textarea } from "@nextui-org/react"
+import { Button, Card, CardBody, CardHeader, Chip, Divider, Image, Textarea } from "@heroui/react"
 import { Formik, Form, Field, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { ChevronLeft, Pen } from "lucide-react"

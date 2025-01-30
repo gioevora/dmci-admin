@@ -9,7 +9,7 @@ import { Column, Career } from '@/app/utils/types';
 import AddCareerModal from './add-career-modal';
 import EditCertificateModal from './edit-career-modal';
 import DeleteModal from './delete-career-modal';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import LoadingDot from '@/components/loading-dot';
 
 const fetchWithToken = async (url: string) => {

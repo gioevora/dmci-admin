@@ -7,7 +7,7 @@ import {
     Input,
     Select,
     SelectItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import React, { useState } from "react";
 import { FaArrowRightLong, } from "react-icons/fa6";
 import { useFormik } from "formik";

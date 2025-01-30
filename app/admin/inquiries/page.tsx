@@ -8,7 +8,7 @@ import type { Inquiry } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 // import AddModal from './add-inquiry-modal';
 import EditModal from './edit-inquiry-modal';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 // import DeleteModal from './delete-inquiry-modal';
 
 const fetchWithToken = async (url: string) => {

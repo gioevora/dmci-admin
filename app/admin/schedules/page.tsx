@@ -4,7 +4,7 @@ import useSWR, { mutate } from 'swr';
 import { useEffect, useState } from 'react';
 import { DataTable } from '@/components/data-table';
 import { Column, Schedule } from '@/app/utils/types';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import LoadingDot from '@/components/loading-dot';

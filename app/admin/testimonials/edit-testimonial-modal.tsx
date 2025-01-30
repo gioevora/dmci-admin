@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from '@nextui-org/react';
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from "@heroui/react";
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, ModalFooter } from '@nextui-org/react';
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, ModalFooter } from "@heroui/react";
 import axios from 'axios';
 import type { Partner } from '@/app/utils/types';
 

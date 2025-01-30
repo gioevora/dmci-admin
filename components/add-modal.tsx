@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal as FortuneUIModal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Button } from "@nextui-org/react"
+import { Modal as FortuneUIModal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Button } from "@heroui/react"
 
 interface ModalProps {
     title?: string

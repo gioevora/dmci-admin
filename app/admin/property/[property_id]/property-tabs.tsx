@@ -1,6 +1,6 @@
 "use client";
 
-import { Tabs, Tab, Card, CardBody } from "@nextui-org/react"
+import { Tabs, Tab, Card, CardBody } from "@heroui/react"
 import PropertyDetails from "./property-deets-card";
 import PropertyEdit from "./property-edit";
 

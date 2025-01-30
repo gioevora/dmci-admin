@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, CardBody, Select, SelectItem, } from "@nextui-org/react";
+import { Button, Card, CardBody, Checkbox, CheckboxGroup, Divider, Select, SelectItem, } from "@heroui/react";
 import React, { useState } from "react";
 import { Field, Form, Formik, } from "formik";
 import * as Yup from "yup";
@@ -8,7 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import useSWR from "swr";
 
 import type { PropertyRecord } from '@/app/utils/types';
-import { fetchWithToken, status, parking, type, furnished, } from "@/app/admin/property/utils/option";
+import { fetchWithToken, status, parking, type, furnished, amenities, } from "@/app/admin/property/utils/option";
 import CustomInput from "@/components/input";
 
 
@@ -41,11 +41,14 @@ const validationSchema = Yup.object({
 const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
     const { data, error, isLoading, mutate } = useSWR<PropertyRecord>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${property_id}`, fetchWithToken,)
     const property = data?.record;
+    const parseAmenities = JSON.parse(property?.amenities || "[]")
+    const [selectedAmenities, setSelectedAmenities] = React.useState(parseAmenities);
 
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
+            console.log(values)
             const token = sessionStorage.getItem("token")
             await axios.patch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`, values, {
                 headers: {
@@ -101,6 +104,8 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
 
                             status: property?.status || "",
                             sale_type: property?.sale_type || "N/A",
+
+                            amenities: selectedAmenities,
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -182,6 +187,25 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                         </SelectItem>
                                     ))}
                                 </Field>
+                                <Divider />
+                                Features and Amenties
+                                <CheckboxGroup
+                                    color="primary"
+                                    orientation="horizontal"
+                                    value={selectedAmenities}
+                                    onValueChange={(values) => {
+                                        setSelectedAmenities(values);
+                                        setFieldValue("amenities", values);
+                                    }}
+                                >
+                                    {amenities.map((amenitiesItem) => (
+                                        <Checkbox key={amenitiesItem.key} value={amenitiesItem.key}>
+                                            {amenitiesItem.label}
+                                        </Checkbox>
+                                    ))}
+                                </CheckboxGroup>
+                                <p className="text-default-500 text-small">Selected: {selectedAmenities.join(", ")}</p>
+
                                 <Button
                                     type="submit"
                                     color="primary"

@@ -11,7 +11,7 @@ import {
   CardFooter,
   Input,
   Spacer,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { setCookie } from 'nookies';
 
 export default function LoginPage() {

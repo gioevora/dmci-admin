@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
 import { Modal } from '@/components/add-modal';
 import CustomInput from '@/components/input';
-import { Textarea } from '@nextui-org/input';
+import { Textarea } from "@heroui/input";
 import { AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 

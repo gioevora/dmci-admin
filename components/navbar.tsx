@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeSwitch } from './theme-switch';
 import { Box, Building, Calendar, Handshake, HardHat, HelpingHand, LogOut, Newspaper, Star, User } from 'lucide-react';
-import { Link } from '@nextui-org/react';
+import { Link } from "@heroui/react";
 import { setCookie } from 'nookies';
 import { FaCertificate } from 'react-icons/fa6';
 

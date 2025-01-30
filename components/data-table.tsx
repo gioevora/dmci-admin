@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { SearchBar } from './search-bar';
 import { Pagination } from './pagination';
 import { DataTableProps, Column } from '@/app/utils/types';
-import { Button } from '@nextui-org/button';
+import { Button } from "@heroui/button";
 import { Space } from 'lucide-react';
 
 export function DataTable<T extends Record<string, any>>({

@@ -8,7 +8,7 @@ import type { Property } from '@/app/utils/types';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-import { Button, Link, Spinner } from '@nextui-org/react';
+import { Button, Link, Spinner } from "@heroui/react";
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
