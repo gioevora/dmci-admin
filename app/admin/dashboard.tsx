@@ -18,6 +18,7 @@ import {
 import { Box, Building, Calendar, HelpingHand, Newspaper, Star, User } from "lucide-react"
 import useSWR from "swr";
 import { FaHelmetSafety } from "react-icons/fa6"
+import LoadingDot from "@/components/loading-dot"
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem("token")
@@ -61,6 +62,10 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
 
 const Dashboard = () => {
     const { data, error, isLoading } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard/get-counts`, fetchWithToken)
+
+    if (error) return <LoadingDot />;
+    if (isLoading) return <LoadingDot />;
+
     return (
         <div className="min-h-screen">
             <div className="p-4">

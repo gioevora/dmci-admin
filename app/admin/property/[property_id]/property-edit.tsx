@@ -59,7 +59,6 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
     console.log(property)
     const parseAmenities = JSON.parse(property?.amenities || "[]")
     const [selectedAmenities, setSelectedAmenities] = React.useState(parseAmenities);
-    const [isSelected, setIsSelected] = React.useState(property?.parking);
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
