@@ -36,7 +36,7 @@ export default function LoginPage() {
         sessionStorage.setItem('token', token);
         sessionStorage.setItem('id', record.id);
         sessionStorage.setItem('type', record.type);
-        setCookie(null, 'abic-admin-login', 'true', { path: '/' });
+        setCookie(undefined, 'token', token, { path: '/' });
         router.replace('/admin');
       } else {
         alert('Invalid email or password');
