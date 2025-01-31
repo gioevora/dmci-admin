@@ -8,6 +8,7 @@ import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 import EditUserModal from './edit-user-modal';
+import { Card, CardBody } from '@heroui/react';
 
 type User = {
     id: number;
@@ -83,18 +84,28 @@ export default function Home() {
     }
 
     return (
-        <main className="container mx-auto p-4">
+        <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between">
                 <h1 className="text-2xl font-bold mb-4">User Table</h1>
                 <AddUserModal />
             </div>
-            <DataTable<User>
-                data={users}
-                columns={columns}
-                itemsPerPage={5}
-                onAction={handleAction}
-                actionLabel="Edit"
-            />
+
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+                        <DataTable<User>
+                            data={users}
+                            columns={columns}
+                            itemsPerPage={5}
+                            onAction={handleAction}
+                            actionLabel="Edit"
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+
+
             {selectedUser && (
                 <EditUserModal
                     user={selectedUser}
@@ -102,6 +113,6 @@ export default function Home() {
                     onClose={handleCloseModal}
                 />
             )}
-        </main>
+        </section>
     );
 }

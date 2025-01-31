@@ -47,7 +47,7 @@ export function DataTable<T extends Record<string, any>>({
                 <SearchBar onSearch={setSearchTerm} />
             </div>
             <div className="overflow-x-auto">
-                <table className="min-w-full bg-white dark:bg-[#18181b] border border-gray-200 dark:border-gray-700">
+                <table className="min-w-full bg-white dark:bg-[#18181b] border border-gray-200 rounded-lg dark:border-gray-700">
                     <thead>
                         <tr>
                             {columns.map((column) => (
@@ -80,8 +80,8 @@ export function DataTable<T extends Record<string, any>>({
                                         </td>
                                     ))}
                                     {onAction && (
-                                        <td className="px-4 py-2 border-b text-center">
-                                            <div className="flex justify-center items-center space-x-2">
+                                        <td className="px-4 py-2 border-b">
+                                            <div className="flex space-x-2">
                                                 <Button
                                                     color="primary"
                                                     onClick={() => onAction(item)}

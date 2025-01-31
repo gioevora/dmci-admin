@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
+import { Image } from "@heroui/react"
 
 interface PropertyImageProps {
     images: string[]
@@ -47,10 +48,12 @@ const PropertyImageSlider: React.FC<PropertyImageProps> = ({ images }) => {
         <div ref={sliderRef} className="keen-slider">
             {images.map((image, index) => (
                 <div key={index} className="keen-slider__slide number-slide1">
-                    <img
+                    <Image
                         src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/properties/images/${image}`}
                         alt={`Property image ${index + 1}`}
-                        className="w-full h-64 object-cover object-center rounded-lg"
+                        className="w-full object-cover object-center rounded-lg"
+                        height={450}
+                        width={1000}
                     />
                 </div>
             ))}

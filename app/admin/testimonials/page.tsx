@@ -9,6 +9,7 @@ import AddTestimonialModal from './add-testimonial-modal';
 import DeleteTestimonial from './delete-testimonial-modal';
 import EditTestimonialModal from './edit-testimonial-modal';
 import LoadingDot from '@/components/loading-dot';
+import { Card, CardBody } from '@heroui/react';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -88,18 +89,27 @@ export default function TestimonialsPage() {
     }
 
     return (
-        <main className="container mx-auto p-4">
+        <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold">Testimonials Table</h1>
+                <h1 className="text-2xl font-semibold text-violet-800 uppercase">Testimonials</h1>
                 <AddTestimonialModal mutate={mutate} />
             </div>
-            <DataTable<Testimonial>
-                data={testimonials}
-                columns={columns}
-                itemsPerPage={5}
-                onAction={handleAction}
-                onDelete={handleDelete}
-            />
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+                        <DataTable<Testimonial>
+                            data={testimonials}
+                            columns={columns}
+                            itemsPerPage={5}
+                            onAction={handleAction}
+                            onDelete={handleDelete}
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+
+
             {selectedTestimonial && (
                 <EditTestimonialModal
                     testimonial={selectedTestimonial}
@@ -116,6 +126,6 @@ export default function TestimonialsPage() {
                     onClose={handleCloseDeleteModal}
                 />
             )}
-        </main>
+        </section>
     );
 }

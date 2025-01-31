@@ -19,9 +19,12 @@ const DeleteCertificateModal: React.FC<DeleteCertificateModalProps> = ({ certifi
 
         setIsSubmitting(true);
         try {
+
+            const token = sessionStorage.getItem('token');
             await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/certificates/${certificate.id}`, {
                 headers: {
                     Accept: 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             toast.success('Operation successful!');

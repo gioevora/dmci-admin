@@ -10,16 +10,16 @@ interface PropertyDetailsTabsProps {
 
 const PropertyDetailsTabs: React.FC<PropertyDetailsTabsProps> = ({ property_id }) => {
     return (
-        <main className="container mx-auto p-4">
+        <section className="py-12 px-4 md:px-12">
             <Tabs aria-label="Options">
-                <Tab key="details" title="Details">
+                <Tab key="details" title="Property Details">
                     <PropertyDetails property_id={property_id} />
                 </Tab>
-                <Tab key="update" title="Update">
+                <Tab key="update" title="Update Property">
                     <PropertyEdit property_id={property_id} />
                 </Tab>
             </Tabs>
-        </main>
+        </section>
     );
 }
 

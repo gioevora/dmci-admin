@@ -67,73 +67,20 @@ const Dashboard = () => {
     if (isLoading) return <LoadingDot />;
 
     return (
-        <div className="min-h-screen">
-            <div className="p-4">
-                <div className="p-4">
-                    <h1 className="text-2xl font-semibold mb-6 dark:text-white">Dashboard</h1>
-
-                    {/* Summary Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                        <SummaryCard title="Total Properties" value={data.records.properties} icon={<Building />} />
-                        <SummaryCard title="New Inquiries" value={data.records.inquiries} icon={<HelpingHand />} />
-                        <SummaryCard title="Published Articles" value={data.records.articles} icon={<Newspaper />} />
-                        <SummaryCard title="Registered Agent" value="6" icon={<User />} />
-                        <SummaryCard title="Careers" value={data.records.careers} icon={<FaHelmetSafety />} />
-                        <SummaryCard title="Items" value={data.records.items} icon={<Box />} />
-                    </div>
-
-                    {/* Charts */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* <Card className="w-full">
-                            <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                                <h4 className="font-bold text-large">Activity Overview</h4>
-                                <small className="text-default-500">Monthly summary</small>
-                            </CardHeader>
-                            <CardBody className="overflow-visible py-2">
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={barChartData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Bar dataKey="value" fill="#8884d8" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </CardBody>
-                        </Card> */}
-
-                        {/* <Card className="w-full">
-                            <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                                <h4 className="font-bold text-large">Property Status</h4>
-                                <small className="text-default-500">Distribution</small>
-                            </CardHeader>
-                            <CardBody className="overflow-visible py-2">
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                        <Pie
-                                            data={pieChartData}
-                                            cx="50%"
-                                            cy="50%"
-                                            labelLine={false}
-                                            outerRadius={80}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                        >
-                                            {pieChartData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </CardBody>
-                        </Card> */}
-                    </div>
+        <section className="pt-24 px-4 md:px-12">
+            <div className="py-8">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                <h1 className="text-2xl font-semibold text-violet-800 mb-6 uppercase dark:text-white">Dashboard</h1>
+                {/* Summary Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <SummaryCard title="Total Properties" value={data.records.properties} icon={<Building />} />
+                    <SummaryCard title="New Inquiries" value={data.records.inquiries} icon={<HelpingHand />} />
+                    <SummaryCard title="Published Articles" value={data.records.articles} icon={<Newspaper />} />
+                    <SummaryCard title="Registered Agent" value="6" icon={<User />} />
+                    <SummaryCard title="Careers" value={data.records.careers} icon={<FaHelmetSafety />} />
+                    <SummaryCard title="Items" value={data.records.items} icon={<Box />} />
                 </div>
             </div>
-        </div>
+        </section>
     )
 }
 

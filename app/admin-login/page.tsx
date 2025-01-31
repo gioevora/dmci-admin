@@ -3,76 +3,119 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import {
   Card,
   CardBody,
   CardHeader,
   Button,
-  CardFooter,
   Input,
   Spacer,
+  Image,
 } from "@heroui/react";
 import { setCookie } from 'nookies';
 
+const validationSchema = Yup.object({
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  password: Yup.string().required('Password is required'),
+});
+
 export default function LoginPage() {
-  const [email, setEmail] = useState('email@gmail.com');
-  const [password, setPassword] = useState('12345678');
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleLogin = async () => {
-    try {
-      const response = await fetch(`https://abicmanpowerservicecorp.com/api/users/login`, {
+  const formik = useFormik({
+    initialValues: {
+      email: 'email@gmail.com',
+      password: '12345678',
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `https://abicmanpowerservicecorp.com/api/users/login`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(values),
+          }
+        );
 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const { token, record } = await response.json();
-        console.log('Login successful');
-        sessionStorage.setItem('token', token);
-        sessionStorage.setItem('id', record.id);
-        sessionStorage.setItem('type', record.type);
-        setCookie(undefined, 'token', token, { path: '/' });
-        router.replace('/admin');
-      } else {
-        alert('Invalid email or password');
+        if (response.ok) {
+          const { token, record } = await response.json();
+          console.log('Login successful');
+          sessionStorage.setItem('token', token);
+          sessionStorage.setItem('id', record.id);
+          sessionStorage.setItem('type', record.type);
+          setCookie(undefined, 'token', token, { path: '/' });
+          router.replace('/admin');
+        } else {
+          alert('Invalid email or password');
+        }
+      } catch (error) {
+        console.error('Error logging in:', error);
+        alert('Something went wrong. Please try again.');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      alert('Something went wrong. Please try again.');
-    }
-  };
+    },
+  });
 
   return (
-    <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-white p-8 dark:bg-black">
-      <Card className="w-full max-w-[600px] p-8">
-        <CardHeader className="flex justify-start">
-          <h1 className="text-2xl">Admin Login</h1>
+    <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-cover bg-no-repeat bg-white p-8 dark:bg-black"
+      style={{
+        backgroundImage:
+          "url('https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/media/admin-bg.png')",
+      }}
+    >
+      <Card className="w-full max-w-[400px] p-8">
+        <CardHeader className="flex flex-col justify-center">
+          <div className="py-4">
+            <Image
+              alt="HeroUI hero Image"
+              src="https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/media/ABIC+Realty.png"
+              width={150}
+            />
+          </div>
         </CardHeader>
         <CardBody>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-          />
-          <Spacer y={4} />
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-          />
+          <form onSubmit={formik.handleSubmit}>
+            <Input
+              type="email"
+              name="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              placeholder="Enter email"
+              isInvalid={formik.touched.email && Boolean(formik.errors.email)}
+              errorMessage={formik.touched.email && formik.errors.email}
+            />
+            <Spacer y={4} />
+            <Input
+              type="password"
+              name="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              placeholder="Enter password"
+              isInvalid={
+                formik.touched.password && Boolean(formik.errors.password)
+              }
+              errorMessage={formik.touched.password && formik.errors.password}
+            />
+            <Spacer y={4} />
+            <Button
+              className="w-full"
+              color="primary"
+              type="submit"
+              isLoading={loading}
+            >
+              {loading ? 'Logging in...' : 'Login'}
+            </Button>
+          </form>
         </CardBody>
-        <CardFooter className="flex justify-end">
-          <Button color="primary" onPress={handleLogin}>
-            Login
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );

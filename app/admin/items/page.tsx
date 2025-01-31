@@ -9,6 +9,7 @@ import LoadingDot from '@/components/loading-dot';
 import AddPartnerModal from './add-item-modal';
 import EditPartnerModal from './edit-item-modal';
 import DeletePartnerModal from './delete-item-modal';
+import { Card, CardBody } from '@heroui/react';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -98,18 +99,28 @@ export default function Property() {
     }
 
     return (
-        <main className="container mx-auto p-4">
+        <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">Item Table</h1>
+                <h1 className="text-2xl font-semibold text-violet-800 mb-4 uppercase">Items</h1>
                 <AddPartnerModal mutate={mutate} />
             </div>
-            <DataTable<Item>
-                data={items}
-                columns={columns}
-                itemsPerPage={5}
-                onAction={handleAction}
-                onDelete={handleDelete} // Pass the handleDelete function
-            />
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+
+                        <DataTable<Item>
+                            data={items}
+                            columns={columns}
+                            itemsPerPage={5}
+                            onAction={handleAction}
+                            onDelete={handleDelete}
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+
+
             {selectedItem && (
                 <EditPartnerModal
                     item={selectedItem}
@@ -126,6 +137,6 @@ export default function Property() {
                     onClose={handleCloseDeleteModal}
                 />
             )}
-        </main>
+        </section>
     );
 }
