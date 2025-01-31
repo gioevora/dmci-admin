@@ -4,7 +4,7 @@ import useSWR, { mutate } from 'swr';
 import { useEffect, useState } from 'react';
 import { DataTable } from '@/components/data-table';
 import { Column, Schedule } from '@/app/utils/types';
-import { Button } from "@heroui/react";
+import { Button, Card, CardBody } from "@heroui/react";
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import LoadingDot from '@/components/loading-dot';
@@ -160,11 +160,20 @@ export default function Home() {
     }
 
     return (
-        <main className="container mx-auto p-4">
+        <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">Schedule Table</h1>
+                <h1 className="text-2xl font-semibold text-violet-800 mb-4 uppercase">Schedule Table</h1>
             </div>
-            <DataTable<Schedule> data={users} columns={columns} itemsPerPage={5} />
-        </main>
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+                    <DataTable<Schedule> data={users} columns={columns} itemsPerPage={5} />
+                    </CardBody>
+                </Card>
+            </div>
+
+          
+        </section>
     );
 }

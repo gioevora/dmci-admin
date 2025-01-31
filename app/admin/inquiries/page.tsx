@@ -8,7 +8,7 @@ import type { Inquiry } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 // import AddModal from './add-inquiry-modal';
 import EditModal from './edit-inquiry-modal';
-import { Button } from "@heroui/react";
+import { Button, Card, CardBody } from "@heroui/react";
 // import DeleteModal from './delete-inquiry-modal';
 
 const fetchWithToken = async (url: string) => {
@@ -124,18 +124,28 @@ export default function Property() {
     }
 
     return (
-        <main className="container mx-auto p-4">
+        <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">Inquiries Table</h1>
+                <h1 className="text-2xl font-semibold text-violet-800 mb-4 uppercase">Inquiry List</h1>
                 {/* <AddModal mutate={mutate} /> */}
             </div>
-            <DataTable<Inquiry>
-                data={inquiries}
-                columns={columns}
-                itemsPerPage={5}
-            // onAction={handleAction}
-            // onDelete={handleDelete}
-            />
+
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+
+                        <DataTable<Inquiry>
+                            data={inquiries}
+                            columns={columns}
+                            itemsPerPage={5}
+                        // onAction={handleAction}
+                        // onDelete={handleDelete}
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+
             {selectedInquiry && (
                 <EditModal
                     inquiry={selectedInquiry}
@@ -153,7 +163,7 @@ export default function Property() {
                     onClose={handleCloseDeleteModal}
                 />
             )} */}
-        </main>
+        </section>
     );
 }
 

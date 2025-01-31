@@ -11,7 +11,6 @@ import FormikCustomError from '@/components/formik-custom-error';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
-    subtitle: Yup.string().required('Subtitle is required'),
     date: Yup.string().required('Date is required'),
     content: Yup.string().required('Content is required'),
     type: Yup.string().required('Type is required'),
@@ -59,7 +58,6 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                         initialValues={{
                             id: article?.id,
                             title: article?.title,
-                            subtitle: article?.subtitle,
                             date: article?.date,
                             content: article?.content,
                             type: article?.type,
@@ -79,12 +77,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     type="text"
                                     error={touched.title ? errors.title : undefined}
                                 />
-                                <CustomInput
-                                    name="subtitle"
-                                    label="Subtitle"
-                                    type="text"
-                                    error={touched.subtitle ? errors.subtitle : undefined}
-                                />
+                              
                                 <CustomInput
                                     name="date"
                                     label="Date"
@@ -106,6 +99,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     <option value="Events">Events</option>
                                     <option value="Closed Deals">Closed Deals</option>
                                     <option value="Real Estate News">Real Estate News</option>
+                                    <option value="Real Estate Tips">Real Estate Tips</option>
                                 </Field>
                                 <ErrorMessage
                                     name="type"

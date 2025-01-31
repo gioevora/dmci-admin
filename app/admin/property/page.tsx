@@ -8,9 +8,10 @@ import type { Property } from '@/app/utils/types';
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-import { Button, Link, Spinner } from "@heroui/react";
+import { Button, Card, CardBody, Link, Spinner } from "@heroui/react";
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { BsHouseAddFill } from "react-icons/bs";
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -133,18 +134,26 @@ export default function Property() {
     ];
 
     return (
-        <main className="container mx-auto p-4">
-            <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">Property Table</h1>
-                <Button color="primary" onClick={() => router.push('/admin/property/new-property')}>
+        <section className="pt-24 px-4 md:px-12">
+            <div className="flex flex-col justify-center md:flex-row md:justify-between">
+                <h1 className="text-2xl font-semibold text-violet-800 mb-4 uppercase text-center">Property list</h1>
+                <Button startContent={<BsHouseAddFill size={16} />} color="primary" onClick={() => router.push('/admin/property/new-property')}>
                     Add new property
                 </Button>
             </div>
-            <DataTable<Property>
-                data={properties}
-                columns={columns}
-                itemsPerPage={5}
-            />
-        </main>
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+                        <DataTable<Property>
+                            data={properties}
+                            columns={columns}
+                            itemsPerPage={5}
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+
+        </section>
     );
 }

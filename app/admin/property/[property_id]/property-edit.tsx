@@ -92,7 +92,7 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
     };
 
     return (
-        <div className="w-full mt-8">
+        <div className="w-full">
             <Card className="w-full">
                 <CardBody>
                     <Formik

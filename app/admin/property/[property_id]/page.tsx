@@ -9,7 +9,7 @@ export default async function ProductPage({
     const { property_id } = await params;
 
     return (
-        <div>
+        <div className="pt-24">
             <PropertyDetailsTabs property_id={property_id} />
         </div>
     );

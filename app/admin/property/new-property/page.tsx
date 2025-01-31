@@ -173,13 +173,13 @@ const NewPropertyPage = () => {
 
 
     return (
-        <div className="w-full mt-8">
+        <section className="pt-24 px-4 md:px-12">
             <form onSubmit={formik.handleSubmit}>
                 <Card className="w-full">
                     <CardBody>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 md:px-6">
                             <div className="col-span-2 py-6">
-                                <h1 className="text-2xl  font-bold underline">
+                                <h1 className="text-xl font-semibold text-violet-800">
                                     Personal Information
                                 </h1>
                             </div>
@@ -285,7 +285,7 @@ const NewPropertyPage = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-6 md:px-6">
                             <div className="col-span-3 py-6">
-                                <h1 className="text-2xl  font-bold underline">
+                                <h1 className="text-xl font-semibold text-violet-800">
                                     Property Information
                                 </h1>
                             </div>
@@ -590,7 +590,7 @@ const NewPropertyPage = () => {
                         <Divider className="my-4" />
 
                         <div className="md:px-6">
-                            <h1 className="font-bold ">
+                            <h1 className="text-xl font-semibold text-violet-800">
                                 Features and Amenties
                             </h1>
 
@@ -637,7 +637,7 @@ const NewPropertyPage = () => {
                             </div>
 
 
-                            <h1 className="font-bold ">Property Image</h1>
+                            <h1 className="text-xl font-semibold text-violet-800">Property Image</h1>
                             <div className="col-span-3 md:col-span-1 py-8">
                                 <label htmlFor="images" className="block text-sm font-medium text-gray-700">
                                     Upload Image
@@ -663,7 +663,7 @@ const NewPropertyPage = () => {
                             </div>
 
                             <Button
-                                className=" text-white font-bold uppercase mb-4"
+                                className="w-full bg-violet-700 text-white font-bold uppercase mb-4"
                                 endContent={<FaArrowRightLong />}
                                 size="lg"
                                 type="submit"
@@ -675,7 +675,7 @@ const NewPropertyPage = () => {
                     </CardBody>
                 </Card>
             </form>
-        </div>
+        </section>
     );
 };
 

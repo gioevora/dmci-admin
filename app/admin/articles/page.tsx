@@ -9,6 +9,7 @@ import LoadingDot from '@/components/loading-dot';
 import AddModal from './add-article-modal';
 import EditModal from './edit-article-modal';
 import DeleteModal from './delete-article-modal';
+import { Card, CardBody } from '@heroui/react';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -35,7 +36,6 @@ const fetchWithToken = async (url: string) => {
 
 const columns: Column<Article>[] = [
     { key: 'title', label: 'Title' },
-    { key: 'subtitle', label: 'Subtitle' },
     { key: 'date', label: 'Date' },
     { key: 'content', label: 'Content' },
     { key: 'type', label: 'Type' },
@@ -98,18 +98,27 @@ export default function Property() {
     }
 
     return (
-        <main className="container mx-auto p-4">
+        <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-bold mb-4">Article Table</h1>
+                <h1 className="text-2xl font-semibold mb-4 uppercase">Articles</h1>
                 <AddModal mutate={mutate} />
             </div>
-            <DataTable<Article>
-                data={articles}
-                columns={columns}
-                itemsPerPage={5}
-                onAction={handleAction}
-                onDelete={handleDelete}
-            />
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+                        <DataTable<Article>
+                            data={articles}
+                            columns={columns}
+                            itemsPerPage={5}
+                            onAction={handleAction}
+                            onDelete={handleDelete}
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+
+
             {selectedArticle && (
                 <EditModal
                     article={selectedArticle}
@@ -126,6 +135,6 @@ export default function Property() {
                     onClose={handleCloseDeleteModal}
                 />
             )}
-        </main>
+        </section>
     );
 }

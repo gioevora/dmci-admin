@@ -9,6 +9,7 @@ import AddTestimonialModal from './add-certificate-modal';
 import DeleteCertificateModal from './delete-certificate-modal';
 import EditCertificateModal from './edit-certificate-modal';
 import LoadingDot from '@/components/loading-dot';
+import { Card, CardBody } from '@heroui/react';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -98,18 +99,26 @@ export default function CertificatesPage() {
     }
 
     return (
-        <main className="container mx-auto p-4">
+        <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">Certificates Table</h1>
                 <AddTestimonialModal mutate={mutate} />
             </div>
-            <DataTable<Certificate>
-                data={certificates}
-                columns={columns}
-                itemsPerPage={5}
-                onAction={handleAction}
-                onDelete={handleDelete}
-            />
+
+            <div className='py-6'>
+                <Card>
+                    <CardBody>
+                        <DataTable<Certificate>
+                            data={certificates}
+                            columns={columns}
+                            itemsPerPage={5}
+                            onAction={handleAction}
+                            onDelete={handleDelete}
+                        />
+                    </CardBody>
+                </Card>
+            </div>
+
             {selectedCertificate && (
                 <EditCertificateModal
                     certificate={selectedCertificate}
@@ -127,6 +136,6 @@ export default function CertificatesPage() {
                     onClose={handleCloseDeleteModal}
                 />
             )}
-        </main>
+        </section>
     );
 }
