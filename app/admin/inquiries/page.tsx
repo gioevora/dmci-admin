@@ -8,7 +8,7 @@ import type { Inquiry } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 // import AddModal from './add-inquiry-modal';
 import EditModal from './edit-inquiry-modal';
-import { Button, Card, CardBody } from "@heroui/react";
+import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, Link } from "@heroui/react";
 // import DeleteModal from './delete-inquiry-modal';
 
 const fetchWithToken = async (url: string) => {
@@ -73,7 +73,7 @@ export default function Property() {
             render: (data) => (
                 <div className="truncate">
                     <Button
-                        color="primary"
+                        className='bg-violet-500 text-white'
                         onClick={() => handleAction(data)}
                         size="sm"
                     >
@@ -124,10 +124,19 @@ export default function Property() {
     }
 
     return (
-        <section className="pt-24 px-4 md:px-12">
+        <section className="py-12 px-4 md:px-12">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-semibold text-violet-800 mb-4 uppercase">Inquiry List</h1>
-                {/* <AddModal mutate={mutate} /> */}
+                <div>
+                    <h1 className="text-3xl font-bold text-violet-800 uppercase text-center">Inquiries</h1>
+                    <Breadcrumbs>
+                        <BreadcrumbItem>
+                            <Link href="/">Home</Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <Link href="/properties">Inquiry</Link>
+                        </BreadcrumbItem>
+                    </Breadcrumbs>
+                </div>
             </div>
 
 

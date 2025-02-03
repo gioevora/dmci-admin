@@ -3,12 +3,14 @@
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 
-import AddUserModal from './add-user-modal';
+
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-import EditUserModal from './edit-user-modal';
+
 import { BreadcrumbItem, Breadcrumbs, Card, CardBody, Link } from '@heroui/react';
+import AddUserModal from '../user/add-user-modal';
+import EditUserModal from '../user/edit-user-modal';
 
 type User = {
     id: number;
@@ -48,7 +50,7 @@ const columns: Column<User>[] = [
     { key: 'type', label: 'type' },
 ];
 
-export default function Home() {
+export default function User() {
     const { data, error } = useSWR<{ code: number; message: string; records: User[] }>(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,
         fetchWithToken
@@ -84,35 +86,15 @@ export default function Home() {
     }
 
     return (
-        <section className="py-12 px-4 md:px-12">
-            <div className="flex justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-violet-800 uppercase text-center">User list</h1>
-                    <Breadcrumbs>
-                        <BreadcrumbItem>
-                            <Link href="/">Home</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbItem>
-                            <Link href="/properties">User</Link>
-                        </BreadcrumbItem>
-                    </Breadcrumbs>
-                </div>
-                <AddUserModal />
-            </div>
-
-
-            <div className='py-6'>
-                <Card>
-                    <CardBody>
-                        <DataTable<User>
-                            data={users}
-                            columns={columns}
-                            itemsPerPage={5}
-                            onAction={handleAction}
-                            actionLabel="Edit"
-                        />
-                    </CardBody>
-                </Card>
+        <section>
+            <div>
+                <DataTable<User>
+                    data={users}
+                    columns={columns}
+                    itemsPerPage={5}
+                    onAction={handleAction}
+                    actionLabel="Edit"
+                />
             </div>
 
 

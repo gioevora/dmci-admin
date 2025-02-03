@@ -1,21 +1,9 @@
 "use client"
 
 import React from "react"
-import { Card, CardBody, CardHeader, Divider } from "@heroui/react"
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    PieChart,
-    Pie,
-    Cell,
-} from "recharts"
-import { Box, Building, Calendar, HelpingHand, Newspaper, Star, User } from "lucide-react"
+import {Card, CardBody} from "@heroui/react"
+
+import { Box, Building,  HelpingHand, Newspaper, User } from "lucide-react"
 import useSWR from "swr";
 import { FaHelmetSafety } from "react-icons/fa6"
 import LoadingDot from "@/components/loading-dot"
@@ -67,11 +55,13 @@ const Dashboard = () => {
     if (isLoading) return <LoadingDot />;
 
     return (
-        <section className="pt-24 px-4 md:px-12">
-            <div className="py-8">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                <h1 className="text-2xl font-semibold text-violet-800 mb-6 uppercase dark:text-white">Dashboard</h1>
+        <section className="py-12 px-4 md:px-12">
+            <div className="py-8">
+                <div>
+                    <h1 className="text-3xl font-bold text-violet-800 uppercase">Dashboard</h1>
+                </div>
                 {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 py-6">
                     <SummaryCard title="Total Properties" value={data.records.properties} icon={<Building />} />
                     <SummaryCard title="New Inquiries" value={data.records.inquiries} icon={<HelpingHand />} />
                     <SummaryCard title="Published Articles" value={data.records.articles} icon={<Newspaper />} />

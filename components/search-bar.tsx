@@ -10,7 +10,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     return (
         <Input
             isClearable
-            className="w-full sm:max-w-[44%] mb-4"
+            className="w-full sm:max-w-[24%] mb-4"
             placeholder="Search..."
             startContent={<SearchIcon />}
             onValueChange={onSearch}

@@ -39,8 +39,8 @@ export const status = [
 ];
 
 export const parking = [
-    { key: "0", label: "With Parking" },
-    { key: "1", label: "No Parking" },
+    { key: "0", label: "Without Parking" },
+    { key: "1", label: "With Parking" },
 ];
 
 export const type = [

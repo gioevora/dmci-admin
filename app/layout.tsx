@@ -54,12 +54,12 @@ export default function RootLayout({
               <Link
                 isExternal
                 className="flex items-center gap-1 text-current"
-                href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-                title="nextui.org homepage"
+                href="https://abic-realty.com"  // Replace with your actual website link
+                title="Abic Realty and Consultancy Corporation"
               >
-                <span className="text-default-600">Powered by</span>
-                <p className="text-primary">NextUI</p>
+                <p className="text-primary">Abic Realty and Consultancy Corporation</p>
               </Link>
+              <span className="text-default-600 text-sm ml-2">| All rights reserved</span>
             </footer>
           </div>
         </Providers>

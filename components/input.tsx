@@ -14,7 +14,7 @@ interface CustomInputProps {
 
 const CustomInput: React.FC<CustomInputProps> = ({ label, name, type = "text", error, onChange }) => {
     return (
-        <div className="mb-4">
+        <div>
             <Field name={name}>
                 {({ field }: FieldProps) => (
                     <Input
@@ -23,7 +23,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ label, name, type = "text", e
                         label={label}
                         onChange={type === "file" ? onChange : field.onChange}
                         value={type === "file" ? undefined : field.value || ""}
-                        variant="underlined"
+                        variant="flat"
                     />
                 )}
             </Field>

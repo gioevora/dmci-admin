@@ -9,7 +9,7 @@ import LoadingDot from '@/components/loading-dot';
 import AddModal from './add-article-modal';
 import EditModal from './edit-article-modal';
 import DeleteModal from './delete-article-modal';
-import { Card, CardBody } from '@heroui/react';
+import { BreadcrumbItem, Breadcrumbs, Card, CardBody, Link } from '@heroui/react';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -100,7 +100,17 @@ export default function Property() {
     return (
         <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-semibold mb-4 uppercase">Articles</h1>
+                <div>
+                    <h1 className="text-3xl font-bold text-violet-800 uppercase text-center">articles</h1>
+                    <Breadcrumbs>
+                        <BreadcrumbItem>
+                            <Link href="/">Home</Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <Link href="/properties">Articles</Link>
+                        </BreadcrumbItem>
+                    </Breadcrumbs>
+                </div>
                 <AddModal mutate={mutate} />
             </div>
 
