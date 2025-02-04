@@ -14,7 +14,14 @@ const validationSchema = Yup.object({
     date: Yup.string().required('Date is required'),
     content: Yup.string().required('Content is required'),
     type: Yup.string().required('Type is required'),
-    image: Yup.mixed().required('Image is required'),
+    image: Yup.mixed()
+        .required('File is required')
+        .test('fileType', 'File must be an image or a video', (value) => {
+            if (!value) return false;
+
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
+            return validTypes.includes((value as File).type);
+        }),
 });
 
 interface EditModalProps {
@@ -77,7 +84,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     type="text"
                                     error={touched.title ? errors.title : undefined}
                                 />
-                              
+
                                 <CustomInput
                                     name="date"
                                     label="Date"
@@ -107,7 +114,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                 />
                                 <CustomInput
                                     name="image"
-                                    label="Image"
+                                    label="Image/Video"
                                     type="file"
                                     error={touched.image ? errors.image : undefined}
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

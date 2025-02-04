@@ -67,6 +67,7 @@ export default function Property() {
         { key: 'phone', label: 'Phone' },
         { key: 'type', label: 'Type' },
         { key: 'message', label: 'Message' },
+        { key: 'status', label: 'Status' },
         {
             key: 'id',
             label: 'Action',

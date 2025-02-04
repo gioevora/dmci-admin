@@ -119,6 +119,7 @@ export interface Inquiry {
     type: string;
     properties: string;
     message: string;
+    status: string;
     user: User;
 }
 

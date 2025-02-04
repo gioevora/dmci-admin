@@ -21,10 +21,16 @@ interface EditModalProps {
 
 const EditModal: React.FC<EditModalProps> = ({ inquiry, isOpen, onClose, mutate }) => {
 
-
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
-            const response = await axios.post(`/api/inquiry-reply-email`, values, {
+            const token = sessionStorage.getItem('token');
+            await axios.post(`/api/inquiry-reply-email`, values);
+
+            await axios.post(`https://abicmanpowerservicecorp.com/api/inquiries/set-status`, values, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+
             });
             onClose();
             toast.success('Operation successful!');
@@ -35,7 +41,6 @@ const EditModal: React.FC<EditModalProps> = ({ inquiry, isOpen, onClose, mutate 
             setSubmitting(false);
         }
     };
-
     return (
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
@@ -50,6 +55,7 @@ const EditModal: React.FC<EditModalProps> = ({ inquiry, isOpen, onClose, mutate 
                             last_name: inquiry?.last_name,
                             email: inquiry?.email,
                             body: '',
+                            status: "Replied",
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
