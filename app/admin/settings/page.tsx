@@ -1,9 +1,19 @@
 'use client';
-import React, { useState } from 'react';
-import { Breadcrumbs, BreadcrumbItem, Card, CardBody, Listbox, ListboxItem, Avatar, Input } from "@heroui/react";
+
+import React, { useState } from 'react'; // React and hooks
+import useSWR from 'swr'; // External hooks
+
+// UI components from @heroui/react
+import { Breadcrumbs, BreadcrumbItem, Card, CardBody, Listbox, ListboxItem } from "@heroui/react";
+
+// Internal components
 import User from './user';
-import Profile from './profile';
+import UserForm from './user-form';
 import Certificates from './certificates';
+
+// Utilities
+import fetchWithToken from '@/app/utils/fetch-with-token';
+import { id } from '@/app/utils/storage';
 
 // Define a mapping for breadcrumb labels
 const breadcrumbLabels: Record<string, string> = {
@@ -13,9 +23,19 @@ const breadcrumbLabels: Record<string, string> = {
     logout: "Log Out",
 };
 
+
 export default function Settings() {
     const [selectedTab, setSelectedTab] = useState("account");
+    const { data } = useSWR(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${id}`,
+        fetchWithToken,
+        {
+            refreshInterval: 10000,
+        }
+    );
 
+    const user = data?.record || "";
+    const avatar = data?.record.profile.image || "";
     return (
         <section className="py-12 px-4 md:px-12">
             <div className="py-8">
@@ -32,13 +52,13 @@ export default function Settings() {
                     {/* Sidebar Navigation */}
                     <div className="min-w-96 py-2 px-4 flex flex-col border-r border-default-200 dark:border-default-100">
                         <div className="flex items-center gap-4">
-                            <Avatar
-                                className="w-20 h-20 text-large"
-                                src="https://i.pravatar.cc/150?u=a04258114e29026708c"
+                            <img
+                                className="w-20 h-20 rounded-full object-cover"
+                                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/profiles/${avatar}`}
                             />
                             <div>
-                                <h1 className="font-semibold text-xl">Abic Realty</h1>
-                                <p className="text-tiny text-default-500">abicrealtycorporation@gmail.com</p>
+                                <h1 className="font-semibold text-xl">{user.name}</h1>
+                                <p className="text-tiny text-default-500">{user.email}</p>
                             </div>
                         </div>
                         <div className="py-4 w-full">
@@ -61,27 +81,10 @@ export default function Settings() {
                                 <div className='py-4 flex flex-col gap-4'>
                                     <Card className='shadow-none border'>
                                         <CardBody>
-                                            <Profile />
-                                        </CardBody>
-                                    </Card>
-
-                                    <Card className='shadow-none border'>
-                                        <CardBody>
-                                            <div className='flex flex-col gap-4'>
-                                                <Input
-                                                    label="Facebook"
-                                                    value={'abicrealty.com'}
-                                                />
-                                                <Input
-                                                    label="Facebook"
-                                                    value={'abicrealty.com'}
-                                                />
-                                            </div>
-
+                                            <UserForm />
                                         </CardBody>
                                     </Card>
                                 </div>
-
                             </section>
                         )}
                         {selectedTab === "users" && (
