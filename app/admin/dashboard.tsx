@@ -31,23 +31,6 @@ const fetchWithToken = async (url: string) => {
     return response.json()
 }
 
-const barChartData = [
-    { name: "Articles", value: 20 },
-    { name: "Careers", value: 15 },
-    { name: "Properties", value: 30 },
-    { name: "Inquiries", value: 25 },
-    { name: "Schedules", value: 18 },
-]
-
-const pieChartData = [
-    { name: "For Sale", value: 400 },
-    { name: "For Rent", value: 300 },
-    { name: "Sold", value: 200 },
-    { name: "Rented", value: 100 },
-]
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
-
 const Dashboard = () => {
     const { data, error, isLoading } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard/get-counts`, fetchWithToken)
 

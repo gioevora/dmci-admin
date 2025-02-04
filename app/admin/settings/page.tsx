@@ -58,8 +58,6 @@ export default function Settings() {
 
                         {selectedTab === "account" && (
                             <section className='py-2 px-2'>
-                                <h1 className="font-semibold text-lg">Account Settings</h1>
-                                <p>Update your profile information and password.</p>
                                 <div className='py-4 flex flex-col gap-4'>
                                     <Card className='shadow-none border'>
                                         <CardBody>
