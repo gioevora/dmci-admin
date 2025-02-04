@@ -52,7 +52,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
     };
 
     return (
-        <Modal title="Add new article" buttonLabel="Add new article">
+        <Modal title="Add New Article" buttonLabel="Add New Article">
             <div className="min-w-full">
                 <Formik
                     initialValues={{
@@ -60,6 +60,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                         date: '',
                         content: '',
                         type: '',
+                        url: '',
                         image: null,
                     }}
                     validationSchema={validationSchema}
@@ -100,6 +101,14 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 name="type"
                                 render={(msg) => <FormikCustomError children={msg} />}
                             />
+
+                            <CustomInput
+                                name="url"
+                                label="URL"
+                                type="text"
+                                // error={touched.content ? errors.content : undefined}
+                            />
+
                             <CustomInput
                                 name="image"
                                 label="Image"

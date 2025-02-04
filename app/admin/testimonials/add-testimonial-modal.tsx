@@ -82,7 +82,7 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
                                     as={Textarea}
                                     name="message"
                                     label="Message"
-                                    variant="underlined"
+                                    variant="flat"
                                     rows={4}
                                     cols={50}
                                 />

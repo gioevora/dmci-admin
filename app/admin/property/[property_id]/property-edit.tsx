@@ -9,7 +9,7 @@ import useSWR from "swr";
 
 
 import type { PropertyRecord } from '@/app/utils/types';
-import { fetchWithToken, status, type, furnished, amenities, agents, } from "@/app/admin/property/utils/option";
+import { fetchWithToken, status, type, furnished, amenities, agents, sale, payment, parking, rent } from "@/app/admin/property/utils/option";
 import CustomInput from "@/components/input";
 import FormikCustomError from "@/components/formik-custom-error";
 
@@ -48,6 +48,7 @@ const validationSchema = Yup.object({
         .required("Floor number is required"),
     parking: Yup.boolean().required("Parking is required"),
     status: Yup.string().required("Property Status is required"),
+    sale_type: Yup.string().required("Property Sale Type is required"),
     amenities: Yup.array()
         .min(1, "At least one amenity is required")
         .required("Amenities are required"),
@@ -93,7 +94,7 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
 
     return (
         <div className="w-full">
-            <Card className="w-full">
+            <Card className="w-full md:px-6 py-6">
                 <CardBody>
                     <Formik
                         initialValues={{
@@ -140,148 +141,257 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ errors, touched, isSubmitting, setFieldValue }) => (
+                        {({ errors, touched, isSubmitting, setFieldValue, values }) => (
                             <Form className="space-y-4">
-                                <h1 className="text-2xl  font-bold underline">
+                                <h1 className="text-xl font-bold text-violet-800">
                                     Personal Information
                                 </h1>
-                                <CustomInput
-                                    name="first_name"
-                                    label="First Name"
-                                    type="text"
-                                    error={touched.first_name ? errors.first_name : undefined}
-                                />
-                                <CustomInput
-                                    name="last_name"
-                                    label="Last Name"
-                                    type="text"
-                                    error={touched.last_name ? errors.last_name : undefined}
-                                />
-                                <CustomInput
-                                    name="email"
-                                    label="Email"
-                                    type="email"
-                                    error={touched.email ? errors.email : undefined}
-                                />
-                                <CustomInput
-                                    name="phone"
-                                    label="Phone"
-                                    type="number"
-                                    error={touched.phone ? errors.phone : undefined}
-                                />
-                                <Field as={Select}
-                                    label="Type"
-                                    name="type"
-                                    variant="underlined"
-                                    defaultSelectedKeys={property?.owner.type ? [String(property.owner.type)] : []}
-                                >
-                                    {agents.map((agent) => (
-                                        <SelectItem key={agent.key} value={agent.key}>
-                                            {agent.label}
-                                        </SelectItem>
-                                    ))}
-                                </Field>
-                                <ErrorMessage
-                                    name="type"
-                                    render={(msg) => <FormikCustomError children={msg} />}
-                                />
-                                <h1 className="text-2xl  font-bold underline">
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <CustomInput
+                                        name="first_name"
+                                        label="First Name"
+                                        type="text"
+                                        error={touched.first_name ? errors.first_name : undefined}
+                                    />
+                                    <CustomInput
+                                        name="last_name"
+                                        label="Last Name"
+                                        type="text"
+                                        error={touched.last_name ? errors.last_name : undefined}
+                                    />
+
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <CustomInput
+                                        name="email"
+                                        label="Email"
+                                        type="email"
+                                        error={touched.email ? errors.email : undefined}
+                                    />
+                                    <CustomInput
+                                        name="phone"
+                                        label="Phone"
+                                        type="number"
+                                        error={touched.phone ? errors.phone : undefined}
+                                    />
+
+                                    <Field as={Select}
+                                        label="Type"
+                                        name="type"
+                                        variant="flat"
+                                        defaultSelectedKeys={property?.owner.type ? [String(property.owner.type)] : []}
+                                    >
+                                        {agents.map((agent) => (
+                                            <SelectItem key={agent.key} value={agent.key}>
+                                                {agent.label}
+                                            </SelectItem>
+                                        ))}
+                                    </Field>
+                                    <ErrorMessage
+                                        name="type"
+                                        render={(msg) => <FormikCustomError children={msg} />}
+                                    />
+                                </div>
+
+                                <hr />
+
+
+                                <h1 className="text-xl font-bold text-violet-800">
                                     Property Information
                                 </h1>
-                                <CustomInput
-                                    name="name"
-                                    label="Property Name"
-                                    type="text"
-                                    error={touched.name ? errors.name : undefined}
-                                />
-                                <Field as={Select}
-                                    label="Unit Type"
-                                    name="unit_type"
-                                    variant="underlined"
-                                    defaultSelectedKeys={property?.unit_type ? [String(property.unit_type)] : []}
-                                >
-                                    {type.map((type) => (
-                                        <SelectItem key={type.key}>{type.label}</SelectItem>
-                                    ))}
-                                </Field>
-                                <ErrorMessage
-                                    name="unit_type"
-                                    render={(msg) => <FormikCustomError children={msg} />}
-                                />
-                                <Field as={Select}
-                                    label="Unit Status"
-                                    name="unit_status"
-                                    variant="underlined"
-                                    defaultSelectedKeys={property?.unit_status ? [String(property.unit_status)] : []}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <CustomInput
+                                        name="name"
+                                        label="Property Name"
+                                        type="text"
+                                        error={touched.name ? errors.name : undefined}
+                                    />
+                                    <Field as={Select}
+                                        label="Unit Type"
+                                        name="unit_type"
+                                        variant="flat"
+                                        defaultSelectedKeys={property?.unit_type ? [String(property.unit_type)] : []}
+                                    >
+                                        {type.map((type) => (
+                                            <SelectItem key={type.key}>{type.label}</SelectItem>
+                                        ))}
+                                    </Field>
+                                    <ErrorMessage
+                                        name="unit_type"
+                                        render={(msg) => <FormikCustomError children={msg} />}
+                                    />
 
-                                >
-                                    {furnished.map((furnished) => (
-                                        <SelectItem key={furnished.key}>
-                                            {furnished.label}
-                                        </SelectItem>
-                                    ))}
-                                </Field>
-                                <ErrorMessage
-                                    name="unit_status"
-                                    render={(msg) => <FormikCustomError children={msg} />}
-                                />
+                                    <Field as={Select}
+                                        label="Unit Status"
+                                        name="unit_status"
+                                        variant="flat"
+                                        defaultSelectedKeys={property?.unit_status ? [String(property.unit_status)] : []}
+
+                                    >
+                                        {furnished.map((furnished) => (
+                                            <SelectItem key={furnished.key}>
+                                                {furnished.label}
+                                            </SelectItem>
+                                        ))}
+                                    </Field>
+                                    <ErrorMessage
+                                        name="unit_status"
+                                        render={(msg) => <FormikCustomError children={msg} />}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <CustomInput
+                                        name="price"
+                                        label="Property Price"
+                                        type="text"
+                                        error={touched.price ? errors.price : undefined}
+                                    />
+                                    <CustomInput
+                                        name="area"
+                                        label="Square Meter"
+                                        type="text"
+                                        error={touched.area ? errors.area : undefined}
+                                    />
+                                    <CustomInput
+                                        name="unit_number"
+                                        label="Floor Number"
+                                        type="text"
+                                        error={touched.unit_number ? errors.unit_number : undefined}
+                                    />
+
+                                    <Field as={Select}
+                                        label="Parking"
+                                        name="parking"
+                                        variant="flat"
+                                        defaultSelectedKeys={property?.parking ? ["1"] : ["0"]}
+                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                            const val = e.target.value === "1";
+                                            setFieldValue("parking", val);
+                                        }}
+                                    >
+                                        {parking.map((statusItem) => (
+                                            <SelectItem key={statusItem.key} value={statusItem.key}>
+                                                {statusItem.label}
+                                            </SelectItem>
+                                        ))}
+                                    </Field>
+
+                                    <ErrorMessage
+                                        name="parking"
+                                        render={(msg) => <FormikCustomError>{msg}</FormikCustomError>}
+                                    />
+
+                                </div>
+
                                 <CustomInput
                                     name="location"
                                     label="Location"
                                     type="text"
                                     error={touched.location ? errors.location : undefined}
                                 />
-                                <CustomInput
-                                    name="price"
-                                    label="Property Price"
-                                    type="text"
-                                    error={touched.price ? errors.price : undefined}
-                                />
-                                <CustomInput
-                                    name="area"
-                                    label="Square Meter"
-                                    type="text"
-                                    error={touched.area ? errors.area : undefined}
-                                />
-                                <CustomInput
-                                    name="unit_number"
-                                    label="Floor Number"
-                                    type="text"
-                                    error={touched.unit_number ? errors.unit_number : undefined}
-                                />
-                                <Field name="parking">
-                                    {({ field }: { field: any }) => (
-                                        <Checkbox
-                                            {...field}
-                                            isSelected={field.value}
-                                            onValueChange={(val) => field.onChange({ target: { name: "parking", value: val } })}
-                                        >
-                                            With Parking
-                                        </Checkbox>
+
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <Field as={Select}
+                                        label="Property Status"
+                                        name="status"
+                                        variant="flat"
+                                        defaultSelectedKeys={property?.status ? [String(property.status)] : []}
+                                    >
+                                        {status.map((statusItem) => (
+                                            <SelectItem key={statusItem.key} value={statusItem.key}>
+                                                {statusItem.label}
+                                            </SelectItem>
+                                        ))}
+                                    </Field>
+                                    <ErrorMessage
+                                        name="status"
+                                        render={(msg) => <FormikCustomError children={msg} />}
+                                    />
+
+                                    {values.status === "For Sale" && (
+                                        <>
+                                            <Field as={Select}
+                                                label="Sale Type"
+                                                name="sale_type"
+                                                variant="flat"
+                                                defaultSelectedKeys={property?.sale_type ? [String(property.sale_type)] : []}
+                                            >
+                                                {sale.map((statusItem) => (
+                                                    <SelectItem key={statusItem.key} value={statusItem.key}>
+                                                        {statusItem.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </Field>
+                                            <ErrorMessage
+                                                name="status"
+                                                render={(msg) => <FormikCustomError children={msg} />}
+                                            />
+
+                                            {values.sale_type == "RFO" && (
+                                                <>
+                                                    <Field as={Select}
+                                                        label="Payment Type"
+                                                        name="payment"
+                                                        variant="flat"
+                                                        defaultSelectedKeys={property?.payment ? [String(property.payment)] : []}
+                                                    >
+                                                        {payment.map((statusItem) => (
+                                                            <SelectItem key={statusItem.key} value={statusItem.key}>
+                                                                {statusItem.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </Field>
+                                                    <ErrorMessage
+                                                        name="payment"
+                                                        render={(msg) => <FormikCustomError children={msg} />}
+                                                    />
+
+                                                    <CustomInput
+                                                        name="title"
+                                                        label="Title"
+                                                        type="text"
+                                                        error={touched.title ? errors.title : undefined}
+                                                    />
+                                                </>
+                                            )}
+
+                                            {values.sale_type === "Pre-Selling" && (
+                                                <>
+                                                    <CustomInput
+                                                        name="turnover"
+                                                        label="Turnover Date"
+                                                        type="date"
+                                                        error={touched.turnover ? errors.turnover : undefined}
+                                                    />
+                                                </>
+                                            )}
+                                        </>
                                     )}
-                                </Field>
-                                <ErrorMessage
-                                    name="parking"
-                                    render={(msg) => <FormikCustomError children={msg} />}
-                                />
-                                <Field as={Select}
-                                    label="Property Status"
-                                    name="status"
-                                    variant="underlined"
-                                    defaultSelectedKeys={property?.status ? [String(property.status)] : []}
-                                >
-                                    {status.map((statusItem) => (
-                                        <SelectItem key={statusItem.key} value={statusItem.key}>
-                                            {statusItem.label}
-                                        </SelectItem>
-                                    ))}
-                                </Field>
-                                <ErrorMessage
-                                    name="status"
-                                    render={(msg) => <FormikCustomError children={msg} />}
-                                />
+
+                                    {values.status === "For Rent" && (
+                                        <>
+                                            <Field as={Select}
+                                                label="Payment Terms"
+                                                name="terms"
+                                                variant="flat"
+                                                defaultSelectedKeys={property?.terms ? [String(property.terms)] : []}
+                                            >
+                                                {rent.map((statusItem) => (
+                                                    <SelectItem key={statusItem.key} value={statusItem.key}>
+                                                        {statusItem.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </Field>
+                                        </>
+                                    )}
+                                </div>
+
                                 <Divider />
-                                Features and Amenties
+                                <div className="text-violet-700 font-semibold">
+                                    Features and Amenties
+                                </div>
                                 <CheckboxGroup
                                     color="primary"
                                     orientation="horizontal"
@@ -307,6 +417,7 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                         <Input
                                             id="images"
                                             type="file"
+                                            size="lg"
                                             multiple
                                             accept="image/*"
                                             onChange={(event) => {
@@ -315,7 +426,7 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                                     form.setFieldValue("images", Array.from(files));
                                                 }
                                             }}
-                                            variant="underlined"
+                                            variant="flat"
                                         />
                                     )}
                                 </Field>
@@ -326,7 +437,7 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                     isLoading={isSubmitting}
                                     isDisabled={isSubmitting}
                                 >
-                                    Save
+                                    Save Changes
                                 </Button>
                             </Form>
                         )}

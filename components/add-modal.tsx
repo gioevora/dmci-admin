@@ -14,7 +14,7 @@ export const Modal: React.FC<ModalProps> = ({ title, buttonLabel, children, foot
 
     return (
         <>
-            <Button startContent={<IoAddCircleOutline  size={24}/> } color="primary" onPress={onOpen}>{buttonLabel}</Button>
+            <Button startContent={<IoAddCircleOutline  size={24}/> } className='bg-violet-500 text-white capitalize' onPress={onOpen}>{buttonLabel}</Button>
             <FortuneUIModal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>

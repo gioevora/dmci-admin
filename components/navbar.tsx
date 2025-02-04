@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 import { ThemeSwitch } from './theme-switch';
 import {
   Box, Building, Badge, Calendar, Handshake, HardHat, HelpingHand,
-  LogOut, Newspaper, Star, User, LayoutDashboard
+  LogOut, Newspaper, Star, User, LayoutDashboard, Settings,
+  Building2
 } from 'lucide-react';
 import { Link } from "@heroui/react";
 import { setCookie } from 'nookies';
@@ -32,7 +33,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       {/* Navbar */}
-      <nav className="fixed top-0 z-50 bg-white shadow-md w-full dark:bg-[#18181b] dark:border-gray-700 md:z-30">
+      <nav className="md:hidden fixed top-0 z-50 bg-white shadow-md w-full dark:bg-[#18181b] dark:border-gray-700 md:z-30">
         <div className="flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
           {/* Sidebar Toggle Button */}
           <div className='flex items-center gap-2'>
@@ -83,7 +84,7 @@ const Navbar: React.FC = () => {
 
         {/* Sidebar Menu */}
         <div className="h-screen px-6 pb-4 overflow-y-auto">
-          <ul className="space-y-2 font-medium top-20">
+          <ul className="space-y-2 top-20">
             {sidebarLinks.map(({ href, icon, text }) => (
               <SidebarItem key={href} href={href} icon={icon} text={text} pathname={pathname} />
             ))}
@@ -104,17 +105,18 @@ const Navbar: React.FC = () => {
 };
 
 const sidebarLinks = [
-  { href: "/admin", icon: <LayoutDashboard />, text: "Dashboard" },
-  { href: "/admin/property", icon: <Building />, text: "Properties" },
-  { href: "/admin/inquiries", icon: <HelpingHand />, text: "Inquiries" },
-  { href: "/admin/schedules", icon: <Calendar />, text: "Schedules" },
-  { href: "/admin/articles", icon: <Newspaper />, text: "Articles" },
-  { href: "/admin/careers", icon: <HardHat />, text: "Careers" },
-  { href: "/admin/certificates", icon: <Badge />, text: "Certificates" },
-  { href: "/admin/items", icon: <Box />, text: "Items" },
-  { href: "/admin/partners", icon: <Handshake />, text: "Partners" },
-  { href: "/admin/testimonials", icon: <Star />, text: "Testimonials" },
-  { href: "/admin/user", icon: <User />, text: "User" }
+  { href: "/admin", icon: <LayoutDashboard size={18} />, text: "Dashboard" },
+  { href: "/admin/property", icon: <Building2 size={18} />, text: "Properties" },
+  { href: "/admin/inquiries", icon: <HelpingHand size={18} />, text: "Inquiries" },
+  { href: "/admin/schedules", icon: <Calendar size={18} />, text: "Schedules" },
+  { href: "/admin/articles", icon: <Newspaper size={18} />, text: "Articles" },
+  { href: "/admin/careers", icon: <HardHat size={18} />, text: "Careers" },
+  { href: "/admin/certificates", icon: <Badge size={18} />, text: "Certificates" },
+  { href: "/admin/items", icon: <Box size={18} />, text: "Items" },
+  { href: "/admin/partners", icon: <Handshake size={18} />, text: "Partners" },
+  { href: "/admin/testimonials", icon: <Star size={18} />, text: "Testimonials" },
+  { href: "/admin/user", icon: <User size={18} />, text: "User" },
+  { href: "/admin/settings", icon: <Settings size={18} />, text: "Settings" }
 ];
 
 const SidebarItem: React.FC<{ href: string; icon: JSX.Element; text: string; pathname: string }> = ({ href, icon, text, pathname }) => {
@@ -122,7 +124,7 @@ const SidebarItem: React.FC<{ href: string; icon: JSX.Element; text: string; pat
   return (
     <Link
       href={href}
-      className={`flex items-center top-24 md:top-0 p-2 rounded-lg transition duration-200 ${isActive ? 'bg-violet-500 dark:bg-gray-700 text-white' : 'text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#27272a]'}`}
+      className={`flex items-center top-24 md:top-0 p-2 rounded-lg transition duration-200 ${isActive ? 'bg-violet-500 font-bold dark:bg-gray-700 text-white' : 'text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#27272a]'}`}
     >
       <span className="w-5 h-5">{icon}</span>
       <span className="ml-3">{text}</span>

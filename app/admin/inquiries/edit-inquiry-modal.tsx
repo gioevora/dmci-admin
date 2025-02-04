@@ -63,7 +63,7 @@ const EditModal: React.FC<EditModalProps> = ({ inquiry, isOpen, onClose, mutate 
                                     name="body"
                                     label="Message"
                                     id="body"
-                                    variant="underlined"
+                                    variant="flat"
                                 >
                                 </Field>
                                 <ErrorMessage
