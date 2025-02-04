@@ -34,24 +34,6 @@ const fetchWithToken = async (url: string) => {
     return response.json();
 };
 
-const columns: Column<Article>[] = [
-    { key: 'title', label: 'Title' },
-    { key: 'date', label: 'Date' },
-    { key: 'content', label: 'Content' },
-    { key: 'type', label: 'Type' },
-    {
-        key: 'image',
-        label: 'Image',
-        render: (article) => (
-            <img
-                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/articles/${article.image}`}
-                alt={article.image}
-                className="h-12 w-12 object-contain"
-            />
-        ),
-    },
-];
-
 export default function Property() {
     const { data, error, mutate } = useSWR<{ code: number; message: string; records: Article[] }>(
         'https://abicmanpowerservicecorp.com/api/articles',
@@ -62,6 +44,9 @@ export default function Property() {
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+    // State to manage which article's content is visible
+    const [visibleContent, setVisibleContent] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         if (data && data.records) {
@@ -89,6 +74,18 @@ export default function Property() {
         setSelectedArticle(null);
     };
 
+    const toggleContentVisibility = (id: string) => {
+        setVisibleContent((prev) => {
+            const newVisibleContent = new Set(prev);
+            if (newVisibleContent.has(id)) {
+                newVisibleContent.delete(id);
+            } else {
+                newVisibleContent.add(id);
+            }
+            return newVisibleContent;
+        });
+    };
+
     if (error) {
         return <div>Error: {error.message}</div>;
     }
@@ -96,6 +93,57 @@ export default function Property() {
     if (!data) {
         return <LoadingDot />;
     }
+
+    const columns: Column<Article>[] = [
+        { key: 'title', label: 'Title' },
+        { key: 'date', label: 'Date' },
+        {
+            key: 'content',
+            label: 'Content',
+            render: (article) => {
+                const isContentVisible = visibleContent.has(article.id);
+
+                const contentToShow = isContentVisible
+                    ? article.content
+                    : article.content?.substring(0, 100) + '...';
+
+                return (
+                    <div className="w-[500px] lg:w-[800px]">
+                        <p>{contentToShow}</p>
+                        {article.content?.length > 100 && (
+                            <Link href="#" onClick={() => toggleContentVisibility(article.id)}>
+                                {isContentVisible ? 'See less' : 'See more'}
+                            </Link>
+                        )}
+                    </div>
+                );
+            }
+        },
+        { key: 'type', label: 'Type' },
+        {
+            key: 'image',
+            label: 'Preview',
+            render: (article) => (
+                article.image ? (
+                    article.image.includes('mp4') ? (
+                        <video
+                            src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/articles/${article.image}`}
+                            className="h-12 w-12 object-contain"
+                            controls
+                        />
+                    ) : (
+                        <img
+                            src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/articles/${article.image}`}
+                            alt={article.image}
+                            className="h-12 w-12 object-contain"
+                        />
+                    )
+                ) : (
+                    <p>No media available</p>
+                )
+            ),
+        }
+    ];
 
     return (
         <section className="pt-24 px-4 md:px-12">
@@ -127,7 +175,6 @@ export default function Property() {
                     </CardBody>
                 </Card>
             </div>
-
 
             {selectedArticle && (
                 <EditModal
