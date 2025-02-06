@@ -64,12 +64,7 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-cover bg-no-repeat bg-white p-8 dark:bg-black"
-      style={{
-        backgroundImage:
-          "url('https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/media/admin-bg.png')",
-      }}
-    >
+    <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-white dark:bg-black bg-[url('/image/login-bg.png')] bg-cover bg-center p-8">
       <Card className="w-full max-w-[400px] p-8">
         <CardHeader className="flex flex-col justify-center">
           <div className="py-4">
