@@ -58,7 +58,7 @@ export function DataTable<T extends Record<string, any>>({
                                     {column.label}
                                 </th>
                             ))}
-                            {onAction && <th className="px-4 py-2 border-b bg-violet-500 text-white uppercase text-sm dark:bg-[#27272a]">Actions</th>}
+                            {onAction && <th className="px-4 py-2 border-b bg-violet-500 text-white uppercase text-sm ">Action</th>}
                         </tr>
                     </thead>
                     <tbody>
