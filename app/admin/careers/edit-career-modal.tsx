@@ -12,7 +12,6 @@ const validationSchema = Yup.object({
     position: Yup.string().required('Position is required'),
     slots: Yup.number().required('Slots is required'),
     image: Yup.mixed().required('Image is required'),
-    available_slots: Yup.number().required('Available slots is required'),
 });
 
 
