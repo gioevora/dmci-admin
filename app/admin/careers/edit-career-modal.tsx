@@ -11,7 +11,6 @@ import toast from 'react-hot-toast';
 const validationSchema = Yup.object({
     position: Yup.string().required('Position is required'),
     slots: Yup.number().required('Slots is required'),
-    image: Yup.mixed().required('Image is required'),
 });
 
 interface EditModalProps {

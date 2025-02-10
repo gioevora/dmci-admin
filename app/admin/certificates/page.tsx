@@ -1,5 +1,6 @@
 'use client';
 
+import "lightbox2/dist/css/lightbox.min.css";
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 
@@ -10,29 +11,7 @@ import DeleteCertificateModal from './delete-certificate-modal';
 import EditCertificateModal from './edit-certificate-modal';
 import LoadingDot from '@/components/loading-dot';
 import { Card, CardBody } from '@heroui/react';
-
-const fetchWithToken = async (url: string) => {
-    const token = sessionStorage.getItem('token');
-
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers,
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch data');
-    }
-
-    return response.json();
-};
+import fetchWithToken from "@/app/utils/fetch-with-token";
 
 const columns: Column<Certificate>[] = [
     // { key: 'id', label: 'ID' },
@@ -41,13 +20,19 @@ const columns: Column<Certificate>[] = [
     { key: 'date', label: 'Date' },
     {
         key: 'image',
-        label: 'Logo',
+        label: 'Image',
         render: (certificate) => (
-            <img
-                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/certificates/${certificate.image}`}
-                alt={certificate.image}
-                className="h-12 w-12 object-contain"
-            />
+            <a
+                data-lightbox="gallery"
+                data-title={certificate.name}
+                href={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/certificates/${certificate.image}`}
+            >
+                <img
+                    alt={certificate.name}
+                    className="h-24 w-24 object-cover"
+                    src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/certificates/${certificate.image}`}
+                />
+            </a>
         ),
     },
 ];
@@ -63,6 +48,12 @@ export default function CertificatesPage() {
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedCertificate, setSelectedTestimonial] = useState<Certificate | null>(null);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            require("lightbox2");
+        }
+    }, []);
 
     useEffect(() => {
         if (data && data.records) {

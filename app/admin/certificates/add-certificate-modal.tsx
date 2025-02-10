@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@heroui/react";
 import { Formik, Form, } from 'formik';
 import * as Yup from 'yup';
@@ -11,7 +11,12 @@ import toast from 'react-hot-toast';
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
     date: Yup.string().required('Date is required'),
-    image: Yup.mixed().required('Image is required'),
+    image: Yup.mixed()
+        .required('Image is required')
+        .test('fileType', 'Only image files are allowed', (value) => {
+            if (!value) return false;
+            return value && ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes((value as File).type);
+        }),
 });
 
 interface AddModalProps {
@@ -19,6 +24,7 @@ interface AddModalProps {
 }
 
 const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [imagePreview, setImagePreview] = useState<string | null>();
     const handleSubmit = async (
         values: { user_id: string; name: string; date: string, image: File | null },
         { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
@@ -87,8 +93,22 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     const file = event.target.files?.[0];
                                     setFieldValue('image', file);
+                                    if (file) {
+                                        const imageUrl = URL.createObjectURL(file);
+                                        setImagePreview(imageUrl);
+                                    }
                                 }}
                             />
+                            {imagePreview && (
+                                <div className="mt-2">
+                                    <p className="text-gray-600 text-sm">Image Preview:</p>
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="mt-1 w-full h-32 object-cover justify-center rounded-lg border"
+                                    />
+                                </div>
+                            )}
                             <Button
                                 type="submit"
                                 color="primary"

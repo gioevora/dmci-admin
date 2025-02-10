@@ -6,6 +6,7 @@ import axios from 'axios';
 import CustomInput from '@/components/input';
 import type { Certificate } from '@/app/utils/types';
 import toast from 'react-hot-toast';
+import { useState } from "react";
 
 const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
@@ -21,13 +22,15 @@ interface EditCertificateModalProps {
 }
 
 const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate, isOpen, onClose, mutate }) => {
+    const [imagePreview, setImagePreview] = useState<string | null>(`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/certificates/${certificate?.image}` || null);
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         console.log(values);
 
         try {
+            const token = sessionStorage.getItem('token');
             const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/certificates`, values, {
                 headers: {
-                    'Accept': 'application/json/',
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 }
 
@@ -52,12 +55,12 @@ const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate
                 <ModalBody className="pb-6">
                     <Formik
                         initialValues={{
+                            _method: 'PUT',
                             id: certificate?.id,
                             user_id: certificate?.user_id,
                             name: certificate?.name,
                             date: certificate?.date,
                             image: certificate?.image,
-                            _method: 'PUT',
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -85,8 +88,22 @@ const EditCertificateModal: React.FC<EditCertificateModalProps> = ({ certificate
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                         const file = event.target.files?.[0];
                                         setFieldValue('image', file);
+                                        if (file) {
+                                            const imageUrl = URL.createObjectURL(file);
+                                            setImagePreview(imageUrl);
+                                        }
                                     }}
                                 />
+                                {imagePreview && (
+                                    <div className="mt-2">
+                                        <p className="text-gray-600 text-sm">Image Preview:</p>
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="mt-1 w-full h-32 object-cover justify-center rounded-lg border"
+                                        />
+                                    </div>
+                                )}
                                 <Button
                                     type="submit"
                                     color="primary"

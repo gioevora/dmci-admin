@@ -115,7 +115,7 @@ const sidebarLinks = [
   // { href: "/admin/items", icon: <Box size={18} />, text: "Items" },
   { href: "/admin/partners", icon: <Handshake size={18} />, text: "Partners" },
   { href: "/admin/testimonials", icon: <Star size={18} />, text: "Testimonials" },
-  { href: "/admin/user", icon: <User size={18} />, text: "User" },
+  // { href: "/admin/user", icon: <User size={18} />, text: "User" },
   { href: "/admin/settings", icon: <Settings size={18} />, text: "Settings" }
 ];
 

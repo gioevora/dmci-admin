@@ -2,6 +2,8 @@
 
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
+import "lightbox2/dist/css/lightbox.min.css";
+
 import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import type { Partner } from '@/app/utils/types';
@@ -10,29 +12,7 @@ import AddPartnerModal from './add-partner-modal';
 import EditPartnerModal from './edit-partner-modal';
 import DeletePartnerModal from './delete-partner-modal';
 import { Card, CardBody } from '@heroui/react';
-
-const fetchWithToken = async (url: string) => {
-    const token = sessionStorage.getItem('token');
-
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers,
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch data');
-    }
-
-    return response.json();
-};
+import fetchWithToken from '@/app/utils/fetch-with-token';
 
 const columns: Column<Partner>[] = [
     { key: 'name', label: 'Name' },
@@ -40,11 +20,17 @@ const columns: Column<Partner>[] = [
         key: 'image',
         label: 'Logo',
         render: (partner) => (
-            <img
-                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/partners/${partner.image}`}
-                alt={partner.image}
-                className="h-12 w-12 object-contain"
-            />
+            <a
+                data-lightbox="gallery"
+                data-title={partner.name}
+                href={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/partners/${partner.image}`}
+            >
+                <img
+                    alt={partner.name}
+                    className="h-24 w-24 object-cover"
+                    src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/partners/${partner.image}`}
+                />
+            </a>
         ),
     },
 ];
@@ -57,14 +43,22 @@ export default function Property() {
 
     const [partners, setPartners] = useState<Partner[]>([]);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
-    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // State for delete modal
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
+
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            require("lightbox2");
+        }
+    }, []);
 
     useEffect(() => {
         if (data && data.records) {
             setPartners(data.records);
         }
     }, [data]);
+
 
     const handleAction = (partner: Partner) => {
         setSelectedPartner(partner);

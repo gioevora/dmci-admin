@@ -1,5 +1,6 @@
 'use client';
 
+import "lightbox2/dist/css/lightbox.min.css";
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 import Link from 'next/link'
@@ -11,55 +12,8 @@ import EditCertificateModal from './edit-career-modal';
 import DeleteModal from './delete-career-modal';
 import { Button, Card, CardBody } from "@heroui/react";
 import LoadingDot from '@/components/loading-dot';
+import fetchWithToken from "@/app/utils/fetch-with-token";
 
-const fetchWithToken = async (url: string) => {
-    const token = sessionStorage.getItem('token');
-
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers,
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch data');
-    }
-
-    return response.json();
-};
-
-const columns: Column<Career>[] = [
-    // { key: 'id', label: 'ID' },
-    { key: 'position', label: 'Position' },
-    { key: 'slots', label: 'Slots' },
-    {
-        key: 'applications_count', label: 'Applicants', render: (career) => (
-            <Link href={`/admin/careers/${career.id}`}>
-                <Button size="sm" className="w-full">
-                    {career.applications_count}
-                </Button >
-            </Link>
-        ),
-    },
-    {
-        key: 'image',
-        label: 'Image',
-        render: (career) => (
-            <img
-                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/careers/images/${career.image}`}
-                alt={career.image}
-                className="h-12 w-12 object-contain"
-            />
-        ),
-    },
-];
 
 export default function CertificatesPage() {
     const { data, error, mutate } = useSWR<{
@@ -67,6 +21,45 @@ export default function CertificatesPage() {
         message: string;
         records: Career[];
     }>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/careers`, fetchWithToken);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            require("lightbox2");
+        }
+    }, []);
+
+
+    const columns: Column<Career>[] = [
+        // { key: 'id', label: 'ID' },
+        { key: 'position', label: 'Position' },
+        { key: 'slots', label: 'Slots' },
+        {
+            key: 'applications_count', label: 'Applicants', render: (career) => (
+                <Link href={`/admin/careers/${career.id}`}>
+                    <Button size="sm" className="w-full">
+                        {career.applications_count}
+                    </Button >
+                </Link>
+            ),
+        },
+        {
+            key: 'image',
+            label: 'Image',
+            render: (career) => (
+                <a
+                    data-lightbox="gallery"
+                    data-title={career.position}
+                    href={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/careers/images/${career.image}`}
+                >
+                    <img
+                        alt={career.position}
+                        className="h-24 w-24 object-cover"
+                        src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/careers/images/${career.image}`}
+                    />
+                </a>
+            ),
+        },
+    ];
 
     const [careers, setCareers] = useState<Career[]>([]);
     const [isEditModalOpen, setEditModalOpen] = useState(false);

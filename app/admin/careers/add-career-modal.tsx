@@ -11,7 +11,12 @@ import toast from 'react-hot-toast';
 const validationSchema = Yup.object({
     position: Yup.string().required('Position is required'),
     slots: Yup.number().required('Slots is required'),
-    image: Yup.mixed().required('Image is required'),
+    image: Yup.mixed()
+        .required('Image is required')
+        .test('fileType', 'Only image files are allowed', (value) => {
+            if (!value) return false;
+            return value && ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes((value as File).type);
+        }),
     available_slots: Yup.number().required('Available slots is required'),
 });
 
