@@ -1,21 +1,21 @@
 'use client';
 
-import React, { useState } from 'react'; // React and hooks
-import useSWR from 'swr'; // External hooks
+import React, { useState } from 'react';
+import useSWR from 'swr';
+import { useRouter } from 'next/navigation';
+import { destroyCookie } from 'nookies';
 
-// UI components from @heroui/react
-import { Breadcrumbs, BreadcrumbItem, Card, CardBody, Listbox, ListboxItem } from "@heroui/react";
+import { Breadcrumbs, BreadcrumbItem, Card, CardBody, Listbox, ListboxItem, Button } from "@heroui/react";
 
-// Internal components
 import User from './user';
 import UserForm from './user-form';
 import Certificates from './certificates';
 
-// Utilities
 import fetchWithToken from '@/app/utils/fetch-with-token';
-import { id } from '@/app/utils/storage';
+import { id, token } from '@/app/utils/storage';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
-// Define a mapping for breadcrumb labels
 const breadcrumbLabels: Record<string, string> = {
     account: "Account Settings",
     users: "User List",
@@ -25,6 +25,7 @@ const breadcrumbLabels: Record<string, string> = {
 
 
 export default function Settings() {
+    const router = useRouter();
     const [selectedTab, setSelectedTab] = useState("account");
     const { data } = useSWR(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${id}`,
@@ -34,9 +35,28 @@ export default function Settings() {
         }
     );
 
-
     const user = data?.record || "";
     const avatar = data?.record?.profile?.image || "default_image.jpg";
+
+    const handleLogout = async () => {
+        try {
+            await axios.post(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/logout`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            sessionStorage.clear();
+            destroyCookie(null, 'token', { path: '/' });
+            router.replace('/admin');
+        } catch {
+            toast.error('Something went wrong');
+        }
+    };
+
     return (
         <section className="py-12 px-4 md:px-12">
             <div className="py-8">
@@ -57,11 +77,11 @@ export default function Settings() {
                                 className="w-20 h-20 rounded-full object-cover"
                                 src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/profiles/${avatar}`}
                             />
-                            <div>
+                            < div >
                                 <h1 className="font-semibold text-xl">{user.name}</h1>
                                 <p className="text-tiny text-default-500">{user.email}</p>
-                            </div>
-                        </div>
+                            </div >
+                        </div >
                         <div className="py-4 w-full">
                             <Listbox aria-label="Actions" onAction={(key) => setSelectedTab(key as string)}>
                                 <ListboxItem key="account">Account</ListboxItem>
@@ -72,10 +92,10 @@ export default function Settings() {
                                 </ListboxItem>
                             </Listbox>
                         </div>
-                    </div>
+                    </div >
 
                     {/* Main Content with Tabs */}
-                    <div className="w-full">
+                    < div className="w-full" >
 
                         {selectedTab === "account" && (
                             <section className='py-2 px-2'>
@@ -88,42 +108,58 @@ export default function Settings() {
                                 </div>
                             </section>
                         )}
-                        {selectedTab === "users" && (
-                            <section className='py-2 px-2'>
-                                <h2 className="font-semibold text-lg">Manage Users</h2>
-                                <p>View and manage registered users.</p>
-                                <div className='py-4 flex flex-col gap-4'>
-                                    <Card>
-                                        <CardBody>
-                                            <User />
-                                        </CardBody>
-                                    </Card>
-                                </div>
-                            </section>
-                        )}
-                        {selectedTab === "certificates" && (
-                            <section className='py-2 px-2'>
-                                <div className='py-4 flex flex-col gap-4'>
-                                    <h2 className="font-semibold text-lg">Certificates</h2>
-                                    <p>Manage and upload certification documents.</p>
-                                    <Card>
-                                        <CardBody>
-                                            <Certificates />
-                                        </CardBody>
-                                    </Card>
-                                </div>
-                            </section>
-                        )}
-                        {selectedTab === "logout" && (
-                            <>
-                                <h2 className="font-semibold text-lg text-danger">Log Out</h2>
-                                <p>Are you sure you want to log out?</p>
-                            </>
-                        )}
+                        {
+                            selectedTab === "users" && (
+                                <section className='py-2 px-2'>
+                                    <h2 className="font-semibold text-lg">Manage Users</h2>
+                                    <p>View and manage registered users.</p>
+                                    <div className='py-4 flex flex-col gap-4'>
+                                        <Card>
+                                            <CardBody>
+                                                <User />
+                                            </CardBody>
+                                        </Card>
+                                    </div>
+                                </section>
+                            )
+                        }
+                        {
+                            selectedTab === "certificates" && (
+                                <section className='py-2 px-2'>
+                                    <div className='py-4 flex flex-col gap-4'>
+                                        <h2 className="font-semibold text-lg">Certificates</h2>
+                                        <p>Manage and upload certification documents.</p>
+                                        <Card>
+                                            <CardBody>
+                                                <Certificates />
+                                            </CardBody>
+                                        </Card>
+                                    </div>
+                                </section>
+                            )
+                        }
+                        {
+                            selectedTab === "logout" && (
+                                <>
+                                    <h2 className="font-semibold text-lg text-danger">Log Out</h2>
+                                    <p>Are you sure you want to log out?</p>
+                                    <div className="pt-4">
+                                        <Button
+                                            variant="solid"
+                                            color="warning"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </Button>
+                                    </div>
 
-                    </div>
-                </div>
-            </div>
-        </section>
+                                </>
+                            )
+                        }
+
+                    </div >
+                </div >
+            </div >
+        </section >
     );
 }
