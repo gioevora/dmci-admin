@@ -15,6 +15,7 @@ import {
   Image,
 } from "@heroui/react";
 import { setCookie } from 'nookies';
+import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -54,11 +55,14 @@ export default function LoginPage() {
           setCookie(undefined, 'token', token, { path: '/' });
           router.replace('/admin');
         } else {
-          alert('Invalid email or password');
+          toast.error('Invalid email or password');
         }
       } catch (error) {
-        console.error('Error logging in:', error);
-        alert('Something went wrong. Please try again.');
+        // console.error('Error logging in:', error);
+        toast.error('Something went wrong. Please try again.');
+      }
+      finally {
+        setLoading(false);
       }
     },
   });
