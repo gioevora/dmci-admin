@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
 import { Toaster } from "react-hot-toast";
 
@@ -50,17 +49,6 @@ export default function RootLayout({
               />
               {children}
             </main>
-            <footer className="w-full flex items-center justify-center py-3">
-              <Link
-                isExternal
-                className="flex items-center gap-1 text-current"
-                href="https://abic-realty.com"  // Replace with your actual website link
-                title="Abic Realty and Consultancy Corporation"
-              >
-                <p className="text-primary">Abic Realty and Consultancy Corporation</p>
-              </Link>
-              <span className="text-default-600 text-sm ml-2">| All rights reserved</span>
-            </footer>
           </div>
         </Providers>
       </body>
