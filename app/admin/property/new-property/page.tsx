@@ -37,7 +37,7 @@ const validationSchema = Yup.object({
         .email("Invalid email address")
         .required("Email is required"),
     phone: Yup.string()
-        .matches(/^[0-9]+$/, "Phone number must be numeric")
+        .matches(/^[0-9]{11}$/, "Phone number must be 11 digits")
         .required("Phone number is required"),
     type: Yup.string().required("Type is required"),
 
@@ -72,6 +72,7 @@ const NewPropertyPage = () => {
     const [selectedtPayment, setSelectedPayment] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
     const [propertyStatus, setPropertyStatus] = useState("");
+    const [previewImages, setPreviewImages] = useState<string[]>([]);
 
     const formik = useFormik({
         initialValues: {
@@ -191,8 +192,12 @@ const NewPropertyPage = () => {
                                     type="text"
                                     value={formik.values.first_name}
                                     onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/[^A-Za-z\s]/g, "");
+                                        formik.setFieldValue("first_name", value);
+                                    }}
                                 />
+
                                 {formik.touched.first_name && formik.errors.first_name && (
                                     <p className="text-red-500 text-sm">
                                         {formik.errors.first_name}
@@ -207,7 +212,10 @@ const NewPropertyPage = () => {
                                     type="text"
                                     value={formik.values.last_name}
                                     onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/[^A-Za-z\s]/g, "");
+                                        formik.setFieldValue("last_name", value);
+                                    }}
                                 />
                                 {formik.touched.last_name && formik.errors.last_name && (
                                     <p className="text-red-500 text-sm">
@@ -236,10 +244,15 @@ const NewPropertyPage = () => {
                                     label="Phone Number"
                                     name="phone"
                                     placeholder="eg. 09924401097"
-                                    type="number"
+                                    type="text"
+                                    maxLength={11}
+                                    pattern="\d{11}"
                                     value={formik.values.phone}
                                     onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, "");
+                                        formik.setFieldValue("phone", value.slice(0, 11));
+                                    }}
                                 />
                                 {formik.touched.phone && formik.errors.phone && (
                                     <p className="text-red-500 text-sm">
@@ -373,11 +386,14 @@ const NewPropertyPage = () => {
                                 <Input
                                     label="Property Price"
                                     name="price"
-                                    placeholder="eg. 0.00"
+                                    placeholder="eg. 0"
                                     type="text"
                                     value={formik.values.price}
                                     onBlur={formik.handleBlur}
-                                    onChange={formik.handleChange}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, "");
+                                        formik.setFieldValue("price", value);
+                                    }}
                                 />
                                 {formik.touched.price &&
                                     formik.errors.price && (
@@ -654,12 +670,27 @@ const NewPropertyPage = () => {
 
                                         if (files) {
                                             formik.setFieldValue("images", files);
+                                            const fileArray = Array.from(files).map((file) =>
+                                                URL.createObjectURL(file)
+                                            );
+                                            setPreviewImages(fileArray);
                                         }
                                     }}
                                 />
                                 {formik.errors.images && formik.touched.images && (
                                     <div className="text-red-500 text-sm">{formik.errors.images}</div>
                                 )}
+                                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {previewImages.map((image, index) => (
+                                        <div key={index} className="relative">
+                                            <img
+                                                src={image}
+                                                alt={`Preview ${index}`}
+                                                className="w-full h-32 object-cover rounded-md"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
                             <Button

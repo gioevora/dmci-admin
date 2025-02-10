@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
         .email("Invalid email address")
         .required("Email is required"),
     phone: Yup.string()
-        .matches(/^[0-9]+$/, "Phone number must be numeric")
+        .matches(/^[0-9]{11}$/, "Phone number must be 11 digits")
         .required("Phone number is required"),
     type: Yup.string().required("Type is required"),
 
@@ -148,19 +148,38 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                 </h1>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <CustomInput
-                                        name="first_name"
-                                        label="First Name"
-                                        type="text"
-                                        error={touched.first_name ? errors.first_name : undefined}
-                                    />
-                                    <CustomInput
-                                        name="last_name"
-                                        label="Last Name"
-                                        type="text"
-                                        error={touched.last_name ? errors.last_name : undefined}
-                                    />
-
+                                    <div>
+                                        <Field as={Input}
+                                            name="first_name"
+                                            label="First Name"
+                                            variant="flat"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                const filteredValue = e.target.value.replace(/[^A-Za-z\s]/g, "");
+                                                setFieldValue("first_name", filteredValue);
+                                            }}
+                                        />
+                                        {touched.first_name && errors.first_name && (
+                                            <FormikCustomError>
+                                                {errors.first_name}
+                                            </FormikCustomError>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Field as={Input}
+                                            name="last_name"
+                                            label="Last Name"
+                                            variant="flat"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                const filteredValue = e.target.value.replace(/[^A-Za-z\s]/g, "");
+                                                setFieldValue("last_name", filteredValue);
+                                            }}
+                                        />
+                                        {touched.last_name && errors.last_name && (
+                                            <FormikCustomError>
+                                                {errors.last_name}
+                                            </FormikCustomError>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -170,12 +189,23 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                         type="email"
                                         error={touched.email ? errors.email : undefined}
                                     />
-                                    <CustomInput
-                                        name="phone"
-                                        label="Phone"
-                                        type="number"
-                                        error={touched.phone ? errors.phone : undefined}
-                                    />
+                                    <div>
+                                        <Field as={Input}
+                                            name="phone"
+                                            label="Phone"
+                                            variant="flat"
+                                            maxLength={11}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                const value = e.target.value.replace(/\D/g, "");
+                                                setFieldValue("phone", value.slice(0, 11));
+                                            }}
+                                        />
+                                        {touched.phone && errors.phone && (
+                                            <FormikCustomError>
+                                                {errors.phone}
+                                            </FormikCustomError>
+                                        )}
+                                    </div>
 
                                     <Field as={Select}
                                         label="Type"
@@ -242,12 +272,28 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                     />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <CustomInput
+                                    {/* <CustomInput
                                         name="price"
                                         label="Property Price"
                                         type="text"
                                         error={touched.price ? errors.price : undefined}
-                                    />
+                                    /> */}
+                                    <div>
+                                        <Field as={Input}
+                                            name="price"
+                                            label="Property Price"
+                                            variant="flat"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                const value = e.target.value.replace(/\D/g, "");
+                                                setFieldValue("price", value);
+                                            }}
+                                        />
+                                        {touched.phone && errors.phone && (
+                                            <FormikCustomError>
+                                                {errors.phone}
+                                            </FormikCustomError>
+                                        )}
+                                    </div>
                                     <CustomInput
                                         name="area"
                                         label="Square Meter"
@@ -414,20 +460,35 @@ const PropertyEdit: React.FC<PropertyEditProps> = ({ property_id }) => {
                                 <p className="text-default-500 text-small">Selected: {selectedAmenities.join(", ")}</p>
                                 <Field name="images">
                                     {({ form }: { form: any }) => (
-                                        <Input
-                                            id="images"
-                                            type="file"
-                                            size="lg"
-                                            multiple
-                                            accept="image/*"
-                                            onChange={(event) => {
-                                                const files = event.currentTarget.files;
-                                                if (files) {
-                                                    form.setFieldValue("images", Array.from(files));
-                                                }
-                                            }}
-                                            variant="flat"
-                                        />
+                                        <>
+                                            <Input
+                                                id="images"
+                                                type="file"
+                                                size="lg"
+                                                multiple
+                                                accept="image/*"
+                                                onChange={(event) => {
+                                                    const files = event.currentTarget.files;
+                                                    if (files) {
+                                                        form.setFieldValue("images", Array.from(files));
+                                                    }
+                                                }}
+                                                variant="flat"
+                                            />
+                                            {form.values.images && form.values.images.length > 0 && (
+                                                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                    {form.values.images.map((file: File, index: number) => (
+                                                        <div key={index} className="relative">
+                                                            <img
+                                                                src={URL.createObjectURL(file)}
+                                                                alt={`Preview ${index}`}
+                                                                className="w-full h-auto object-cover"
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </>
                                     )}
                                 </Field>
                                 <Button
