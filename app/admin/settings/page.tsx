@@ -34,8 +34,9 @@ export default function Settings() {
         }
     );
 
+
     const user = data?.record || "";
-    const avatar = data?.record.profile.image || "";
+    const avatar = data?.record?.profile?.image || "default_image.jpg";
     return (
         <section className="py-12 px-4 md:px-12">
             <div className="py-8">
