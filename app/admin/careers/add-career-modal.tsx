@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@heroui/react";
 import { Formik, Form, } from 'formik';
 import * as Yup from 'yup';
@@ -20,6 +20,7 @@ interface AddModalProps {
 }
 
 const AddCareerModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [imagePreview, setImagePreview] = useState<string | null>();
     const handleSubmit = async (
         values: any,
         { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
@@ -89,8 +90,22 @@ const AddCareerModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     const file = event.target.files?.[0];
                                     setFieldValue('image', file);
+                                    if (file) {
+                                        const imageUrl = URL.createObjectURL(file);
+                                        setImagePreview(imageUrl);
+                                    }
                                 }}
                             />
+                            {imagePreview && (
+                                <div className="mt-2">
+                                    <p className="text-gray-600 text-sm">Image Preview:</p>
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="mt-1 w-full h-32 object-cover justify-center rounded-lg border"
+                                    />
+                                </div>
+                            )}
                             <Button
                                 type="submit"
                                 color="primary"

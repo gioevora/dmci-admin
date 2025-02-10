@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
@@ -14,7 +14,6 @@ const validationSchema = Yup.object({
     image: Yup.mixed().required('Image is required'),
 });
 
-
 interface EditModalProps {
     career: Career | null;
     isOpen: boolean;
@@ -23,17 +22,16 @@ interface EditModalProps {
 }
 
 const EditModal: React.FC<EditModalProps> = ({ career, isOpen, onClose, mutate }) => {
-
+    const [imagePreview, setImagePreview] = useState<string | null>(`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/careers/images/${career?.image}` || null);
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
             const token = sessionStorage.getItem('token');
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/careers`, values, {
+            await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/careers`, values, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 }
-
             });
             onClose();
             toast.success('Operation successful!');
@@ -55,11 +53,10 @@ const EditModal: React.FC<EditModalProps> = ({ career, isOpen, onClose, mutate }
                     <Formik
                         initialValues={{
                             id: career?.id,
-                            position: career?.position,
-                            slots: career?.slots,
-                            image: career?.image,
+                            position: career?.position || '',
+                            slots: career?.slots || '',
+                            image: career?.image || null,
                             _method: 'PUT',
-
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -77,8 +74,9 @@ const EditModal: React.FC<EditModalProps> = ({ career, isOpen, onClose, mutate }
                                     name="slots"
                                     label="Slots"
                                     type="number"
-                                    error={touched.position ? errors.position : undefined}
+                                    error={touched.slots ? errors.slots : undefined}
                                 />
+
                                 <CustomInput
                                     name="image"
                                     label="Image"
@@ -87,8 +85,22 @@ const EditModal: React.FC<EditModalProps> = ({ career, isOpen, onClose, mutate }
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                         const file = event.target.files?.[0];
                                         setFieldValue('image', file);
+                                        if (file) {
+                                            const imageUrl = URL.createObjectURL(file);
+                                            setImagePreview(imageUrl);
+                                        }
                                     }}
                                 />
+                                {imagePreview && (
+                                    <div className="mt-2">
+                                        <p className="text-gray-600 text-sm">Image Preview:</p>
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="mt-1 w-full h-32 object-cover justify-center rounded-lg border"
+                                        />
+                                    </div>
+                                )}
                                 <Button
                                     type="submit"
                                     color="primary"
