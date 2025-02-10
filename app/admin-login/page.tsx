@@ -56,12 +56,11 @@ export default function LoginPage() {
           router.replace('/admin');
         } else {
           toast.error('Invalid email or password');
+          setLoading(false);
         }
       } catch (error) {
         console.error('Error logging in:', error);
         toast.error('Something went wrong. Please try again.');
-      }
-      finally {
         setLoading(false);
       }
     },
