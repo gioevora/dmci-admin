@@ -28,6 +28,7 @@ export interface Article {
     date: string;
     content: string;
     type: string;
+    url: string;
     image: string;
 }
 

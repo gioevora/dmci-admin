@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from "@heroui/react";
+import { Button, Textarea } from "@heroui/react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -87,11 +87,13 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 type="date"
                                 error={touched.date ? errors.date : undefined}
                             />
-                            <CustomInput
+                            <Field as={Textarea}
                                 name="content"
                                 label="Content"
-                                type="text"
-                                error={touched.content ? errors.content : undefined}
+                            />
+                            <ErrorMessage
+                                name="content"
+                                render={(msg) => <FormikCustomError children={msg} />}
                             />
                             <Field as="select"
                                 name="type"
@@ -115,7 +117,6 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 type="text"
                             // error={touched.content ? errors.content : undefined}
                             />
-
                             <CustomInput
                                 name="image"
                                 label="Image/Video"

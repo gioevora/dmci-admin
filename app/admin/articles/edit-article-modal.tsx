@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from "@heroui/react";
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -14,14 +14,6 @@ const validationSchema = Yup.object({
     date: Yup.string().required('Date is required'),
     content: Yup.string().required('Content is required'),
     type: Yup.string().required('Type is required'),
-    image: Yup.mixed()
-        .required('File is required')
-        .test('fileType', 'File must be an image or a video', (value) => {
-            if (!value) return false;
-
-            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
-            return validTypes.includes((value as File).type);
-        }),
 });
 
 interface EditModalProps {
@@ -68,6 +60,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                             date: article?.date,
                             content: article?.content,
                             type: article?.type,
+                            url: article?.url,
                             image: article?.image,
                             _method: 'PUT',
 
@@ -91,11 +84,19 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     type="date"
                                     error={touched.date ? errors.date : undefined}
                                 />
-                                <CustomInput
+                                <Field as={Textarea}
                                     name="content"
                                     label="Content"
+                                />
+                                <ErrorMessage
+                                    name="content"
+                                    render={(msg) => <FormikCustomError children={msg} />}
+                                />
+                                <CustomInput
+                                    name="url"
+                                    label="URL"
                                     type="text"
-                                    error={touched.content ? errors.content : undefined}
+                                // error={touched.content ? errors.content : undefined}
                                 />
                                 <Field as="select"
                                     name="type"
@@ -116,7 +117,6 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     name="image"
                                     label="Image/Video"
                                     type="file"
-                                    error={touched.image ? errors.image : undefined}
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                         const file = event.target.files?.[0];
                                         setFieldValue('image', file);
@@ -136,7 +136,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                     </Formik>
                 </ModalBody>
             </ModalContent>
-        </Modal>
+        </Modal >
     );
 };
 

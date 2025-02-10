@@ -58,7 +58,7 @@ export default function LoginPage() {
           toast.error('Invalid email or password');
         }
       } catch (error) {
-        // console.error('Error logging in:', error);
+        console.error('Error logging in:', error);
         toast.error('Something went wrong. Please try again.');
       }
       finally {
