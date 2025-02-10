@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal as FortuneUIModal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Button } from "@heroui/react"
-import { IoAddCircleOutline  } from "react-icons/io5";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 interface ModalProps {
     title?: string
@@ -14,8 +14,8 @@ export const Modal: React.FC<ModalProps> = ({ title, buttonLabel, children, foot
 
     return (
         <>
-            <Button startContent={<IoAddCircleOutline  size={24}/> } className='bg-violet-500 text-white capitalize' onPress={onOpen}>{buttonLabel}</Button>
-            <FortuneUIModal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
+            <Button startContent={<IoAddCircleOutline size={24} />} className='bg-violet-500 text-white capitalize' onPress={onOpen}>{buttonLabel}</Button>
+            <FortuneUIModal scrollBehavior="inside" placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
                     <ModalBody className="pb-6">

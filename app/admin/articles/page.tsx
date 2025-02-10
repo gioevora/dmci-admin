@@ -1,39 +1,20 @@
 'use client';
 
-import useSWR from 'swr';
+import "lightbox2/dist/css/lightbox.min.css";
 import { useEffect, useState } from 'react';
-import { DataTable } from '@/components/data-table';
-import { Column } from '@/app/utils/types';
+import useSWR from 'swr';
+
+import fetchWithToken from '@/app/utils/fetch-with-token';
 import type { Article } from '@/app/utils/types';
+import { Column } from '@/app/utils/types';
+
+import { DataTable } from '@/components/data-table';
 import LoadingDot from '@/components/loading-dot';
 import AddModal from './add-article-modal';
 import EditModal from './edit-article-modal';
 import DeleteModal from './delete-article-modal';
+
 import { BreadcrumbItem, Breadcrumbs, Card, CardBody, Link } from '@heroui/react';
-
-const fetchWithToken = async (url: string) => {
-    const token = sessionStorage.getItem('token');
-
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers,
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch data');
-    }
-
-    return response.json();
-};
-
 export default function Property() {
     const { data, error, mutate } = useSWR<{ code: number; message: string; records: Article[] }>(
         'https://abicmanpowerservicecorp.com/api/articles',
@@ -47,6 +28,12 @@ export default function Property() {
 
     // State to manage which article's content is visible
     const [visibleContent, setVisibleContent] = useState<Set<string>>(new Set());
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            require("lightbox2");
+        }
+    }, []);
 
     useEffect(() => {
         if (data && data.records) {
@@ -128,15 +115,22 @@ export default function Property() {
                     article.image.includes('mp4') ? (
                         <video
                             src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/articles/${article.image}`}
-                            className="h-12 w-12 object-contain"
+                            className="h-24 w-24 object-fit"
                             controls
+                            poster="/image/play-button.png"
                         />
                     ) : (
-                        <img
-                            src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/articles/${article.image}`}
-                            alt={article.image}
-                            className="h-12 w-12 object-contain"
-                        />
+                        <a
+                            data-lightbox="gallery"
+                            data-title={article.title}
+                            href={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/articles/${article.image}`}
+                        >
+                            <img
+                                alt={article.title}
+                                className="h-24 w-24 object-cover"
+                                src={`https://abic-agent-bakit.s3.ap-southeast-1.amazonaws.com/articles/${article.image}`}
+                            />
+                        </a>
                     )
                 ) : (
                     <p>No media available</p>

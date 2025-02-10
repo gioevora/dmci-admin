@@ -96,6 +96,7 @@ export function DataTable<T extends Record<string, any>>({
                                                 ${column.key === 'type' && item.type === 'Seminars' ? 'bg-emerald-200 text-emerrald-700 ' : ''}
                                                 ${column.key === 'type' && item.type === 'Closed Deals' ? 'bg-cyan-200 text-cyan-700 ' : ''}
                                                 ${column.key === 'type' && item.type === 'Events' ? 'bg-purple-200 text-purple-700 ' : ''}
+                                                ${column.key === 'type' && item.type === 'Meetings' ? 'bg-red-200 text-red-700 ' : ''}
                                                 ${column.key === 'type' && item.type === 'Admin' ? 'bg-red-200 text-red-700 ' : ''}
                                                   ${column.key === 'type' && item.type === 'Agent' ? 'bg-green-200 text-green-700 ' : ''}
                                                 `}>

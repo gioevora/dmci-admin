@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from "@heroui/react";
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import * as Yup from 'yup';
@@ -24,7 +24,8 @@ interface EditModalProps {
 }
 
 const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate }) => {
-
+    const [preview, setPreview] = useState<string | null>(null);
+    const [isVideo, setIsVideo] = useState<boolean>(false);
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
@@ -47,7 +48,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
     };
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
+        <Modal scrollBehavior="inside" isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
                 <ModalHeader>
                     <h1>Edit {article?.title}</h1>
@@ -55,6 +56,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                 <ModalBody className="pb-6">
                     <Formik
                         initialValues={{
+                            _method: 'PUT',
                             id: article?.id,
                             title: article?.title,
                             date: article?.date,
@@ -62,8 +64,6 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                             type: article?.type,
                             url: article?.url,
                             image: article?.image,
-                            _method: 'PUT',
-
                         }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
@@ -117,11 +117,23 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     name="image"
                                     label="Image/Video"
                                     type="file"
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    onChange={(event) => {
                                         const file = event.target.files?.[0];
-                                        setFieldValue('image', file);
+                                        if (file) {
+                                            setFieldValue('image', file);
+                                            setPreview(URL.createObjectURL(file));
+                                            setIsVideo(file.type.startsWith('video'));
+                                        }
                                     }}
                                 />
+                                {preview && (
+                                    <div className="relative mt-2">
+                                        {isVideo
+                                            ? (<video poster="/image/play-button.png" controls className="w-full h-auto"><source src={preview} /></video>)
+                                            : (<img src={preview} alt="Preview" className="w-full h-auto object-cover" />)
+                                        }
+                                    </div>
+                                )}
                                 <Button
                                     type="submit"
                                     color="primary"

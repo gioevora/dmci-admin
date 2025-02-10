@@ -1,13 +1,12 @@
-import React from 'react';
-import { Button, Textarea } from "@heroui/react";
+import React, { useState } from 'react';
+import { Button } from "@heroui/react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
 import { Modal } from '@/components/add-modal';
-import CustomInput from '@/components/input';
-import { AlertCircle } from 'lucide-react';
+import CustomInput from '@/components/input'; 0;
 import FormikCustomError from '@/components/formik-custom-error';
 
 const validationSchema = Yup.object({
@@ -30,6 +29,9 @@ interface AddModalProps {
 }
 
 const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [preview, setPreview] = useState<string | null>(null);
+    const [isVideo, setIsVideo] = useState<boolean>(false);
+
     const handleSubmit = async (
         values: any,
         { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
@@ -51,6 +53,8 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
             if (imageInput) {
                 imageInput.value = '';
             }
+            setPreview(null);
+            setIsVideo(false);
         } catch {
             toast.error('Something went wrong.');
         } finally {
@@ -87,13 +91,11 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 type="date"
                                 error={touched.date ? errors.date : undefined}
                             />
-                            <Field as={Textarea}
+                            <CustomInput
                                 name="content"
                                 label="Content"
-                            />
-                            <ErrorMessage
-                                name="content"
-                                render={(msg) => <FormikCustomError children={msg} />}
+                                type="text"
+                                error={touched.content ? errors.content : undefined}
                             />
                             <Field as="select"
                                 name="type"
@@ -115,19 +117,29 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 name="url"
                                 label="URL"
                                 type="text"
-                            // error={touched.content ? errors.content : undefined}
                             />
                             <CustomInput
                                 name="image"
                                 label="Image/Video"
                                 type="file"
                                 error={touched.image ? errors.image : undefined}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                onChange={(event) => {
                                     const file = event.target.files?.[0];
-                                    setFieldValue('image', file);
+                                    if (file) {
+                                        setFieldValue('image', file);
+                                        setPreview(URL.createObjectURL(file));
+                                        setIsVideo(file.type.startsWith('video'));
+                                    }
                                 }}
                             />
-
+                            {preview && (
+                                <div className="relative mt-2">
+                                    {isVideo
+                                        ? (<video poster="/image/play-button.png" controls className="w-full h-auto"><source src={preview} /></video>)
+                                        : (<img src={preview} alt="Preview" className="w-full h-auto object-cover" />)
+                                    }
+                                </div>
+                            )}
                             <Button
                                 type="submit"
                                 color="primary"
@@ -146,10 +158,3 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
 };
 
 export default AddModal;
-
-const ErrorMessageComponent = ({ children }: { children: React.ReactNode }) => (
-    <div className="mt-1 flex items-center gap-1 text-sm text-red-500">
-        <AlertCircle size={16} />
-        <span>{children}</span>
-    </div>
-);
