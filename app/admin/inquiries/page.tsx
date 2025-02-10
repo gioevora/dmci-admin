@@ -6,35 +6,10 @@ import { DataTable } from '@/components/data-table';
 import { Column } from '@/app/utils/types';
 import type { Inquiry } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
-// import AddModal from './add-inquiry-modal';
 import EditModal from './edit-inquiry-modal';
 import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, Link } from "@heroui/react";
-// import DeleteModal from './delete-inquiry-modal';
-
-const fetchWithToken = async (url: string) => {
-    const token = sessionStorage.getItem('token');
-
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers,
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch data');
-    }
-
-    return response.json();
-};
-
-
+import DeleteModal from './delete-inquiry-modal';
+import fetchWithToken from '@/app/utils/fetch-with-token';
 
 export default function Property() {
     const { data, error, mutate } = useSWR<{ code: number; message: string; records: Inquiry[] }>(
@@ -72,13 +47,20 @@ export default function Property() {
             key: 'id',
             label: 'Action',
             render: (data) => (
-                <div className="truncate">
+                <div className="flex gap-2">
                     <Button
                         className='bg-violet-500 text-white'
                         onClick={() => handleAction(data)}
                         size="sm"
                     >
                         Reply
+                    </Button>
+                    <Button
+                        className='bg-red-500 text-white'
+                        onClick={() => handleDelete(data)}
+                        size="sm"
+                    >
+                        Delete
                     </Button>
                 </div>
             ),
@@ -164,7 +146,7 @@ export default function Property() {
                     onClose={handleCloseEditModal}
                 />
             )}
-            {/* 
+
             {selectedInquiry && (
                 <DeleteModal
                     inquiry={selectedInquiry}
@@ -172,7 +154,7 @@ export default function Property() {
                     mutate={mutate}
                     onClose={handleCloseDeleteModal}
                 />
-            )} */}
+            )}
         </section>
     );
 }

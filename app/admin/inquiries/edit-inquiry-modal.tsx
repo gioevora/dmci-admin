@@ -73,7 +73,7 @@ const EditModal: React.FC<EditModalProps> = ({ inquiry, isOpen, onClose, mutate 
                                 >
                                 </Field>
                                 <ErrorMessage
-                                    name="type"
+                                    name="body"
                                     render={(msg) => <FormikCustomError children={msg} />}
                                 />
                                 <Button
