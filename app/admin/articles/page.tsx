@@ -144,14 +144,14 @@ export default function Property() {
             <div className="flex justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-violet-800 uppercase text-center">articles</h1>
-                    <Breadcrumbs>
+                    {/* <Breadcrumbs>
                         <BreadcrumbItem>
                             <Link href="/">Home</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem>
                             <Link href="/properties">Articles</Link>
                         </BreadcrumbItem>
-                    </Breadcrumbs>
+                    </Breadcrumbs> */}
                 </div>
                 <AddModal mutate={mutate} />
             </div>

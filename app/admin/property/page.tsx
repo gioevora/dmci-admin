@@ -133,14 +133,14 @@ export default function Property() {
             <div className="flex flex-col justify-center md:flex-row md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-violet-800 uppercase text-center">Property list</h1>
-                    <Breadcrumbs>
+                    {/* <Breadcrumbs>
                         <BreadcrumbItem>
                             <Link href="/">Home</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem>
                             <Link href="/properties">Properties</Link>
                         </BreadcrumbItem>
-                    </Breadcrumbs>
+                    </Breadcrumbs> */}
                 </div>
                 <Button className='bg-violet-500 text-white capitalize' startContent={<BsHouseAddFill size={16} />} onClick={() => router.push('/admin/property/new-property')}>
                     Add new property
