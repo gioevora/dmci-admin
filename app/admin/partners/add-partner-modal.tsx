@@ -52,7 +52,7 @@ const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
     };
 
     return (
-        <Modal title="Add new partner" buttonLabel="Add new partner" isOpen={isOpen} setIsOpen={setIsOpen}>
+        <Modal title="Add partner" buttonLabel="Add partner" isOpen={isOpen} setIsOpen={setIsOpen}>
             <Formik
                 initialValues={{
                     name: '',

@@ -144,7 +144,7 @@ const NewPropertyPage = () => {
 
 
                 router.replace("/admin/property")
-                toast.success("Inquiry submitted successfully!");
+                toast.success("Operation successful!");
                 resetForm();
             } catch (error) {
                 if (axios.isAxiosError(error)) {

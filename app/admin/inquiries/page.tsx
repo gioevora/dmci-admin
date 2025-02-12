@@ -111,8 +111,6 @@ export default function Property() {
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-semibold text-violet-800 uppercase">Inquiries</h1>
             </div>
-
-
             <div className='py-6'>
                 <Card>
                     <CardBody>

@@ -63,7 +63,7 @@ const AddCareerModal: React.FC<AddModalProps> = ({ mutate }) => {
     const user_id = sessionStorage.getItem('id') || '';
 
     return (
-        <Modal title="Add new career" buttonLabel="Add new career" isOpen={isOpen} setIsOpen={setIsOpen}>
+        <Modal title="Add career" buttonLabel="Add career" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{

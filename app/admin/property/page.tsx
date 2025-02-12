@@ -133,7 +133,7 @@ export default function Property() {
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-semibold text-violet-800 uppercase">Properties</h1>
                 <Button className='bg-violet-500 text-white capitalize' startContent={<BsHouseAddFill size={16} />} onClick={() => router.push('/admin/property/new-property')}>
-                    Add new property
+                    Add property
                 </Button>
             </div>
 

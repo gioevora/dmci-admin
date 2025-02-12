@@ -61,7 +61,7 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
     const user_id = sessionStorage.getItem('id') || '';
 
     return (
-        <Modal title="Add new certificate" buttonLabel="Add new certificate" isOpen={isOpen} setIsOpen={setIsOpen}>
+        <Modal title="Add certificate" buttonLabel="Add certificate" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{
