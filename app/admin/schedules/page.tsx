@@ -8,6 +8,7 @@ import { Button, Card, CardBody } from "@heroui/react";
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import LoadingDot from '@/components/loading-dot';
+import SeeMoreText from '@/components/see-more-text';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -59,7 +60,7 @@ const columns: Column<Schedule>[] = [
     { key: "time", label: "Time" },
     { key: "type", label: "Type" },
     { key: "properties", label: "Properties" },
-    { key: "message", label: "Message" },
+    { key: "message", label: "Message", render: (data) => <SeeMoreText text={data.message || "No message"} /> },
     { key: "status", label: "Status" },
     {
         key: "id",
@@ -168,12 +169,12 @@ export default function Home() {
             <div className='py-6'>
                 <Card>
                     <CardBody>
-                    <DataTable<Schedule> data={users} columns={columns} itemsPerPage={5} />
+                        <DataTable<Schedule> data={users} columns={columns} itemsPerPage={5} />
                     </CardBody>
                 </Card>
             </div>
 
-          
+
         </section>
     );
 }

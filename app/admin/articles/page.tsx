@@ -15,6 +15,7 @@ import EditModal from './edit-article-modal';
 import DeleteModal from './delete-article-modal';
 
 import { BreadcrumbItem, Breadcrumbs, Card, CardBody, Link } from '@heroui/react';
+import SeeMoreText from "@/components/see-more-text";
 export default function Property() {
     const { data, error, mutate } = useSWR<{ code: number; message: string; records: Article[] }>(
         'https://abicmanpowerservicecorp.com/api/articles',
@@ -84,28 +85,7 @@ export default function Property() {
     const columns: Column<Article>[] = [
         { key: 'title', label: 'Title' },
         { key: 'date', label: 'Date' },
-        {
-            key: 'content',
-            label: 'Content',
-            render: (article) => {
-                const isContentVisible = visibleContent.has(article.id);
-
-                const contentToShow = isContentVisible
-                    ? article.content
-                    : article.content?.substring(0, 100) + '...';
-
-                return (
-                    <div className="w-[500px] lg:w-[800px]">
-                        <p>{contentToShow}</p>
-                        {article.content?.length > 100 && (
-                            <Link href="#" onClick={() => toggleContentVisibility(article.id)}>
-                                {isContentVisible ? 'See less' : 'See more'}
-                            </Link>
-                        )}
-                    </div>
-                );
-            }
-        },
+        { key: 'content', label: 'Content', render: (data) => <div className="w-[500px] lg:w-[800px]"><SeeMoreText text={data.content || "No message"} /></div> },
         { key: 'type', label: 'Type' },
         {
             key: 'image',

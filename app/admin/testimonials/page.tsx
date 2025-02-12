@@ -10,6 +10,7 @@ import DeleteTestimonial from './delete-testimonial-modal';
 import EditTestimonialModal from './edit-testimonial-modal';
 import LoadingDot from '@/components/loading-dot';
 import { Card, CardBody } from '@heroui/react';
+import SeeMoreText from '@/components/see-more-text';
 
 const fetchWithToken = async (url: string) => {
     const token = sessionStorage.getItem('token');
@@ -39,7 +40,7 @@ const columns: Column<Testimonial>[] = [
     // { key: 'user_id', label: 'User ID' },
     { key: 'first_name', label: 'First Name' },
     { key: 'last_name', label: 'Last Name' },
-    { key: 'message', label: 'Message' },
+    { key: 'message', label: 'Message', render: (data) => <div className="w-[500px] lg:w-[800px]"><SeeMoreText text={data.message || "No message"} /></div> },
 ];
 
 export default function TestimonialsPage() {
