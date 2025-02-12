@@ -92,7 +92,7 @@ export default function CertificatesPage() {
     return (
         <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold">Certificates Table</h1>
+                <h1 className="text-2xl font-bold">Certificates</h1>
                 <AddTestimonialModal mutate={mutate} />
             </div>
 

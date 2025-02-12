@@ -91,7 +91,7 @@ export default function Property() {
     return (
         <section className="pt-24 px-4 md:px-12">
             <div className="flex justify-between">
-                <h1 className="text-2xl font-semibold text-violet-800 mb-4 uppercase">Partner Table</h1>
+                <h1 className="text-2xl font-semibold text-violet-800 mb-4 uppercase">Partner</h1>
                 <AddPartnerModal mutate={mutate} />
             </div>
 

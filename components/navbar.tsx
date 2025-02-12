@@ -58,11 +58,11 @@ const Navbar: React.FC = () => {
           {/* Right Section */}
           <div className="flex items-center space-x-4">
             <ThemeSwitch />
-            <img
+            {/* <img
               className="w-8 h-8 rounded-full"
               src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
               alt="User Profile"
-            />
+            /> */}
           </div>
         </div>
       </nav>
