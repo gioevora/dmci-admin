@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from 'next/navigation';
 import {
     Button,
     Card,
@@ -14,7 +15,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Images } from "lucide-react";
 
 import {
     agents,
@@ -28,6 +28,7 @@ import {
     payment,
     amenities,
 } from "@/app/admin/property/utils/option";
+import { Router } from "next/router";
 
 const validationSchema = Yup.object({
     // Personal Information
@@ -73,6 +74,7 @@ const NewPropertyPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [propertyStatus, setPropertyStatus] = useState("");
     const [previewImages, setPreviewImages] = useState<string[]>([]);
+    const router = useRouter();
 
     const formik = useFormik({
         initialValues: {
@@ -129,7 +131,6 @@ const NewPropertyPage = () => {
                             formData.append("amenities[]", amenity);
                         });
                     } else if (typeof value === "string" || typeof value === "number") {
-                        // Append other fields
                         formData.append(key, value.toString());
                     }
                 });
@@ -141,6 +142,8 @@ const NewPropertyPage = () => {
                     },
                 });
 
+
+                router.replace("/admin/property")
                 toast.success("Inquiry submitted successfully!");
                 resetForm();
             } catch (error) {
