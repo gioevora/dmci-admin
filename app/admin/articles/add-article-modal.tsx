@@ -14,6 +14,11 @@ const validationSchema = Yup.object({
     date: Yup.string().required('Date is required'),
     content: Yup.string().required('Content is required'),
     type: Yup.string().required('Type is required'),
+    url: Yup.string()
+        .matches(
+            /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+            'URL is not valid'
+        ),
     image: Yup.mixed()
         .required('File is required')
         .test('fileType', 'File must be an image or a video', (value) => {
@@ -29,6 +34,7 @@ interface AddModalProps {
 }
 
 const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
     const [preview, setPreview] = useState<string | null>(null);
     const [isVideo, setIsVideo] = useState<boolean>(false);
 
@@ -55,6 +61,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
             }
             setPreview(null);
             setIsVideo(false);
+            setIsOpen(false);
         } catch {
             toast.error('Something went wrong.');
         } finally {
@@ -63,7 +70,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
     };
 
     return (
-        <Modal title="Add New Article" buttonLabel="Add New Article">
+        <Modal title="Add New Article" buttonLabel="Add New Article" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{
@@ -117,6 +124,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
                                 name="url"
                                 label="URL"
                                 type="text"
+                                error={touched.url ? errors.url : undefined}
                             />
                             <CustomInput
                                 name="image"

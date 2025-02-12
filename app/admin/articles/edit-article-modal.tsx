@@ -14,6 +14,11 @@ const validationSchema = Yup.object({
     date: Yup.string().required('Date is required'),
     content: Yup.string().required('Content is required'),
     type: Yup.string().required('Type is required'),
+    url: Yup.string()
+        .matches(
+            /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+            'URL is not valid'
+        ),
 });
 
 interface EditModalProps {
@@ -96,7 +101,7 @@ const EditModal: React.FC<EditModalProps> = ({ article, isOpen, onClose, mutate 
                                     name="url"
                                     label="URL"
                                     type="text"
-                                // error={touched.content ? errors.content : undefined}
+                                    error={touched.url ? errors.url : undefined}
                                 />
                                 <Field as="select"
                                     name="type"
