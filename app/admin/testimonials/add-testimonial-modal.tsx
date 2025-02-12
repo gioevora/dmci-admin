@@ -21,6 +21,8 @@ interface AddModalProps {
 }
 
 const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+
     const handleSubmit = async (
         values: { user_id: string; first_name: string; last_name: string; message: string },
         { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
@@ -40,6 +42,7 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
             toast.success('Operation successful!');
             mutate();
             resetForm();
+            setIsOpen(false);
         } catch (error) {
             toast.error('Something went wrong.');
             console.error('Error adding Testimonial:', error);
@@ -51,7 +54,7 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
     const user_id = sessionStorage.getItem('id') || '';
 
     return (
-        <Modal title="Add new Testimonial" buttonLabel="Add new Testimonial">
+        <Modal title="Add new testimonial" buttonLabel="Add new testimonial" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{

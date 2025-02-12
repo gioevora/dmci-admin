@@ -24,6 +24,7 @@ interface AddModalProps {
 }
 
 const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>();
     const handleSubmit = async (
         values: { user_id: string; name: string; date: string, image: File | null },
@@ -48,6 +49,7 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
             if (imageInput) {
                 imageInput.value = '';
             }
+            setIsOpen(false);
         } catch (error) {
             toast.error('Something went wrong.');
             console.error('Error adding Testimonial:', error);
@@ -59,7 +61,7 @@ const AddTestimonialModal: React.FC<AddModalProps> = ({ mutate }) => {
     const user_id = sessionStorage.getItem('id') || '';
 
     return (
-        <Modal title="Add new Certificate" buttonLabel="Add new Certificate">
+        <Modal title="Add new certificate" buttonLabel="Add new certificate" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{

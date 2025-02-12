@@ -70,7 +70,7 @@ const AddModal: React.FC<AddModalProps> = ({ mutate }) => {
     };
 
     return (
-        <Modal title="Add New Article" buttonLabel="Add New Article" isOpen={isOpen} setIsOpen={setIsOpen}>
+        <Modal title="Add new article" buttonLabel="Add new article" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{

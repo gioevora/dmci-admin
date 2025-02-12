@@ -25,6 +25,7 @@ interface AddModalProps {
 }
 
 const AddCareerModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>();
     const handleSubmit = async (
         values: any,
@@ -50,6 +51,7 @@ const AddCareerModal: React.FC<AddModalProps> = ({ mutate }) => {
             if (imageInput) {
                 imageInput.value = '';
             }
+            setIsOpen(false);
         } catch (error) {
             toast.error('Something went wrong.');
             console.error('Error adding Career:', error);
@@ -61,7 +63,7 @@ const AddCareerModal: React.FC<AddModalProps> = ({ mutate }) => {
     const user_id = sessionStorage.getItem('id') || '';
 
     return (
-        <Modal title="Add new Career" buttonLabel="Add new Career">
+        <Modal title="Add new career" buttonLabel="Add new career" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{

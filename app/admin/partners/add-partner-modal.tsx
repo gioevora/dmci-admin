@@ -18,16 +18,21 @@ interface AddModalProps {
 }
 
 const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+
     const handleSubmit = async (
         values: { name: string; image: File | null },
         { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }
     ) => {
-
-        console.log(values);
         try {
-
             const token = sessionStorage.getItem('token');
-            await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners`, values, {
+            const formData = new FormData();
+            formData.append("name", values.name);
+            if (values.image) {
+                formData.append("image", values.image);
+            }
+
+            await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/partners`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
@@ -37,60 +42,55 @@ const AddPartnerModal: React.FC<AddModalProps> = ({ mutate }) => {
             toast.success('Operation successful!');
             mutate();
             resetForm();
-            const imageInput = document.querySelector('input[name="image"]') as HTMLInputElement | null;
-            if (imageInput) {
-                imageInput.value = '';
-            }
+            setIsOpen(false);
         } catch (error) {
             console.error('Error adding partner:', error);
+            toast.error('Something went wrong.');
         } finally {
             setSubmitting(false);
         }
     };
 
     return (
-        <Modal title="Add new partner" buttonLabel="Add new partner">
-            <div className="min-w-full">
-                <Formik
-                    initialValues={{
-                        name: '',
-                        image: null,
-                    }}
-                    validationSchema={validationSchema}
-                    onSubmit={handleSubmit}
-                >
-                    {({ errors, touched, isSubmitting, setFieldValue }) => (
-                        <Form className="space-y-4">
-                            <CustomInput
-                                name="name"
-                                label="Name"
-                                type="text"
-                                error={touched.name ? errors.name : undefined}
-                            />
-                            <CustomInput
-                                name="image"
-                                label="Image"
-                                type="file"
-                                error={touched.image ? errors.image : undefined}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                    const file = event.target.files?.[0];
-                                    setFieldValue('image', file);
-                                }}
-                            />
-
-                            <Button
-                                type="submit"
-                                color="primary"
-                                className="w-full"
-                                isLoading={isSubmitting}
-                                isDisabled={isSubmitting}
-                            >
-                                Submit
-                            </Button>
-                        </Form>
-                    )}
-                </Formik>
-            </div>
+        <Modal title="Add new partner" buttonLabel="Add new partner" isOpen={isOpen} setIsOpen={setIsOpen}>
+            <Formik
+                initialValues={{
+                    name: '',
+                    image: null,
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+            >
+                {({ errors, touched, isSubmitting, setFieldValue }) => (
+                    <Form className="space-y-4">
+                        <CustomInput
+                            name="name"
+                            label="Name"
+                            type="text"
+                            error={touched.name ? errors.name : undefined}
+                        />
+                        <CustomInput
+                            name="image"
+                            label="Image"
+                            type="file"
+                            error={touched.image ? errors.image : undefined}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                const file = event.target.files?.[0];
+                                setFieldValue('image', file);
+                            }}
+                        />
+                        <Button
+                            type="submit"
+                            color="primary"
+                            className="w-full"
+                            isLoading={isSubmitting}
+                            isDisabled={isSubmitting}
+                        >
+                            Submit
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
         </Modal>
     );
 };
