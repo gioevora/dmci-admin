@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(admin)/admin/property/new-property/page.jsx", "app/(admin)/admin/property/add-property-modal.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(admin)/admin/property/new-property/page.jsx", "app/(admin)/admin/property/add-property-modal.jsx", "app/admin/user/page.xt"],
   "exclude": ["node_modules"]
 }

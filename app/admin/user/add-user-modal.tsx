@@ -16,7 +16,7 @@ const validationSchema = Yup.object({
 
 
 const AddUserModal = () => {
-
+    const [isOpen, setIsOpen] = React.useState(false);
     const handleSubmit = async (values: { name: string; email: string; password: string, type: string }, { setSubmitting }: any) => {
         try {
             const response = await axios.post('https://abicmanpowerservicecorp.com/api/users', values, {
@@ -29,6 +29,7 @@ const AddUserModal = () => {
             console.log(values);
             console.log(response);
             console.log('User added:', response.data);
+            setIsOpen(false);
         } catch (error: any) {
             setSubmitting(false);
             console.error('Error adding user:', error);
@@ -36,7 +37,7 @@ const AddUserModal = () => {
     };
 
     return (
-        <Modal title="Add new user" buttonLabel="Add new user">
+        <Modal title="Add new user" buttonLabel="Add new user" isOpen={isOpen} setIsOpen={setIsOpen}>
             <div className="min-w-full">
                 <Formik
                     initialValues={{
