@@ -28,8 +28,8 @@ export default function LoginPage() {
 
   const formik = useFormik({
     initialValues: {
-      email: 'email@gmail.com',
-      password: '12345678',
+      email: '',
+      password: '',
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -48,7 +48,7 @@ export default function LoginPage() {
 
         if (response.ok) {
           const { token, record } = await response.json();
-          console.log('Login successful');
+          toast.success('Login successful');
           sessionStorage.setItem('token', token);
           sessionStorage.setItem('id', record.id);
           sessionStorage.setItem('type', record.type);
@@ -59,8 +59,7 @@ export default function LoginPage() {
           setLoading(false);
         }
       } catch (error) {
-        console.error('Error logging in:', error);
-        toast.error('Something went wrong. Please try again.');
+        toast.error('Invalid email or password');
         setLoading(false);
       }
     },
