@@ -45,22 +45,42 @@ const columns: Column<Schedule>[] = [
     },
     {
         key: "first_name",
-        label: "Full Name",
+        label: "Info",
         render: (data) => (
             <div className="truncate">
                 <span>
-                    {data.first_name} {data.last_name}
+                    <span className="font-semibold">{data.first_name} {data.last_name} </span> <br />
+                    {data.email} <br />
+                    {data.phone}
                 </span>
             </div>
         ),
     },
-    { key: "phone", label: "Phone" },
-    { key: "email", label: "Email" },
-    { key: "date", label: "Date" },
-    { key: "time", label: "Time" },
+    // { key: "phone", label: "Phone" },
+    // { key: "email", label: "Email" },
+    {
+        key: "date",
+        label: "Date & Time",
+        render: (data) => {
+            if (!data.date || !data.time) return "No date & time";
+
+            const dateTimeString = `${data.date} ${data.time}`;
+            const dateObj = new Date(dateTimeString);
+
+            return dateObj.toLocaleString("en-US", {
+                weekday: "short",
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+            });
+        }
+    },
     { key: "type", label: "Type" },
     { key: "properties", label: "Properties" },
-    { key: "message", label: "Message", render: (data) => <SeeMoreText text={data.message || "No message"} /> },
+    { key: "message", label: "Message", render: (data) => <div><SeeMoreText text={data.message || "No message"} /></div> },
     { key: "status", label: "Status" },
     {
         key: "id",
