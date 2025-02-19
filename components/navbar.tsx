@@ -6,7 +6,7 @@ import { ThemeSwitch } from './theme-switch';
 import {
   Box, Building, Badge, Calendar, Handshake, HardHat, HelpingHand,
   LogOut, Newspaper, Star, User, LayoutDashboard, Settings,
-  Building2
+  Building2, Image,
 } from 'lucide-react';
 import { Link } from "@heroui/react";
 import { setCookie } from 'nookies';
@@ -89,7 +89,7 @@ const Navbar: React.FC = () => {
               <SidebarItem key={href} href={href} icon={icon} text={text} pathname={pathname} />
             ))}
           </ul>
-          <div className='pt-64'>
+          <div className='py-8'>
             <button
               onClick={handleLogout}
               className="flex w-full items-center p-2 rounded-lg text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#27272a] transition duration-200"
@@ -115,8 +115,9 @@ const sidebarLinks = [
   { href: "/admin/items", icon: <Box size={18} />, text: "Items" },
   { href: "/admin/partners", icon: <Handshake size={18} />, text: "Partners" },
   { href: "/admin/testimonials", icon: <Star size={18} />, text: "Testimonials" },
+  { href: "/admin/photos", icon: <Image size={18} />, text: "Photos" },
   { href: "/admin/user", icon: <User size={18} />, text: "User" },
-  { href: "/admin/settings", icon: <Settings size={18} />, text: "Settings" }
+  { href: "/admin/settings", icon: <Settings size={18} />, text: "Settings" },
 ];
 
 const SidebarItem: React.FC<{ href: string; icon: JSX.Element; text: string; pathname: string }> = ({ href, icon, text, pathname }) => {
