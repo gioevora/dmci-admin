@@ -1,12 +1,9 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import clsx from "clsx";
 import { Toaster } from "react-hot-toast";
-
 import { Providers } from "@/app/providers";
-
-import { fontSans } from "@/config/fonts";
 import Navbar from "@/components/navbar";
+import { Poppins } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "ADMIN",
@@ -19,6 +16,14 @@ export const viewport: Viewport = {
   ],
 };
 
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  display: "swap",
+  fallback: ["system-ui", "Arial", "sans-serif"],
+  variable: "--font-poppins", // Correct variable assignment
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -28,10 +33,7 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <head />
       <body
-        className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
+        className={`min-h-screen bg-background ${poppins.className}`}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
@@ -40,7 +42,8 @@ export default function RootLayout({
               {/* Toaster with Dark Theme Support */}
               <Toaster
                 toastOptions={{
-                  className: "bg-background text-default-500 dark:bg-gray-800 dark:text-white",
+                  className:
+                    "bg-background text-default-500 dark:bg-gray-800 dark:text-white",
                   style: {
                     borderRadius: "8px",
                     padding: "12px",

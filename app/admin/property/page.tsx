@@ -1,19 +1,19 @@
 'use client';
-
 import useSWR from 'swr';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { BsHouseAddFill } from "react-icons/bs";
-import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, Link, Spinner } from "@heroui/react";
+import { SlPlus } from "react-icons/sl";
+import { Button, Chip, Link, Spinner } from "@heroui/react";
 
 import { fetchWithToken } from './utils/option';
 import type { Property } from '@/app/utils/types';
-import { DataTable } from '@/components/data-table';
-import { Column } from '@/app/utils/types';
 import LoadingDot from '@/components/loading-dot';
 import DeleteModal from './delete-property-modal';
+import TableData from '@/components/tabledata';
+import { LuPlus } from 'react-icons/lu';
+import { SmilePlus } from 'lucide-react';
 
 export default function Property() {
     const router = useRouter();
@@ -22,6 +22,8 @@ export default function Property() {
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties`,
         fetchWithToken
     );
+
+    console.log(data);
 
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [properties, setProperties] = useState<Property[]>([]);
@@ -68,19 +70,36 @@ export default function Property() {
     const handlePublishProperty = (id: string) => updatePropertyStatus(id, '1');
     const handleUnpublishProperty = (id: string) => updatePropertyStatus(id, '0');
 
-    const columns: Column<Property>[] = [
+    const Status: Record<string, "primary" | "warning" | "success" | "default"> = {
+        "For Rent": "primary",
+        "For Sale": "warning",
+    };
+
+    const columns = [
+        { key: "id", label: "ID" },
         { key: 'name', label: 'NAME' },
         { key: 'location', label: 'LOCATION' },
-        { key: 'status', label: 'STATUS' },
+        {
+            key: "status",
+            label: "STATUS",
+            renderCell: (row: any) => {
+                const chipColor = Status[row.status] || "default";
+                return <Chip color={chipColor} variant="flat">{row.status}</Chip>;
+            },
+        },
         {
             key: 'price',
             label: 'PRICE',
-            render: (property) => `₱${parseFloat(property.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+            renderCell: (property: any) =>
+                `₱${parseFloat(property.price).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                })}`,
         },
         {
             key: 'action',
             label: 'ACTION',
-            render: (data) => (
+            renderCell: (data: any) => (
                 <div className="flex gap-2">
                     <Link href={`/admin/property/${data.id}`} className="w-full">
                         <Button size="sm" className="w-full uppercase font-semibold bg-yellow-300 text-yellow-800">
@@ -115,7 +134,13 @@ export default function Property() {
                     </Button>
                 </div>
             ),
-        }
+        },
+    ];
+
+    const statusOptions = [
+        { key: "all", label: "All" },
+        { key: "for sale", label: "For Sale" },
+        { key: "for rent", label: "For Rent" },
     ];
 
     const handleDelete = (property: Property) => {
@@ -129,25 +154,22 @@ export default function Property() {
     };
 
     return (
-        <section className="pt-24 px-4 md:px-12">
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-semibold text-violet-800 uppercase">Properties</h1>
-                <Button className='bg-violet-500 text-white capitalize' startContent={<BsHouseAddFill size={16} />} onClick={() => router.push('/admin/property/new-property')}>
+        <section className="py-12 px-4 md:px-12">
+            <div className="flex justify-end items-center mb-4">
+                <Button size='lg' className="bg-violet-500 text-white capitalize" startContent={<SlPlus  size={18} />} onPress={() => router.push('/admin/property/new-property')}>
                     Add property
                 </Button>
             </div>
 
-            <div className='py-6'>
-                <Card>
-                    <CardBody>
-                        <DataTable<Property>
-                            data={properties}
-                            columns={columns}
-                            itemsPerPage={5}
-                        />
-                    </CardBody>
-                </Card>
-            </div>
+            <TableData
+                filter={true}
+                label="PROPERTIES"
+                description="Overview of all properties."
+                columns={columns}
+                data={properties}
+                statusOptions={statusOptions}
+            />
+
             {selectedProperty && (
                 <DeleteModal
                     property={selectedProperty}
