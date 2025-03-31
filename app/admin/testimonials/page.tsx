@@ -90,7 +90,7 @@ export default function TestimonialsPage() {
     }
 
     return (
-        <section className="pt-24 px-4 md:px-12">
+        <section className="pt-16 px-4 md:px-12">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-semibold text-violet-800 uppercase">Testimonials</h1>
                 <AddTestimonialModal mutate={mutate} />

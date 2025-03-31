@@ -107,43 +107,43 @@ export default function Property() {
     }
 
     return (
-        <section className="pt-24 px-4 md:px-12">
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-semibold text-violet-800 uppercase">Inquiries</h1>
-            </div>
-            <div className='py-6'>
-                <Card>
-                    <CardBody>
-
-                        <DataTable<Inquiry>
-                            data={inquiries}
-                            columns={columns}
-                            itemsPerPage={5}
-                        // onAction={handleAction}
-                        // onDelete={handleDelete}
-                        />
-                    </CardBody>
-                </Card>
-            </div>
-
-            {selectedInquiry && (
-                <EditModal
-                    inquiry={selectedInquiry}
-                    isOpen={isEditModalOpen}
-                    mutate={mutate}
-                    onClose={handleCloseEditModal}
-                />
-            )}
-
-            {selectedInquiry && (
-                <DeleteModal
-                    inquiry={selectedInquiry}
-                    isOpen={isDeleteModalOpen}
-                    mutate={mutate}
-                    onClose={handleCloseDeleteModal}
-                />
-            )}
-        </section>
+        <section className="pt-16 px-4 md:px-12">
+        <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-semibold text-violet-800 uppercase">Inquiries</h1>
+        </div>
+        <div className='py-6'>
+            <Card>
+                <CardBody>
+                    <DataTable<Inquiry>
+                        data={inquiries}
+                        columns={columns}
+                        itemsPerPage={5}
+                    // onAction={handleAction}
+                    // onDelete={handleDelete}
+                    />
+                </CardBody>
+            </Card>
+        </div>
+    
+        {selectedInquiry && (
+            <EditModal
+                inquiry={selectedInquiry}
+                isOpen={isEditModalOpen}
+                mutate={mutate}
+                onClose={handleCloseEditModal}
+            />
+        )}
+    
+        {selectedInquiry && (
+            <DeleteModal
+                inquiry={selectedInquiry}
+                isOpen={isDeleteModalOpen}
+                mutate={mutate}
+                onClose={handleCloseDeleteModal}
+            />
+        )}
+    </section>
+    
     );
 }
 
