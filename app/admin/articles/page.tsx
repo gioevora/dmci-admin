@@ -120,7 +120,7 @@ export default function Property() {
     ];
 
     return (
-        <section className="pt-24 px-4 md:px-12">
+        <section className="pt-16 px-4 md:px-12">
             <div className="flex justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-violet-800 uppercase text-center">articles</h1>
