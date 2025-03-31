@@ -82,7 +82,7 @@ export default function LoginPage() {
             <Input
               type="email"
               name="email"
-              value={formik.values.email}
+              
               onChange={formik.handleChange}
               placeholder="Enter email"
               isInvalid={formik.touched.email && Boolean(formik.errors.email)}
@@ -92,7 +92,7 @@ export default function LoginPage() {
             <Input
               type="password"
               name="password"
-              value={formik.values.password}
+              
               onChange={formik.handleChange}
               placeholder="Enter password"
               isInvalid={
